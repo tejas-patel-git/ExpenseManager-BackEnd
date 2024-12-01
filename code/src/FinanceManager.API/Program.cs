@@ -14,8 +14,8 @@ builder.Services.AddSwaggerGen();
 
 // Configure Database
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString(builder.Configuration["SQLDbConnectionString"]
-    ?? throw new ArgumentNullException("SQL Connection string missing"))));
+    options.UseSqlServer(builder.Configuration["SQLDbConnectionString"]
+    ?? throw new ArgumentNullException("SQL Connection string missing")));
 
 // Configure Dependency Injection
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
