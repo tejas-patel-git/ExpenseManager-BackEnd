@@ -1,4 +1,5 @@
-﻿using FinanceManager.Models;
+﻿
+using FinanceManager.Data.Models;
 
 namespace FinanceManager.Data.Repository
 {

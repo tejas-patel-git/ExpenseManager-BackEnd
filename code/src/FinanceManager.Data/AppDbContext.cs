@@ -1,4 +1,4 @@
-﻿using FinanceManager.Models;
+﻿using FinanceManager.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinanceManager.Data
@@ -7,6 +7,6 @@ namespace FinanceManager.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<Transaction> Transactions { get; set; }
+        internal DbSet<Transaction> Transactions { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using FinanceManager.Models;
+﻿using FinanceManager.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinanceManager.Data.Repository
