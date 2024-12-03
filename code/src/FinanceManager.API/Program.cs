@@ -1,6 +1,6 @@
-using FinanceManager.API.Services;
 using FinanceManager.Data;
 using FinanceManager.Data.Repository;
+using FinanceMangement.Application.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

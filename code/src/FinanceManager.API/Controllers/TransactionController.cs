@@ -1,6 +1,7 @@
-using FinanceManager.API.Services;
 using FinanceManager.Models;
+using FinanceMangement.Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FinanceManager.API.Controllers
 {
@@ -16,9 +17,12 @@ namespace FinanceManager.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactions()
+        public async Task<ActionResult<IEnumerable<TransactionDto>>> GetTransactions()
         {
             var transactions = await _service.GetTransactionsAsync();
+
+            if (transactions.IsNullOrEmpty()) return NoContent();
+
             return Ok(transactions);
         }
     }
