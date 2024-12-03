@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FinanceManager.Data\FinanceManager.Data.csproj" />
+    <ProjectReference Include="..\FinanceManager.Models\FinanceManager.Models.csproj" />
+  </ItemGroup>
+
 </Project>
