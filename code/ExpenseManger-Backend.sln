@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35514.174
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceManager.API", "FinanceManager.API\FinanceManager.API.csproj", "{A07ED614-F521-40DA-9D94-E9C19301637B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceManager.API", "src\FinanceManager.API\FinanceManager.API.csproj", "{A07ED614-F521-40DA-9D94-E9C19301637B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceManager.Models", "FinanceManager.Models\FinanceManager.Models.csproj", "{DFF55E03-997E-456A-804D-7257477CD0F8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceManager.Models", "src\FinanceManager.Models\FinanceManager.Models.csproj", "{DFF55E03-997E-456A-804D-7257477CD0F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceManager.Data", "FinanceManager.Data\FinanceManager.Data.csproj", "{D86C7743-155B-4D6E-A417-CA78627CD4D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceManager.Data", "src\FinanceManager.Data\FinanceManager.Data.csproj", "{D86C7743-155B-4D6E-A417-CA78627CD4D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceMangement.Application", "FinanceMangement.Application\FinanceMangement.Application.csproj", "{D25CE3BC-EFCF-426C-8492-604A0E38467A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceMangement.Application", "src\FinanceMangement.Application\FinanceMangement.Application.csproj", "{D25CE3BC-EFCF-426C-8492-604A0E38467A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
