@@ -26,7 +26,7 @@ namespace FinanceManager.API.Controllers
             return Ok(transactions);
         }
 
-        [HttpGet("GetAllTransactions/{userID}")]
+        [HttpGet("[action]/{userID}")]
         public async Task<ActionResult<IEnumerable<TransactionDto>>> GetAllTransactions(int userID)
         {
             var transactions = await _service.GetAllTransactionsAsync(userID);
