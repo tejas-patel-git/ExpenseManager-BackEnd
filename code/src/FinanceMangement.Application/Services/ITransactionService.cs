@@ -4,6 +4,7 @@ namespace FinanceMangement.Application.Services
 {
     public interface ITransactionService
     {
-        Task<IEnumerable<TransactionDto>> GetTransactionsAsync();
+        Task<IEnumerable<TransactionDto>> GetAllTransactionsAsync();
+        Task<IEnumerable<TransactionDto>> GetAllTransactionsAsync(int userID);
     }
 }
