@@ -16,5 +16,11 @@ namespace FinanceManager.Data.Repository
         {
             return await _context.Transactions.ToListAsync();
         }
+
+        public async Task<IEnumerable<Transaction>> GetAllTransactionsAsync(int userID)
+        {
+            return await _context.Transactions.Where(transaction => transaction.UserID == userID)
+                                              .ToListAsync();
+        }
     }
 }

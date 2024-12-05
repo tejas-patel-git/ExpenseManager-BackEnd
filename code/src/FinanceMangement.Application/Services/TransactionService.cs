@@ -1,5 +1,6 @@
 ﻿using FinanceManager.Data.Repository;
 using FinanceManager.Models;
+using FinanceMangement.Application.Mappers;
 
 namespace FinanceMangement.Application.Services
 {
@@ -12,25 +13,22 @@ namespace FinanceMangement.Application.Services
             _repository = repository;
         }
 
-        public async Task<IEnumerable<TransactionDto>> GetTransactionsAsync()
+        public async Task<IEnumerable<TransactionDto>> GetAllTransactionsAsync()
         {
             var transactions = await _repository.GetAllTransactionsAsync();
 
             if (!transactions.Any()) return Enumerable.Empty<TransactionDto>();
 
-            var responseTransactions = new List<TransactionDto>();
+            return transactions.MapToDto();
+        }
 
-            foreach (var transaction in transactions)
-                responseTransactions.Add(new()
-                {
-                    TransactionID = transaction.TransactionID,
-                    IsExpense = transaction.IsExpense,
-                    Amount = transaction.Amount,
-                    Date = transaction.Date,
-                    Description = transaction.Description
-                });
+        public async Task<IEnumerable<TransactionDto>> GetAllTransactionsAsync(int userID)
+        {
+            var transactions = await _repository.GetAllTransactionsAsync(userID);
 
-            return responseTransactions;
+            if (!transactions.Any()) return Enumerable.Empty<TransactionDto>();
+
+            return transactions.MapToDto();
         }
     }
 }
