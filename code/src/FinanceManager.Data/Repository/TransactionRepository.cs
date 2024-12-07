@@ -20,26 +20,20 @@ namespace FinanceManager.Data.Repository
         /// <inheritdoc />
         public async Task<Transaction?> GetTransactionByIdAsync(int transactionId)
         {
-            if (transactionId <= 0)
-            {
-                _logger.LogWarning("Invalid transaction ID: {TransactionId}", transactionId);
-                throw new ArgumentException("Transaction ID must be greater than zero.", nameof(transactionId));
-            }
-
             try
             {
                 var transaction = await _context.Transactions.FindAsync(transactionId);
 
                 if (transaction == null)
                 {
-                    _logger.LogWarning("Transaction with ID {TransactionId} not found.", transactionId);
+                    _logger.LogWarning($"Transaction with ID {transactionId} not found.");
                 }
 
                 return transaction;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while retrieving transaction ID {TransactionId}", transactionId);
+                _logger.LogError(ex, $"Error occurred while retrieving transaction ID {transactionId}");
                 throw;
             }
         }
@@ -61,19 +55,13 @@ namespace FinanceManager.Data.Repository
         /// <inheritdoc />
         public async Task<IEnumerable<Transaction>> GetAllTransactionsAsync(int userID)
         {
-            if (userID <= 0)
-            {
-                _logger.LogWarning("Invalid user ID: {UserID}", userID);
-                throw new ArgumentException("User ID must be greater than zero.", nameof(userID));
-            }
-
             try
             {
                 return await _context.Transactions.Where(t => t.UserID == userID).ToListAsync();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while retrieving transactions for UserID {UserID}", userID);
+                _logger.LogError(ex, $"Error occurred while retrieving transactions for UserID {userID}");
                 throw;
             }
         }
@@ -81,12 +69,6 @@ namespace FinanceManager.Data.Repository
         /// <inheritdoc />
         public async Task AddTransactionAsync(Transaction transaction)
         {
-            if (transaction == null)
-            {
-                _logger.LogWarning("Cannot add a null transaction.");
-                throw new ArgumentNullException(nameof(transaction));
-            }
-
             try
             {
                 await _context.Transactions.AddAsync(transaction);
@@ -103,12 +85,6 @@ namespace FinanceManager.Data.Repository
         /// <inheritdoc />
         public async Task UpdateTransactionAsync(Transaction transaction)
         {
-            if (transaction == null)
-            {
-                _logger.LogWarning("Cannot update a null transaction.");
-                throw new ArgumentNullException(nameof(transaction));
-            }
-
             try
             {
                 _context.Update(transaction);
@@ -125,29 +101,23 @@ namespace FinanceManager.Data.Repository
         /// <inheritdoc />
         public async Task DeleteTransactionAsync(int transactionId)
         {
-            if (transactionId <= 0)
-            {
-                _logger.LogWarning("Invalid transaction ID: {TransactionId}", transactionId);
-                throw new ArgumentException("Transaction ID must be greater than zero.", nameof(transactionId));
-            }
-
             try
             {
                 var transaction = await GetTransactionByIdAsync(transactionId);
 
                 if (transaction == null)
                 {
-                    _logger.LogWarning("Transaction with ID {TransactionId} not found for deletion.", transactionId);
+                    _logger.LogWarning($"Transaction with ID {transactionId} not found for deletion.");
                     return;
                 }
 
                 _context.Transactions.Remove(transaction);
                 await _context.SaveChangesAsync();
-                _logger.LogInformation("Transaction with ID {TransactionId} deleted successfully.", transactionId);
+                _logger.LogInformation($"Transaction with ID {transactionId} deleted successfully.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while deleting transaction ID {TransactionId}.", transactionId);
+                _logger.LogError(ex, $"Error occurred while deleting transaction ID {transactionId}.");
                 throw;
             }
         }
