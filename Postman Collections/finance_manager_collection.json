@@ -56,15 +56,100 @@
 					]
 				},
 				{
-					"name": "Get transactions by user",
-					"id": "17e3a67e-3184-47b6-bef3-2b51d505daf7",
+					"name": "Get Transaction by ID",
+					"id": "54621cad-c0db-4916-904f-986de3431747",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/Transactions"
+						"url": "localhost:5000/api/transaction/{{transactionId}}",
+						"description": "Retrieves a transaction by its ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Transactions by User ID",
+					"id": "36b1c3a4-d721-46da-8a06-e1ed7c10eb4f",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:5000/api/transaction/user/{{userId}}",
+						"description": "Retrieves all transactions for a specific user."
+					},
+					"response": []
+				},
+				{
+					"name": "Add Transaction",
+					"id": "dd40dade-a765-43ef-95bb-ea596207cca3",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"TransactionID\": 0,\n  \"IsExpense\": true,\n  \"Amount\": 150.00,\n  \"Date\": \"2024-12-07T00:00:00\",\n  \"Description\": \"Test transaction\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:5000/api/transaction",
+						"description": "Adds a new transaction."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Transaction",
+					"id": "96b68887-8c85-4791-8059-fe7c5b970b64",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"TransactionID\": {{transactionId}},\n  \"IsExpense\": false,\n  \"Amount\": 200.00,\n  \"Date\": \"2024-12-07T00:00:00\",\n  \"Description\": \"Updated transaction\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:5000/api/transaction/{{transactionId}}",
+						"description": "Updates an existing transaction."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Transaction",
+					"id": "9051ceec-f87d-4231-9cd5-4968600b4c09",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:5000/api/transaction/{{transactionId}}",
+						"description": "Deletes a transaction by its ID."
 					},
 					"response": []
 				}
