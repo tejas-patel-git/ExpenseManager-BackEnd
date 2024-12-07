@@ -1,4 +1,4 @@
-name: .NET CI/CD Workflow
+name: .NET CI Workflow with Release Mode
 
 on:
   push:
@@ -9,28 +9,78 @@ on:
       - main
 
 jobs:
-  build:
+  # Restore Dependencies
+  restore:
     runs-on: ubuntu-latest
-
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 2: Setup .NET environment
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 8.0.x # Specify the version of .NET
+          dotnet-version: 8.0.x
 
-      # Step 3: Install dependencies
-      - name: Install Dependencies
+      - name: Restore Dependencies
         run: dotnet restore code/ExpenseManger-Backend.sln
 
-      # Step 4: Build the project
-      - name: Build
-        run: dotnet build code/ExpenseManger-Backend.sln --configuration Release
+  lint:
+    runs-on: ubuntu-latest
+    needs: restore
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+  
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+  
+      - name: Check Code Formatting
+        run: dotnet format --verify-no-changes
 
-      # Step 5: Run Tests
+  # Build the Solution in Release Mode
+  build:
+    runs-on: ubuntu-latest
+    needs: restore
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Build Solution in Release Mode
+        run: dotnet build code/ExpenseManger-Backend.sln --configuration Release --output ./output
+
+  # Run Unit Tests
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+
       - name: Run Tests
         run: dotnet test code/ExpenseManger-Backend.sln --configuration Release --verbosity normal
+
+  # Upload Build Artifacts
+  upload-artifacts:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: ./output/*
