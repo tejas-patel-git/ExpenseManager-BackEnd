@@ -4,22 +4,20 @@ using Microsoft.Extensions.Logging;
 
 namespace FinanceManager.Data.Repository
 {
-    public class TransactionRepository : ITransactionRepository
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TransactionRepository"/> class.
+    /// </summary>
+    /// <param name="context">The <see cref="AppDbContext"/> instance used to interact with the database.</param>
+    /// <param name="logger">The <see cref="ILogger{TransactionRepository}"/> instance for logging repository activities.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when either <paramref name="context"/> or <paramref name="logger"/> is <c>null</c>.
+    /// </exception>
+    public class TransactionRepository(AppDbContext context, ILogger<TransactionRepository> logger) : ITransactionRepository
     {
-        private readonly AppDbContext _context;
-        private readonly ILogger<TransactionRepository> _logger;
+        private readonly AppDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
+        private readonly ILogger<TransactionRepository> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-        public TransactionRepository(AppDbContext context, ILogger<TransactionRepository> logger)
-        {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
-
-        /// <summary>
-        /// Retrieves a transaction by its ID asynchronously.
-        /// </summary>
-        /// <param name="transactionId">The ID of the transaction to retrieve.</param>
-        /// <returns>The <see cref="Transaction"/> entity if found; otherwise, null.</returns>
+        /// <inheritdoc />
         public async Task<Transaction?> GetTransactionByIdAsync(int transactionId)
         {
             if (transactionId <= 0)
@@ -46,10 +44,7 @@ namespace FinanceManager.Data.Repository
             }
         }
 
-        /// <summary>
-        /// Retrieves all transactions asynchronously.
-        /// </summary>
-        /// <returns>A collection of <see cref="Transaction"/>.</returns>
+        /// <inheritdoc />
         public async Task<IEnumerable<Transaction>> GetAllTransactionsAsync()
         {
             try
@@ -63,11 +58,7 @@ namespace FinanceManager.Data.Repository
             }
         }
 
-        /// <summary>
-        /// Retrieves all transactions for a specific user asynchronously.
-        /// </summary>
-        /// <param name="userID">The user ID to filter transactions.</param>
-        /// <returns>A collection of <see cref="Transaction"/> for the specified user.</returns>
+        /// <inheritdoc />
         public async Task<IEnumerable<Transaction>> GetAllTransactionsAsync(int userID)
         {
             if (userID <= 0)
@@ -87,10 +78,7 @@ namespace FinanceManager.Data.Repository
             }
         }
 
-        /// <summary>
-        /// Adds a new transaction asynchronously.
-        /// </summary>
-        /// <param name="transaction">The transaction entity to add.</param>
+        /// <inheritdoc />
         public async Task AddTransactionAsync(Transaction transaction)
         {
             if (transaction == null)
@@ -112,10 +100,7 @@ namespace FinanceManager.Data.Repository
             }
         }
 
-        /// <summary>
-        /// Updates an existing transaction asynchronously.
-        /// </summary>
-        /// <param name="transaction">The transaction entity to update.</param>
+        /// <inheritdoc />
         public async Task UpdateTransactionAsync(Transaction transaction)
         {
             if (transaction == null)
@@ -137,10 +122,7 @@ namespace FinanceManager.Data.Repository
             }
         }
 
-        /// <summary>
-        /// Deletes a transaction asynchronously.
-        /// </summary>
-        /// <param name="transactionId">The ID of the transaction to delete.</param>
+        /// <inheritdoc />
         public async Task DeleteTransactionAsync(int transactionId)
         {
             if (transactionId <= 0)
