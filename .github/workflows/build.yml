@@ -15,24 +15,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the code
-      - name: Checkout Code
-      - uses: actions/checkout@v4
+    # Checkout the code
+    - name: Checkout Code
+    - uses: actions/checkout@v4
 
-      # Setup .NET SDK
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.x
-          
-      # Restore dependencies
-      - name: Restore dependencies
-        run: dotnet restore code/ExpenseManger-Backend.sln
+    # Setup .NET SDK
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+        
+    # Restore dependencies
+    - name: Restore dependencies
+      run: dotnet restore code/ExpenseManger-Backend.sln
 
-      # Build the application
-      - name: Build
-        run: dotnet build ExpenseManger-Backend.sln --no-restore
+    # Build the application
+    - name: Build
+      run: dotnet build ExpenseManger-Backend.sln --no-restore
 
-      # Run tests
-      - name: Test
-        run: dotnet test code/tests --no-build --verbosity normal
+    # Run tests
+    - name: Test
+      run: dotnet test code/tests --no-build --verbosity normal
