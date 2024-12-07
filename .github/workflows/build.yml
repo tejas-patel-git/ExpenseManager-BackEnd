@@ -29,8 +29,8 @@ jobs:
 
       # Step 4: Build the project
       - name: Build
-        run: dotnet build code/ExpenseManger-Backend.sln --no-restore --configuration Release
+        run: dotnet build code/ExpenseManger-Backend.sln --configuration Release
 
       # Step 5: Run Tests
       - name: Run Tests
-        run: dotnet test code/ExpenseManger-Backend.sln --no-build --verbosity normal
+        run: dotnet test code/ExpenseManger-Backend.sln --configuration Release --verbosity normal
