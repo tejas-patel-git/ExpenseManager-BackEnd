@@ -21,7 +21,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '7.0' # Specify the version of .NET
+          dotnet-version: 8.0.x # Specify the version of .NET
 
       # Step 3: Install dependencies
       - name: Install Dependencies
@@ -33,4 +33,4 @@ jobs:
 
       # Step 5: Run Tests
       - name: Run Tests
-        run: dotnet test code/tests --no-build --verbosity normal
+        run: dotnet test code/ExpenseManger-Backend.sln --no-build --verbosity normal
