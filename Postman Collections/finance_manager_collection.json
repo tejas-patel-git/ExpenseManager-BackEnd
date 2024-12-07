@@ -64,7 +64,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "localhost:5000/api/transaction/{{transactionId}}",
+						"url": "{{base_url}}/transaction/1",
 						"description": "Retrieves a transaction by its ID."
 					},
 					"response": []
@@ -78,7 +78,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "localhost:5000/api/transaction/user/{{userId}}",
+						"url": "{{base_url}}/transaction/user/1",
 						"description": "Retrieves all transactions for a specific user."
 					},
 					"response": []
@@ -106,7 +106,7 @@
 								}
 							}
 						},
-						"url": "localhost:5000/api/transaction",
+						"url": "{{base_url}}/transaction",
 						"description": "Adds a new transaction."
 					},
 					"response": []
@@ -127,14 +127,14 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"TransactionID\": {{transactionId}},\n  \"IsExpense\": false,\n  \"Amount\": 200.00,\n  \"Date\": \"2024-12-07T00:00:00\",\n  \"Description\": \"Updated transaction\"\n}",
+							"raw": "{\n  \"TransactionID\": 1,\n  \"IsExpense\": false,\n  \"Amount\": 200.00,\n  \"Date\": \"2024-12-07T00:00:00\",\n  \"Description\": \"Updated transaction\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "localhost:5000/api/transaction/{{transactionId}}",
+						"url": "{{base_url}}/transaction/1",
 						"description": "Updates an existing transaction."
 					},
 					"response": []
@@ -148,7 +148,7 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "localhost:5000/api/transaction/{{transactionId}}",
+						"url": "{{base_url}}/transaction/",
 						"description": "Deletes a transaction by its ID."
 					},
 					"response": []
