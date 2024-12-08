@@ -85,9 +85,19 @@ namespace FinanceManager.Data.Repository
         /// <inheritdoc />
         public async Task UpdateTransactionAsync(Transaction transaction)
         {
+            // TODO : Revisit logic - might need some tweaks related to how to handle FKs
             try
             {
-                _context.Update(transaction);
+                var existingTransaction = await GetTransactionByIdAsync(transaction.TransactionID);
+
+                if (existingTransaction == null) return;
+
+                existingTransaction.IsExpense = transaction.IsExpense;
+                existingTransaction.UpdatedAt = DateTime.UtcNow;
+                existingTransaction.Date = transaction.Date;
+                existingTransaction.Amount = transaction.Amount;
+                existingTransaction.Description = transaction.Description;
+
                 await _context.SaveChangesAsync();
                 _logger.LogInformation($"Transaction with ID {transaction.TransactionID} updated successfully.");
             }
