@@ -19,5 +19,7 @@ namespace FinanceManager.Data
         /// </summary>
         /// <value>A set of <see cref="Transaction"/> entities in the database.</value>
         internal DbSet<Transaction> Transactions { get; set; }
+
+        internal DbSet<User> Users { get; set; }
     }
 }
