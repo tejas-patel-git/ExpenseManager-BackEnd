@@ -25,7 +25,7 @@ namespace FinanceManager.Data.Repository
         }
 
         /// <inheritdoc/>
-        public async Task<User> GetUserByIdAsync(int id)
+        public async Task<User?> GetUserByIdAsync(int id)
         {
             if (id <= 0)
             {

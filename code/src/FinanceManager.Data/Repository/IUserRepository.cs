@@ -12,7 +12,7 @@ namespace FinanceManager.Data.Repository
         /// </summary>
         /// <param name="id">The ID of the user to retrieve.</param>
         /// <returns>The user with the specified ID, or null if not found.</returns>
-        Task<User> GetUserByIdAsync(int id);
+        Task<User?> GetUserByIdAsync(int id);
 
         /// <summary>
         /// Retrieves all users in the data store.
