@@ -18,9 +18,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     ?? throw new ArgumentNullException("SQL Connection string missing")));
 
 // Configure Dependency Injection
-builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddRepositories();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();

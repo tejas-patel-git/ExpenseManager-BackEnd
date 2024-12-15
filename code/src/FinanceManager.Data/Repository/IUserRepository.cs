@@ -5,7 +5,7 @@ namespace FinanceManager.Data.Repository
     /// <summary>
     /// Interface for managing User entities in the data store.
     /// </summary>
-    public interface IUserRepository
+    public interface IUserRepository : IGenericRepository<User>
     {
         /// <summary>
         /// Retrieves a user by their ID.
