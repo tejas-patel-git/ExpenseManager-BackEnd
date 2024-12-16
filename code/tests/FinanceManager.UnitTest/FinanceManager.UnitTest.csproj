@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\FinanceManager.Data\FinanceManager.Data.csproj" />
-    <ProjectReference Include="..\..\src\FinanceMangement.Application\FinanceMangement.Application.csproj" />
+    <ProjectReference Include="..\..\src\FinanceMangement.Application\FinanceManager.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

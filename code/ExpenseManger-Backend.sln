@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceManager.Models", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceManager.Data", "src\FinanceManager.Data\FinanceManager.Data.csproj", "{D86C7743-155B-4D6E-A417-CA78627CD4D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceMangement.Application", "src\FinanceMangement.Application\FinanceMangement.Application.csproj", "{D25CE3BC-EFCF-426C-8492-604A0E38467A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceManager.Application", "src\FinanceMangement.Application\FinanceManager.Application.csproj", "{D25CE3BC-EFCF-426C-8492-604A0E38467A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceManager.UnitTest", "tests\FinanceManager.UnitTest\FinanceManager.UnitTest.csproj", "{6918E1E2-1582-4B29-8F79-44721C7C9E39}"
 EndProject
