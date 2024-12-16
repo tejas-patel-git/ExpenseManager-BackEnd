@@ -8,7 +8,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 
-namespace FinananceManager.UnitTest;
+namespace FinanceManager.UnitTest;
 public class TransactionServiceTests
 {
     private readonly IFixture _fixture;

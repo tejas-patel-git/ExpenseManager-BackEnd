@@ -1,6 +1,5 @@
 using FinanceManager.Data;
-using FinanceManager.Data.Repository;
-using FinanceMangement.Application.Services;
+using FinanceMangement.Application;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,8 +18,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Configure Dependency Injection
 builder.Services.AddRepositories();
-builder.Services.AddScoped<ITransactionService, TransactionService>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 
