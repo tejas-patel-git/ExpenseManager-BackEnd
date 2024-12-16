@@ -1,7 +1,7 @@
-﻿using FinanceMangement.Application.Services;
+﻿using FinanceManager.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FinanceMangement.Application
+namespace FinanceManager.Application
 {
     public static class DependencyInjection
     {

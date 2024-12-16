@@ -1,6 +1,6 @@
 ﻿using FinanceManager.Data.Models;
 using Microsoft.AspNetCore.Mvc;
-using FinanceMangement.Application.Services;
+using FinanceManager.Application.Services;
 
 namespace FinanceManager.API.Controllers
 {

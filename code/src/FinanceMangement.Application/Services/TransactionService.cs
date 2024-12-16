@@ -1,9 +1,9 @@
 ﻿using FinanceManager.Data;
 using FinanceManager.Models;
-using FinanceMangement.Application.Mappers;
+using FinanceManager.Application.Mappers;
 using Microsoft.Extensions.Logging;
 
-namespace FinanceMangement.Application.Services;
+namespace FinanceManager.Application.Services;
 
 public class TransactionService : ITransactionService
 {

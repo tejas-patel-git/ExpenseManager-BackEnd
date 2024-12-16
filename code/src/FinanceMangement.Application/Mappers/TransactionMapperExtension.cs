@@ -1,7 +1,7 @@
 ﻿using FinanceManager.Data.Models;
 using FinanceManager.Models;
 
-namespace FinanceMangement.Application.Mappers
+namespace FinanceManager.Application.Mappers
 {
     /// <summary>
     /// Extension methods for mapping between <see cref="Transaction"/> and <see cref="TransactionDto"/>.

@@ -2,7 +2,7 @@
 using FinanceManager.Data.Models;
 using FinanceManager.Data.Repository;
 
-namespace FinanceMangement.Application.Services;
+namespace FinanceManager.Application.Services;
 
 // TODO : Use DTOs
 

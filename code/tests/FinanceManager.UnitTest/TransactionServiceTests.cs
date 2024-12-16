@@ -3,7 +3,7 @@ using FinanceManager.Data;
 using FinanceManager.Data.Models;
 using FinanceManager.Data.Repository;
 using FinanceManager.Models;
-using FinanceMangement.Application.Services;
+using FinanceManager.Application.Services;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;

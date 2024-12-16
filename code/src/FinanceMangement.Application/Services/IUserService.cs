@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinanceMangement.Application.Services
+namespace FinanceManager.Application.Services
 {
     /// <summary>
     /// Service interface for managing user-related business logic.

@@ -1,5 +1,5 @@
 using FinanceManager.Data;
-using FinanceMangement.Application;
+using FinanceManager.Application;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

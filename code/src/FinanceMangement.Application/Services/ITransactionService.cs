@@ -1,7 +1,7 @@
 ﻿using FinanceManager.Data.Models;
 using FinanceManager.Models;
 
-namespace FinanceMangement.Application.Services
+namespace FinanceManager.Application.Services
 {
     /// <summary>
     /// Defines methods for managing transactions in the system.
