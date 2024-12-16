@@ -157,6 +157,40 @@
 			"id": "de11a272-4942-4526-adc2-a70780a2f60d"
 		}
 	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": {
+			"accessTokenUrl": "https://accounts.google.com/o/oauth2/v2/auth",
+			"clientSecret": "{{vault:client-secret-dev}}",
+			"clientId": "{{vault:client-id-dev}}",
+			"grant_type": "client_credentials",
+			"addTokenTo": "header"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "f0b747ca-3f8e-4b5a-8462-e0d8f3494049",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "7a8d9466-0d4b-4e87-af99-767c48ccd84e",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
 	"variable": [
 		{
 			"key": "base_url",
