@@ -160,8 +160,18 @@
 	"auth": {
 		"type": "oauth2",
 		"oauth2": {
-			"accessTokenUrl": "https://accounts.google.com/o/oauth2/v2/auth",
+			"tokenRequestParams": [
+				{
+					"key": "audience",
+					"value": "{{vault:audience-dev}}",
+					"enabled": true,
+					"send_as": "request_body"
+				}
+			],
+			"scope": "",
 			"clientSecret": "{{vault:client-secret-dev}}",
+			"accessTokenUrl": "https://financemanager-dev.us.auth0.com/oauth/token",
+			"client_authentication": "header",
 			"clientId": "{{vault:client-id-dev}}",
 			"grant_type": "client_credentials",
 			"addTokenTo": "header"
@@ -171,7 +181,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "f0b747ca-3f8e-4b5a-8462-e0d8f3494049",
+				"id": "0fc7edec-6830-425b-bbd1-6cf067629cd0",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -182,7 +192,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "7a8d9466-0d4b-4e87-af99-767c48ccd84e",
+				"id": "aed4a517-c732-4b1b-8145-0337ae42d8f7",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
