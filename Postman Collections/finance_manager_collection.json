@@ -56,53 +56,6 @@
 					]
 				},
 				{
-					"name": "Get all transactions Copy",
-					"id": "6c3354d6-4eb3-4aec-9440-af6c68b9703a",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": "{{base_url}}/Transactions"
-					},
-					"response": [
-						{
-							"id": "f80bbffb-9050-4075-bc04-9eeb2a290581",
-							"name": "Success Response",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": "{{base_url}}/Transactions"
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 06 Dec 2024 05:33:32 GMT"
-								},
-								{
-									"key": "Server",
-									"value": "Kestrel"
-								},
-								{
-									"key": "Transfer-Encoding",
-									"value": "chunked"
-								}
-							],
-							"cookie": [],
-							"responseTime": null,
-							"body": "[\n    {\n        \"transactionID\": 1,\n        \"isExpense\": true,\n        \"amount\": 50,\n        \"date\": \"2024-11-01T10:00:00\",\n        \"description\": \"Grocery Shopping\"\n    },\n    {\n        \"transactionID\": 2,\n        \"isExpense\": false,\n        \"amount\": 1500,\n        \"date\": \"2024-11-01T15:00:00\",\n        \"description\": \"Salary\"\n    },\n    {\n        \"transactionID\": 3,\n        \"isExpense\": true,\n        \"amount\": 20,\n        \"date\": \"2024-11-02T12:00:00\",\n        \"description\": \"Coffee\"\n    },\n    {\n        \"transactionID\": 4,\n        \"isExpense\": true,\n        \"amount\": 200,\n        \"date\": \"2024-11-01T09:00:00\",\n        \"description\": \"Online Shopping\"\n    },\n    {\n        \"transactionID\": 5,\n        \"isExpense\": false,\n        \"amount\": 1000,\n        \"date\": \"2024-11-01T16:30:00\",\n        \"description\": \"Freelance Payment\"\n    },\n    {\n        \"transactionID\": 6,\n        \"isExpense\": true,\n        \"amount\": 100,\n        \"date\": \"2024-11-02T13:00:00\",\n        \"description\": \"Dining Out\"\n    },\n    {\n        \"transactionID\": 7,\n        \"isExpense\": true,\n        \"amount\": 75,\n        \"date\": \"2024-11-01T11:00:00\",\n        \"description\": \"Gym Membership\"\n    },\n    {\n        \"transactionID\": 8,\n        \"isExpense\": false,\n        \"amount\": 2000,\n        \"date\": \"2024-11-01T17:00:00\",\n        \"description\": \"Bonus\"\n    },\n    {\n        \"transactionID\": 9,\n        \"isExpense\": true,\n        \"amount\": 40,\n        \"date\": \"2024-11-02T14:00:00\",\n        \"description\": \"Gas\"\n    },\n    {\n        \"transactionID\": 10,\n        \"isExpense\": true,\n        \"amount\": 150,\n        \"date\": \"2024-11-01T08:30:00\",\n        \"description\": \"Electronics Purchase\"\n    },\n    {\n        \"transactionID\": 11,\n        \"isExpense\": false,\n        \"amount\": 1800,\n        \"date\": \"2024-11-01T14:00:00\",\n        \"description\": \"Investment Return\"\n    },\n    {\n        \"transactionID\": 12,\n        \"isExpense\": true,\n        \"amount\": 60,\n        \"date\": \"2024-11-02T10:30:00\",\n        \"description\": \"Clothing\"\n    },\n    {\n        \"transactionID\": 13,\n        \"isExpense\": true,\n        \"amount\": 120,\n        \"date\": \"2024-11-01T07:45:00\",\n        \"description\": \"Utilities\"\n    },\n    {\n        \"transactionID\": 14,\n        \"isExpense\": false,\n        \"amount\": 1500,\n        \"date\": \"2024-11-01T13:45:00\",\n        \"description\": \"Salary\"\n    },\n    {\n        \"transactionID\": 15,\n        \"isExpense\": true,\n        \"amount\": 35,\n        \"date\": \"2024-11-02T09:45:00\",\n        \"description\": \"Snacks\"\n    }\n]"
-						}
-					]
-				},
-				{
 					"name": "Get Transaction by ID",
 					"id": "54621cad-c0db-4916-904f-986de3431747",
 					"protocolProfileBehavior": {
@@ -146,7 +99,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"TransactionID\": 0,\n  \"IsExpense\": true,\n  \"Amount\": 150.00,\n  \"Date\": \"2024-12-07T00:00:00\",\n  \"Description\": \"Test transaction\"\n}",
+							"raw": "{\n    \"isExpense\": false,\n    \"amount\": 50.00,\n    \"date\": \"2024-11-01T10:00:00\",\n    \"description\": \"Grocery Shopping\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -174,7 +127,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"TransactionID\": 1,\n  \"IsExpense\": false,\n  \"Amount\": 200.00,\n  \"Date\": \"2024-12-07T00:00:00\",\n  \"Description\": \"Updated transaction\"\n}",
+							"raw": "{\n    \"transactionID\": 1,\n    \"isExpense\": false,\n    \"amount\": 50.00,\n    \"description\": \"UPDATE Grocery Shopping\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -207,6 +160,7 @@
 	"auth": {
 		"type": "oauth2",
 		"oauth2": {
+			"accessTokenUrl": "{{vault:oauth-token-url}}",
 			"scope": "read:user",
 			"tokenRequestParams": [
 				{
@@ -217,7 +171,6 @@
 				}
 			],
 			"clientSecret": "{{vault:client-secret-dev}}",
-			"accessTokenUrl": "https://financemanager-dev.us.auth0.com/oauth/token",
 			"client_authentication": "header",
 			"clientId": "{{vault:client-id-dev}}",
 			"grant_type": "client_credentials",
@@ -228,7 +181,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "03911868-4661-4d15-90f6-c9353a461f7e",
+				"id": "46734154-05b1-4e86-ba6e-bff8fa87605f",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -239,7 +192,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "f4e2e7e9-701e-4660-8727-bf58ac5e2a81",
+				"id": "802e3d19-2ff8-4cae-bfc0-0a7ce7110a32",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
