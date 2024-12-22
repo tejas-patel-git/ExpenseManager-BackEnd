@@ -8,9 +8,7 @@ namespace FinanceManager.API.Controllers
     /// <summary>
     /// Controller for managing transactions.
     /// </summary>
-    [ApiController]
-    [Route("api/[controller]")]
-    public class TransactionController : ControllerBase
+    public class TransactionController : ApiController
     {
         private readonly ITransactionService _transactionService;
 
@@ -18,7 +16,7 @@ namespace FinanceManager.API.Controllers
         /// Initializes a new instance of the <see cref="TransactionController"/> class.
         /// </summary>
         /// <param name="transactionService">The transaction service to manage transactions.</param>
-        public TransactionController(ITransactionService transactionService)
+        public TransactionController(ITransactionService transactionService) : base()
         {
             _transactionService = transactionService;
         }

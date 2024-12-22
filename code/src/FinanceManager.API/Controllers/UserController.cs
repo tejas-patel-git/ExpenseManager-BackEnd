@@ -9,9 +9,7 @@ namespace FinanceManager.API.Controllers
     /// <summary>
     /// Controller for managing user-related operations.
     /// </summary>
-    [ApiController]
-    [Route("api/[controller]")]
-    public class UserController : ControllerBase
+    public class UserController : ApiController
     {
         private readonly IUserService _userService;
 
