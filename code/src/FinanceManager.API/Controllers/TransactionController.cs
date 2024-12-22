@@ -29,7 +29,7 @@ namespace FinanceManager.API.Controllers
         /// A <see cref="IActionResult"/> representing the result of the operation.
         /// </returns>
         [HttpGet("{transactionId}")]
-        [ProducesResponseType(typeof(TransactionDto), 200)]
+        [ProducesResponseType(typeof(TransactionResponse), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetTransactionById(int transactionId)
@@ -74,7 +74,7 @@ namespace FinanceManager.API.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(Transaction), 201)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> AddTransaction([FromBody] TransactionDto transaction)
+        public async Task<IActionResult> AddTransaction([FromBody] TransactionResponse transaction)
         {
             // TODO : Add Validatoins
             if (!ModelState.IsValid)
@@ -94,7 +94,7 @@ namespace FinanceManager.API.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateTransaction(int transactionId, [FromBody] TransactionDto transaction)
+        public async Task<IActionResult> UpdateTransaction(int transactionId, [FromBody] TransactionResponse transaction)
         {
             if (transactionId != transaction.TransactionID)
                 return BadRequest("Transaction ID mismatch.");

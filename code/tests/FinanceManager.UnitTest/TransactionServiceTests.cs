@@ -130,7 +130,7 @@ public class TransactionServiceTests
         // Assert
         result.Should().NotBeNull()
               .And.HaveCount(transactions.Count)
-              .And.AllBeOfType<TransactionDto>();
+              .And.AllBeOfType<TransactionResponse>();
 
         _transactionRepositoryMock.Verify(repo => repo.GetAllTransactionsAsync(userId), Times.Once);
     }

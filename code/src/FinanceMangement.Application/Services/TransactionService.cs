@@ -18,7 +18,7 @@ public class TransactionService : ITransactionService
     }
 
     /// <inheritdoc/>
-    public async Task<TransactionDto?> GetTransactionByIdAsync(int transactionId)
+    public async Task<TransactionResponse?> GetTransactionByIdAsync(int transactionId)
     {
         if (transactionId <= 0)
         {
@@ -37,7 +37,7 @@ public class TransactionService : ITransactionService
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<TransactionDto>> GetAllTransactionsAsync(int userId)
+    public async Task<IEnumerable<TransactionResponse>> GetAllTransactionsAsync(int userId)
     {
         if (userId <= 0)
         {
@@ -49,14 +49,14 @@ public class TransactionService : ITransactionService
         var transactions = await _unitOfWork.TransactionRepository.GetAllTransactionsAsync(userId);
 
         // Return empty collection if not found
-        if (!transactions.Any()) return Enumerable.Empty<TransactionDto>();
+        if (!transactions.Any()) return Enumerable.Empty<TransactionResponse>();
 
         // Return dto of fetched data
         return transactions.MapToDto();
     }
 
     /// <inheritdoc/>
-    public async Task AddTransactionAsync(TransactionDto transactionDto)
+    public async Task AddTransactionAsync(TransactionResponse transactionDto)
     {
         ArgumentNullException.ThrowIfNull(transactionDto);
 
@@ -70,7 +70,7 @@ public class TransactionService : ITransactionService
     }
 
     /// <inheritdoc/>
-    public async Task UpdateTransactionAsync(TransactionDto transactionDto)
+    public async Task UpdateTransactionAsync(TransactionResponse transactionDto)
     {
         ArgumentNullException.ThrowIfNull(transactionDto);
 
