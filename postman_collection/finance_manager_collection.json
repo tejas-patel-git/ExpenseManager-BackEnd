@@ -61,6 +61,7 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "13168e85-b43d-4252-9af5-048b6212c307",
 								"exec": [
 									"pm.test(\"Response status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -96,7 +97,8 @@
 									"  pm.expect(responseData.date).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -107,10 +109,44 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/transaction/1",
+						"url": "{{base_url}}/transaction/2",
 						"description": "Retrieves a transaction by its ID."
 					},
-					"response": []
+					"response": [
+						{
+							"id": "41133c20-6ada-4c1b-8a03-9d9b0bab3543",
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": "{{base_url}}/transaction/2"
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Dec 2024 05:10:26 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"responseTime": null,
+							"body": "{\n    \"transactionID\": 2,\n    \"isExpense\": false,\n    \"amount\": 1500,\n    \"date\": \"2024-11-01T15:00:00\",\n    \"description\": \"Salary\"\n}"
+						}
+					]
 				},
 				{
 					"name": "Get All Transactions by User ID",
