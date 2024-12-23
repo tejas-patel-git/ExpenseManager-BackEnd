@@ -355,8 +355,10 @@
 	"auth": {
 		"type": "oauth2",
 		"oauth2": {
+			"scope": "",
+			"clientSecret": "{{vault:client-secret-web-dev}}",
+			"clientId": "{{vault:client-id-web-dev}}",
 			"accessTokenUrl": "{{vault:oauth-token-url}}",
-			"scope": "read:user",
 			"tokenRequestParams": [
 				{
 					"key": "audience",
@@ -365,9 +367,7 @@
 					"send_as": "request_body"
 				}
 			],
-			"clientSecret": "{{vault:client-secret-dev}}",
 			"client_authentication": "header",
-			"clientId": "{{vault:client-id-dev}}",
 			"grant_type": "client_credentials",
 			"addTokenTo": "header"
 		}
@@ -376,7 +376,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "46734154-05b1-4e86-ba6e-bff8fa87605f",
+				"id": "feec6a28-c20b-428b-97d9-8c7c64e61c3e",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -387,7 +387,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "802e3d19-2ff8-4cae-bfc0-0a7ce7110a32",
+				"id": "76058521-9545-497f-96be-7e0812d87c96",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
