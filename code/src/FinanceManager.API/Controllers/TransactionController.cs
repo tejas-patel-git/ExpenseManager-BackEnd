@@ -1,7 +1,7 @@
 using FinanceManager.Data.Models;
-using FinanceManager.Models;
 using FinanceManager.Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using FinanceManager.Models.Response;
 
 namespace FinanceManager.API.Controllers
 {

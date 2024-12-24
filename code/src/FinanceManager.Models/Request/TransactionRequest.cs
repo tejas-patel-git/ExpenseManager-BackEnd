@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FinanceManager.Models;
+namespace FinanceManager.Models.Request;
 
 /// <summary>
 /// Represents a request to create or update a transaction.

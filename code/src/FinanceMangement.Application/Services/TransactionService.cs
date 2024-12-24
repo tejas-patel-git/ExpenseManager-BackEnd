@@ -1,7 +1,7 @@
 ﻿using FinanceManager.Data;
-using FinanceManager.Models;
 using FinanceManager.Application.Mappers;
 using Microsoft.Extensions.Logging;
+using FinanceManager.Models.Response;
 
 namespace FinanceManager.Application.Services;
 

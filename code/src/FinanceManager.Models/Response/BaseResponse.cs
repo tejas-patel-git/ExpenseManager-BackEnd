@@ -1,4 +1,4 @@
-﻿namespace FinanceManager.Models;
+﻿namespace FinanceManager.Models.Response;
 
 /// <summary>
 /// Represents a base response model.

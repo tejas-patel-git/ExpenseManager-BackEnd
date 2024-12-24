@@ -1,4 +1,4 @@
-﻿namespace FinanceManager.Models;
+﻿namespace FinanceManager.Models.Request;
 
 /// <summary>
 /// Represents a base request model.
