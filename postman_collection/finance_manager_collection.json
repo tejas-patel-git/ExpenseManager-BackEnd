@@ -355,20 +355,32 @@
 	"auth": {
 		"type": "oauth2",
 		"oauth2": {
-			"scope": "",
-			"clientSecret": "{{vault:client-secret-web-dev}}",
-			"clientId": "{{vault:client-id-web-dev}}",
-			"accessTokenUrl": "{{vault:oauth-token-url}}",
+			"scope": "openid profile email",
+			"grant_type": "authorization_code_with_pkce",
+			"authRequestParams": [
+				{
+					"key": "audience",
+					"value": "{{vault:audience-dev}}",
+					"enabled": true,
+					"send_as": "request_url"
+				}
+			],
+			"client_authentication": "body",
 			"tokenRequestParams": [
 				{
 					"key": "audience",
 					"value": "{{vault:audience-dev}}",
 					"enabled": true,
-					"send_as": "request_body"
+					"send_as": "request_url"
 				}
 			],
-			"client_authentication": "header",
-			"grant_type": "client_credentials",
+			"clientSecret": "{{vault:client-secret-web-dev}}",
+			"state": "1234",
+			"redirect_uri": "http://localhost:5277",
+			"clientId": "{{vault:client-id-web-dev}}",
+			"useBrowser": false,
+			"authUrl": "{{vault:oauth-auth-url}}",
+			"accessTokenUrl": "{{vault:oauth-token-url}}",
 			"addTokenTo": "header"
 		}
 	},
@@ -376,7 +388,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "feec6a28-c20b-428b-97d9-8c7c64e61c3e",
+				"id": "816e3679-5f83-4442-9236-d073cbbd4c2c",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -387,7 +399,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "76058521-9545-497f-96be-7e0812d87c96",
+				"id": "ba6b5e69-afd3-47e6-adb2-503782a672fc",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
