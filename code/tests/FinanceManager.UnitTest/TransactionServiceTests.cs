@@ -2,11 +2,11 @@ using AutoFixture;
 using FinanceManager.Data;
 using FinanceManager.Data.Models;
 using FinanceManager.Data.Repository;
-using FinanceManager.Models;
 using FinanceManager.Application.Services;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
+using FinanceManager.Models.Response;
 
 namespace FinanceManager.UnitTest;
 public class TransactionServiceTests
@@ -130,7 +130,7 @@ public class TransactionServiceTests
         // Assert
         result.Should().NotBeNull()
               .And.HaveCount(transactions.Count)
-              .And.AllBeOfType<TransactionDto>();
+              .And.AllBeOfType<TransactionResponse>();
 
         _transactionRepositoryMock.Verify(repo => repo.GetAllTransactionsAsync(userId), Times.Once);
     }
