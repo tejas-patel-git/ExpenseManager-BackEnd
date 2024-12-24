@@ -355,7 +355,7 @@
 	"auth": {
 		"type": "oauth2",
 		"oauth2": {
-			"scope": "openid profile email",
+			"scope": "",
 			"grant_type": "authorization_code_with_pkce",
 			"authRequestParams": [
 				{
@@ -388,7 +388,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "816e3679-5f83-4442-9236-d073cbbd4c2c",
+				"id": "328c151d-e9a4-4d3c-9cfa-113a6f6acff8",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -399,7 +399,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "ba6b5e69-afd3-47e6-adb2-503782a672fc",
+				"id": "aa395a19-d748-4e61-a7a8-3af644e256d7",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
