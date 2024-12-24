@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a Data Transfer Object (DTO) for a financial transaction.
     /// </summary>
-    public class TransactionResponse
+    public class TransactionResponse : BaseResponse
     {
         /// <summary>
         /// Gets or sets the unique identifier for the transaction.
