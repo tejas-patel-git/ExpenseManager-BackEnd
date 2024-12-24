@@ -64,7 +64,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "localhost:5000/api/transaction/{{transactionId}}",
+						"url": "{{base_url}}/transaction/1",
 						"description": "Retrieves a transaction by its ID."
 					},
 					"response": []
@@ -78,7 +78,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "localhost:5000/api/transaction/user/{{userId}}",
+						"url": "{{base_url}}/transaction/user/1",
 						"description": "Retrieves all transactions for a specific user."
 					},
 					"response": []
@@ -99,14 +99,14 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"TransactionID\": 0,\n  \"IsExpense\": true,\n  \"Amount\": 150.00,\n  \"Date\": \"2024-12-07T00:00:00\",\n  \"Description\": \"Test transaction\"\n}",
+							"raw": "{\n    \"isExpense\": false,\n    \"amount\": 50.00,\n    \"date\": \"2024-11-01T10:00:00\",\n    \"description\": \"Grocery Shopping\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "localhost:5000/api/transaction",
+						"url": "{{base_url}}/transaction",
 						"description": "Adds a new transaction."
 					},
 					"response": []
@@ -127,14 +127,14 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"TransactionID\": {{transactionId}},\n  \"IsExpense\": false,\n  \"Amount\": 200.00,\n  \"Date\": \"2024-12-07T00:00:00\",\n  \"Description\": \"Updated transaction\"\n}",
+							"raw": "{\n    \"transactionID\": 1,\n    \"isExpense\": false,\n    \"amount\": 50.00,\n    \"description\": \"UPDATE Grocery Shopping\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "localhost:5000/api/transaction/{{transactionId}}",
+						"url": "{{base_url}}/transaction/1",
 						"description": "Updates an existing transaction."
 					},
 					"response": []
@@ -148,13 +148,57 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "localhost:5000/api/transaction/{{transactionId}}",
+						"url": "{{base_url}}/transaction/",
 						"description": "Deletes a transaction by its ID."
 					},
 					"response": []
 				}
 			],
 			"id": "de11a272-4942-4526-adc2-a70780a2f60d"
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": {
+			"accessTokenUrl": "{{vault:oauth-token-url}}",
+			"scope": "read:user",
+			"tokenRequestParams": [
+				{
+					"key": "audience",
+					"value": "{{vault:audience-dev}}",
+					"enabled": true,
+					"send_as": "request_body"
+				}
+			],
+			"clientSecret": "{{vault:client-secret-dev}}",
+			"client_authentication": "header",
+			"clientId": "{{vault:client-id-dev}}",
+			"grant_type": "client_credentials",
+			"addTokenTo": "header"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "46734154-05b1-4e86-ba6e-bff8fa87605f",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "802e3d19-2ff8-4cae-bfc0-0a7ce7110a32",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
 		}
 	],
 	"variable": [
