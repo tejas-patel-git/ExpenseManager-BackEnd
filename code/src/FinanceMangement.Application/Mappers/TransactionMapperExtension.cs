@@ -1,4 +1,5 @@
 ﻿using FinanceManager.Data.Models;
+using FinanceManager.Models.Request;
 using FinanceManager.Models.Response;
 
 namespace FinanceManager.Application.Mappers
@@ -51,13 +52,14 @@ namespace FinanceManager.Application.Mappers
         /// </summary>
         /// <param name="transactionDto">The DTO to map.</param>
         /// <returns>The mapped <see cref="Transaction"/> entity.</returns>
-        public static Transaction MapToEntity(this TransactionResponse transactionDto)
+        public static Transaction MapToEntity(this TransactionRequest transactionDto)
         {
             ArgumentNullException.ThrowIfNull(transactionDto, nameof(transactionDto));
 
             return new Transaction
             {
-                TransactionID = transactionDto.TransactionID,
+                // TODO : Handle Null transaction id.
+                TransactionID = transactionDto.TransactionId ?? 0,
                 IsExpense = transactionDto.IsExpense,
                 Amount = transactionDto.Amount,
                 Date = transactionDto.Date,
@@ -71,7 +73,7 @@ namespace FinanceManager.Application.Mappers
         /// </summary>
         /// <param name="transactionDtos">The collection of DTOs to map.</param>
         /// <returns>A collection of mapped <see cref="Transaction"/> entities.</returns>
-        public static IEnumerable<Transaction> MapToEntity(this IEnumerable<TransactionResponse> transactionDtos)
+        public static IEnumerable<Transaction> MapToEntity(this IEnumerable<TransactionRequest> transactionDtos)
         {
             ArgumentNullException.ThrowIfNull(transactionDtos, nameof(transactionDtos));
 

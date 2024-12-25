@@ -1,4 +1,4 @@
-﻿using FinanceManager.Data.Models;
+﻿using FinanceManager.Models.Request;
 using FinanceManager.Models.Response;
 
 namespace FinanceManager.Application.Services
@@ -31,22 +31,22 @@ namespace FinanceManager.Application.Services
         /// <summary>
         /// Adds a new transaction.
         /// </summary>
-        /// <param name="transaction">The <see cref="Transaction"/> object to add. Cannot be <c>null</c>.</param>
+        /// <param name="transaction">The <see cref="TransactionRequest"/> object to add. Cannot be <c>null</c>.</param>
         /// <returns>
         /// A task representing the asynchronous operation.
         /// </returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="transaction"/> is <c>null</c>.</exception>
-        Task AddTransactionAsync(TransactionResponse transaction);
+        Task AddTransactionAsync(TransactionRequest transaction);
 
         /// <summary>
         /// Updates an existing transaction.
         /// </summary>
-        /// <param name="transaction">The updated <see cref="TransactionResponse"/> object. Must not be <c>null</c>.</param>
+        /// <param name="transaction">The updated <see cref="TransactionRequest"/> object. Must not be <c>null</c>.</param>
         /// <returns>
         /// A task representing the asynchronous operation.
         /// </returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="transaction"/> is <c>null</c>.</exception>
-        Task UpdateTransactionAsync(TransactionResponse transaction);
+        Task UpdateTransactionAsync(TransactionRequest transaction);
 
         /// <summary>
         /// Deletes a transaction from the system by its unique ID.

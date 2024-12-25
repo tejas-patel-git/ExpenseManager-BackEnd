@@ -12,7 +12,7 @@ public class TransactionRequest : BaseRequest
     /// This is automatically generated to ensure uniqueness.
     /// </summary>
     [Required]
-    public Guid TransactionId { get; set; } = Guid.NewGuid();
+    public int? TransactionId { get; set; }
 
     /// <summary>
     /// Gets or sets the amount for the transaction.

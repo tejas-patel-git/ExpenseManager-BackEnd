@@ -2,6 +2,7 @@
 using FinanceManager.Application.Mappers;
 using Microsoft.Extensions.Logging;
 using FinanceManager.Models.Response;
+using FinanceManager.Models.Request;
 
 namespace FinanceManager.Application.Services;
 
@@ -56,11 +57,11 @@ public class TransactionService : ITransactionService
     }
 
     /// <inheritdoc/>
-    public async Task AddTransactionAsync(TransactionResponse transactionDto)
+    public async Task AddTransactionAsync(TransactionRequest transactionDto)
     {
         ArgumentNullException.ThrowIfNull(transactionDto);
 
-        // TODO : Validate userId witht the transaction's userId
+        // TODO : Validate userId with the transaction's userId
 
         // Map dto model to entity model
         var transaction = transactionDto.MapToEntity();
@@ -70,7 +71,7 @@ public class TransactionService : ITransactionService
     }
 
     /// <inheritdoc/>
-    public async Task UpdateTransactionAsync(TransactionResponse transactionDto)
+    public async Task UpdateTransactionAsync(TransactionRequest transactionDto)
     {
         ArgumentNullException.ThrowIfNull(transactionDto);
 
