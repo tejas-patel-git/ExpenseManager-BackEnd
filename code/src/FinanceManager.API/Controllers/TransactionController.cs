@@ -1,8 +1,8 @@
-using FinanceManager.Data.Models;
 using FinanceManager.Application.Services;
-using Microsoft.AspNetCore.Mvc;
-using FinanceManager.Models.Response;
+using FinanceManager.Data.Models;
 using FinanceManager.Models.Request;
+using FinanceManager.Models.Response;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FinanceManager.API.Controllers
 {
@@ -50,7 +50,7 @@ namespace FinanceManager.API.Controllers
         /// <param name="userId">The user ID to filter transactions.</param>
         /// <returns>A collection of <see cref="Transaction"/> for the specified user.</returns>
         [HttpGet("user/{userId}")]
-        [ProducesResponseType(typeof(IEnumerable<TransactionResponse>), 200)]  
+        [ProducesResponseType(typeof(IEnumerable<TransactionResponse>), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetAllTransactions(int userId)
@@ -97,9 +97,9 @@ namespace FinanceManager.API.Controllers
         {
             if (transactionId != transaction.TransactionId)
                 return BadRequest("Transaction ID mismatch.");
-            
+
             // TODO : Add Validatoins
-            
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -119,6 +119,6 @@ namespace FinanceManager.API.Controllers
         {
             await _transactionService.DeleteTransactionAsync(transactionId);
             return NoContent();
-        } 
+        }
     }
 }

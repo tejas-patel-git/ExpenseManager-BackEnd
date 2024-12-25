@@ -8,8 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FinanceManager.Data\FinanceManager.Data.csproj" />
-    <ProjectReference Include="..\FinanceManager.Models\FinanceManager.Models.csproj" />
+    <ProjectReference Include="..\..\FinanceManager.Data\FinanceManager.Data.csproj" />
+    <ProjectReference Include="..\..\FinanceManager.Models\FinanceManager.Models.csproj" />
+    <ProjectReference Include="..\FinanceManager.Application.Mapper\FinanceManager.Application.Mapper.csproj" />
   </ItemGroup>
 
 </Project>
