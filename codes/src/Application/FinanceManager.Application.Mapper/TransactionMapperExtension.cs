@@ -2,7 +2,7 @@
 using FinanceManager.Models.Request;
 using FinanceManager.Models.Response;
 
-namespace FinanceManager.Application.Mappers
+namespace FinanceManager.Application.Mapper
 {
     /// <summary>
     /// Extension methods for mapping between <see cref="Transaction"/> and <see cref="TransactionResponse"/>.
