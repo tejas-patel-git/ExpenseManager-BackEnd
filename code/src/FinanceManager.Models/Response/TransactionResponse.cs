@@ -1,9 +1,9 @@
-﻿namespace FinanceManager.Models
+﻿namespace FinanceManager.Models.Response
 {
     /// <summary>
     /// Represents a Data Transfer Object (DTO) for a financial transaction.
     /// </summary>
-    public class TransactionDto
+    public class TransactionResponse : BaseResponse
     {
         /// <summary>
         /// Gets or sets the unique identifier for the transaction.

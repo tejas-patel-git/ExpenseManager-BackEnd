@@ -1,7 +1,8 @@
 using FinanceManager.Data.Models;
-using FinanceManager.Models;
 using FinanceManager.Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using FinanceManager.Models.Response;
+using FinanceManager.Models.Request;
 
 namespace FinanceManager.API.Controllers
 {
@@ -29,13 +30,11 @@ namespace FinanceManager.API.Controllers
         /// A <see cref="IActionResult"/> representing the result of the operation.
         /// </returns>
         [HttpGet("{transactionId}")]
-        [ProducesResponseType(typeof(TransactionDto), 200)]
+        [ProducesResponseType(typeof(TransactionResponse), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetTransactionById(int transactionId)
         {
-            if (transactionId <= 0)
-                return BadRequest($"Transaction ID {transactionId} is invalid.");
 
             var transaction = await _transactionService.GetTransactionByIdAsync(transactionId);
 
@@ -51,7 +50,7 @@ namespace FinanceManager.API.Controllers
         /// <param name="userId">The user ID to filter transactions.</param>
         /// <returns>A collection of <see cref="Transaction"/> for the specified user.</returns>
         [HttpGet("user/{userId}")]
-        [ProducesResponseType(typeof(IEnumerable<Transaction>), 200)]  
+        [ProducesResponseType(typeof(IEnumerable<TransactionResponse>), 200)]  
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetAllTransactions(int userId)
@@ -72,16 +71,16 @@ namespace FinanceManager.API.Controllers
         /// <param name="transaction">The transaction entity to add.</param>
         /// <returns>A <see cref="IActionResult"/> with the status of the operation.</returns>
         [HttpPost]
-        [ProducesResponseType(typeof(Transaction), 201)]
+        [ProducesResponseType(typeof(TransactionResponse), 201)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> AddTransaction([FromBody] TransactionDto transaction)
+        public async Task<IActionResult> AddTransaction([FromBody] TransactionRequest transaction)
         {
-            // TODO : Add Validatoins
+            // TODO : Add Validations
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             await _transactionService.AddTransactionAsync(transaction);
-            return CreatedAtAction(nameof(GetTransactionById), new { transactionId = transaction.TransactionID }, transaction);
+            return CreatedAtAction(nameof(GetTransactionById), new { transactionId = transaction.TransactionId }, transaction);
         }
 
         /// <summary>
@@ -94,9 +93,9 @@ namespace FinanceManager.API.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateTransaction(int transactionId, [FromBody] TransactionDto transaction)
+        public async Task<IActionResult> UpdateTransaction(int transactionId, [FromBody] TransactionRequest transaction)
         {
-            if (transactionId != transaction.TransactionID)
+            if (transactionId != transaction.TransactionId)
                 return BadRequest("Transaction ID mismatch.");
             
             // TODO : Add Validatoins

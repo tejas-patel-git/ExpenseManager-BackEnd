@@ -1,7 +1,8 @@
 ﻿using FinanceManager.Data;
-using FinanceManager.Models;
 using FinanceManager.Application.Mappers;
 using Microsoft.Extensions.Logging;
+using FinanceManager.Models.Response;
+using FinanceManager.Models.Request;
 
 namespace FinanceManager.Application.Services;
 
@@ -18,7 +19,7 @@ public class TransactionService : ITransactionService
     }
 
     /// <inheritdoc/>
-    public async Task<TransactionDto?> GetTransactionByIdAsync(int transactionId)
+    public async Task<TransactionResponse?> GetTransactionByIdAsync(int transactionId)
     {
         if (transactionId <= 0)
         {
@@ -37,7 +38,7 @@ public class TransactionService : ITransactionService
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<TransactionDto>> GetAllTransactionsAsync(int userId)
+    public async Task<IEnumerable<TransactionResponse>> GetAllTransactionsAsync(int userId)
     {
         if (userId <= 0)
         {
@@ -49,18 +50,18 @@ public class TransactionService : ITransactionService
         var transactions = await _unitOfWork.TransactionRepository.GetAllTransactionsAsync(userId);
 
         // Return empty collection if not found
-        if (!transactions.Any()) return Enumerable.Empty<TransactionDto>();
+        if (!transactions.Any()) return Enumerable.Empty<TransactionResponse>();
 
         // Return dto of fetched data
         return transactions.MapToDto();
     }
 
     /// <inheritdoc/>
-    public async Task AddTransactionAsync(TransactionDto transactionDto)
+    public async Task AddTransactionAsync(TransactionRequest transactionDto)
     {
         ArgumentNullException.ThrowIfNull(transactionDto);
 
-        // TODO : Validate userId witht the transaction's userId
+        // TODO : Validate userId with the transaction's userId
 
         // Map dto model to entity model
         var transaction = transactionDto.MapToEntity();
@@ -70,7 +71,7 @@ public class TransactionService : ITransactionService
     }
 
     /// <inheritdoc/>
-    public async Task UpdateTransactionAsync(TransactionDto transactionDto)
+    public async Task UpdateTransactionAsync(TransactionRequest transactionDto)
     {
         ArgumentNullException.ThrowIfNull(transactionDto);
 
