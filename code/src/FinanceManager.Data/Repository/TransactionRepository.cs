@@ -97,10 +97,11 @@ internal class TransactionRepository : GenericRepository<Transaction>, ITransact
             if (existingTransaction == null) return;
 
             existingTransaction.IsExpense = transaction.IsExpense;
-            existingTransaction.UpdatedAt = DateTime.UtcNow;
             existingTransaction.Date = transaction.Date;
             existingTransaction.Amount = transaction.Amount;
             existingTransaction.Description = transaction.Description;
+            existingTransaction.CreatedAt = existingTransaction.CreatedAt;
+            existingTransaction.UpdatedAt = DateTime.UtcNow;
 
             _logger.LogInformation($"Transaction with ID {transaction.TransactionID} updated successfully.");
         }

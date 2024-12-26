@@ -83,4 +83,9 @@ internal class GenericRepository<TEntity> : IGenericRepository<TEntity> where TE
         var entity = await GetByIdAsync(id);
         return entity != null;
     }
+
+    public async Task SaveChangesAsync()
+    {
+        await _context.SaveChangesAsync();
+    }
 }

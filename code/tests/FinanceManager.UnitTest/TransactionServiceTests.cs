@@ -7,6 +7,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using FinanceManager.Models.Response;
+using FinanceManager.Application.Mapper.Mappers;
 
 namespace FinanceManager.UnitTest;
 public class TransactionServiceTests
@@ -58,7 +59,7 @@ public class TransactionServiceTests
         _logger = new NullLogger<TransactionService>();
 
         // Inject mock into service
-        _transactionService = new TransactionService(_unitOfWorkMock.Object, _logger);
+        _transactionService = new TransactionService(_unitOfWorkMock.Object, _logger, new TransactionDomainToEntityMapper());
     }
 
     // TODO : Update the test after service update

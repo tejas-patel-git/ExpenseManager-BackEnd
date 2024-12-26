@@ -1,4 +1,5 @@
 using FinanceManager.Application;
+using FinanceManager.Application.Mapper;
 using FinanceManager.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -52,6 +53,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     ?? throw new ArgumentNullException("SQL Connection string missing")));
 
 // Configure Dependency Injection
+builder.Services.AddObjectMappers();
 builder.Services.AddRepositories();
 builder.Services.AddApplicationServices();
 

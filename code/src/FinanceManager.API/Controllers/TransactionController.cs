@@ -1,5 +1,7 @@
 using FinanceManager.Application.Services;
 using FinanceManager.Data.Models;
+using FinanceManager.Domain.Abstraction.Mappers;
+using FinanceManager.Domain.Models;
 using FinanceManager.Models.Request;
 using FinanceManager.Models.Response;
 using Microsoft.AspNetCore.Mvc;
@@ -12,14 +14,17 @@ namespace FinanceManager.API.Controllers
     public class TransactionController : ApiController
     {
         private readonly ITransactionService _transactionService;
+        private readonly IMapper<TransactionRequest, TransactionDomain> _mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionController"/> class.
         /// </summary>
         /// <param name="transactionService">The transaction service to manage transactions.</param>
-        public TransactionController(ITransactionService transactionService) : base()
+        /// <param name="mapper"></param>
+        public TransactionController(ITransactionService transactionService, IMapper<TransactionRequest, TransactionDomain> mapper) : base()
         {
             _transactionService = transactionService;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -68,19 +73,20 @@ namespace FinanceManager.API.Controllers
         /// <summary>
         /// Adds a new transaction.
         /// </summary>
-        /// <param name="transaction">The transaction entity to add.</param>
+        /// <param name="transactionRequest">The transaction entity to add.</param>
         /// <returns>A <see cref="IActionResult"/> with the status of the operation.</returns>
         [HttpPost]
         [ProducesResponseType(typeof(TransactionResponse), 201)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> AddTransaction([FromBody] TransactionRequest transaction)
+        public async Task<IActionResult> AddTransaction([FromBody] TransactionRequest transactionRequest)
         {
             // TODO : Add Validations
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            var transaction = _mapper.Map(transactionRequest);
             await _transactionService.AddTransactionAsync(transaction);
-            return CreatedAtAction(nameof(GetTransactionById), new { transactionId = transaction.TransactionId }, transaction);
+            return CreatedAtAction(nameof(GetTransactionById), new { transactionId = transaction.TransactionID }, transaction);
         }
 
         /// <summary>

@@ -20,4 +20,5 @@ public interface IGenericRepository<TEntity> where TEntity : class
         Expression<Func<TEntity, bool>>? filter = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         string includeProperties = "");
+    Task SaveChangesAsync();
 }
