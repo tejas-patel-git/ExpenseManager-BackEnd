@@ -3,6 +3,9 @@ using Microsoft.Extensions.Logging;
 using FinanceManager.Models.Response;
 using FinanceManager.Models.Request;
 using FinanceManager.Application.Mapper;
+using FinanceManager.Domain.Models;
+using FinanceManager.Domain.Abstraction.Mappers;
+using FinanceManager.Data.Models;
 
 namespace FinanceManager.Application.Services;
 
@@ -10,12 +13,14 @@ public class TransactionService : ITransactionService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<TransactionService> _logger;
+    private readonly IMapper<TransactionDomain, Transaction> _mapper;
 
     /// <inheritdoc/>
-    public TransactionService(IUnitOfWork unitOfWork, ILogger<TransactionService> logger)
+    public TransactionService(IUnitOfWork unitOfWork, ILogger<TransactionService> logger, IMapper<TransactionDomain, Transaction> mapper)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _mapper = mapper;
     }
 
     /// <inheritdoc/>
@@ -57,14 +62,14 @@ public class TransactionService : ITransactionService
     }
 
     /// <inheritdoc/>
-    public async Task AddTransactionAsync(TransactionRequest transactionDto)
+    public async Task AddTransactionAsync(TransactionDomain transactionDomain)
     {
-        ArgumentNullException.ThrowIfNull(transactionDto);
+        ArgumentNullException.ThrowIfNull(transactionDomain);
 
         // TODO : Validate userId with the transaction's userId
 
         // Map dto model to entity model
-        var transaction = transactionDto.MapToEntity();
+        var transaction = _mapper.Map(transactionDomain);
 
         // Add data to repository
         await _unitOfWork.TransactionRepository.AddTransactionAsync(transaction);
@@ -80,6 +85,7 @@ public class TransactionService : ITransactionService
 
         // Update data to repository
         await _unitOfWork.TransactionRepository.UpdateTransactionAsync(transaction);
+        await _unitOfWork.TransactionRepository.SaveChangesAsync();
     }
 
     /// <inheritdoc/>

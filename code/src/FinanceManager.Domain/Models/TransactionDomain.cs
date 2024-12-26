@@ -5,7 +5,7 @@ public class TransactionDomain
     /// <summary>
     /// Gets or sets the unique identifier for the transaction.
     /// </summary>
-    public int TransactionID { get; set; }
+    public int? TransactionID { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier for the user associated with the transaction.

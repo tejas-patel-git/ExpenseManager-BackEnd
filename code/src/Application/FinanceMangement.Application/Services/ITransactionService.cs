@@ -1,4 +1,5 @@
-﻿using FinanceManager.Models.Request;
+﻿using FinanceManager.Domain.Models;
+using FinanceManager.Models.Request;
 using FinanceManager.Models.Response;
 
 namespace FinanceManager.Application.Services
@@ -36,7 +37,7 @@ namespace FinanceManager.Application.Services
         /// A task representing the asynchronous operation.
         /// </returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="transaction"/> is <c>null</c>.</exception>
-        Task AddTransactionAsync(TransactionRequest transaction);
+        Task AddTransactionAsync(TransactionDomain transaction);
 
         /// <summary>
         /// Updates an existing transaction.
