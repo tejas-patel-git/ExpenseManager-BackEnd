@@ -100,7 +100,7 @@ internal class TransactionRepository : GenericRepository<Transaction>, ITransact
             existingTransaction.Date = transaction.Date;
             existingTransaction.Amount = transaction.Amount;
             existingTransaction.Description = transaction.Description;
-            existingTransaction.CreatedAt = transaction.CreatedAt;
+            existingTransaction.CreatedAt = existingTransaction.CreatedAt;
             existingTransaction.UpdatedAt = DateTime.UtcNow;
 
             _logger.LogInformation($"Transaction with ID {transaction.TransactionID} updated successfully.");
