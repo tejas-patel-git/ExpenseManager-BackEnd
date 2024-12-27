@@ -4,4 +4,9 @@
     {
         public T? Data { get; set; }
     }
+
+    public class Response : BaseResponse
+    {
+
+    }
 }

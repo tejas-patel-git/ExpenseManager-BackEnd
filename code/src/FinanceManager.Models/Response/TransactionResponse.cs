@@ -8,7 +8,7 @@
         /// <summary>
         /// Gets or sets the unique identifier for the transaction.
         /// </summary>
-        public int TransactionID { get; set; }
+        public int TransactionId { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the transaction is an expense or income.

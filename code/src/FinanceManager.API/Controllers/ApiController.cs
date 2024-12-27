@@ -15,12 +15,21 @@ namespace FinanceManager.API.Controllers
 
         }
 
-        protected Response<T> PrepareSuccessResponse<T>(T responseData)
+        protected Response<T> PrepareResponse<T>(T responseData, bool isSuccess = true)
         {
             return new()
             {
                 Data = responseData,
-                Success = true
+                Success = isSuccess
+            };
+        }
+
+        protected Response PrepareResponse(string errorMessage)
+        {
+            return new()
+            {
+                Success = false,
+                ErrorMessage = errorMessage
             };
         }
     }

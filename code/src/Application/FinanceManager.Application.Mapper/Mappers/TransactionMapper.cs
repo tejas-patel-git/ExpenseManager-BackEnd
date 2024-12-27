@@ -25,7 +25,7 @@ namespace FinanceManager.Application.Mapper.Mappers
         public TransactionDomainToResponseMapper()
             : base(source => new()
             {
-                TransactionID = source.TransactionID ?? 0,
+                TransactionId = source.TransactionID ?? 0,
                 Amount = source.Amount,
                 Date = source.Date,
                 IsExpense = source.IsExpense

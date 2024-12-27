@@ -44,9 +44,9 @@ namespace FinanceManager.API.Controllers
             var transaction = await _transactionService.GetTransactionByIdAsync(transactionId);
 
             if (transaction == null)
-                return NotFound();
+                return NotFound(PrepareResponse("No transaction found!"));
 
-            return Ok(PrepareSuccessResponse(transaction));
+            return Ok(PrepareResponse(transaction));
         }
 
         /// <summary>
@@ -65,9 +65,9 @@ namespace FinanceManager.API.Controllers
 
             var transactions = await _transactionService.GetAllTransactionsAsync(userId);
 
-            if (!transactions.Any()) return NotFound();
+            if (!transactions.Any()) return NotFound(PrepareResponse("No transaction found!"));
 
-            return Ok(transactions);
+            return Ok(PrepareResponse(transactions));
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace FinanceManager.API.Controllers
             if (transactionId != transaction.TransactionId)
                 return BadRequest("Transaction ID mismatch.");
 
-            // TODO : Add Validatoins
+            // TODO : Add Validations
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
