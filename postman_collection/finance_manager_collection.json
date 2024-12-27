@@ -114,12 +114,12 @@
 					},
 					"response": [
 						{
-							"id": "41133c20-6ada-4c1b-8a03-9d9b0bab3543",
+							"id": "cd9952fa-70cd-411e-8e47-b5e41aafca41",
 							"name": "Success Response",
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": "{{base_url}}/transaction/2"
+								"url": "{{base_url}}/transaction/1"
 							},
 							"status": "OK",
 							"code": 200,
@@ -131,7 +131,7 @@
 								},
 								{
 									"key": "Date",
-									"value": "Sun, 22 Dec 2024 05:10:26 GMT"
+									"value": "Fri, 27 Dec 2024 17:27:12 GMT"
 								},
 								{
 									"key": "Server",
@@ -144,7 +144,7 @@
 							],
 							"cookie": [],
 							"responseTime": null,
-							"body": "{\n    \"transactionID\": 2,\n    \"isExpense\": false,\n    \"amount\": 1500,\n    \"date\": \"2024-11-01T15:00:00\",\n    \"description\": \"Salary\"\n}"
+							"body": "{\n    \"data\": {\n        \"transactionID\": 1,\n        \"isExpense\": true,\n        \"amount\": 60,\n        \"date\": \"0001-01-01T00:00:00\",\n        \"description\": \"UPDATE Grocery Shopping\"\n    },\n    \"success\": true\n}"
 						}
 					]
 				},
