@@ -1,4 +1,6 @@
-﻿namespace FinanceManager.Models.Response;
+﻿using System.Text.Json.Serialization;
+
+namespace FinanceManager.Models.Response;
 
 /// <summary>
 /// Represents a base response model.
@@ -13,5 +15,6 @@ public abstract class BaseResponse
     /// <summary>
     /// Gets or sets an optional error message if the operation failed.
     /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? ErrorMessage { get; set; }
 }

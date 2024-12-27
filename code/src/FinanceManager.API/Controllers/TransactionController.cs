@@ -46,7 +46,7 @@ namespace FinanceManager.API.Controllers
             if (transaction == null)
                 return NotFound();
 
-            return Ok(transaction);
+            return Ok(PrepareSuccessResponse(transaction));
         }
 
         /// <summary>
