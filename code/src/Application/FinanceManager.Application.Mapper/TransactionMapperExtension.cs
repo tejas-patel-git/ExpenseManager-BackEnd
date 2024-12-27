@@ -21,7 +21,7 @@ namespace FinanceManager.Application.Mapper
 
             return new()
             {
-                TransactionID = transaction.TransactionID,
+                TransactionId = transaction.TransactionID,
                 IsExpense = transaction.IsExpense,
                 Amount = transaction.Amount,
                 Date = transaction.Date,

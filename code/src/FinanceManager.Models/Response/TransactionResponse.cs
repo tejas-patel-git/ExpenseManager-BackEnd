@@ -3,12 +3,12 @@
     /// <summary>
     /// Represents a Data Transfer Object (DTO) for a financial transaction.
     /// </summary>
-    public class TransactionResponse : BaseResponse
+    public class TransactionResponse
     {
         /// <summary>
         /// Gets or sets the unique identifier for the transaction.
         /// </summary>
-        public int TransactionID { get; set; }
+        public int TransactionId { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the transaction is an expense or income.
