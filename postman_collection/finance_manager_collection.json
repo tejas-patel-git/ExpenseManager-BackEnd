@@ -205,6 +205,7 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "06716b22-52f9-4922-8287-b640cca094db",
 								"exec": [
 									"pm.test(\"Response status code is 201\", function () {",
 									"    pm.expect(pm.response.code).to.equal(201);",
@@ -246,7 +247,8 @@
 									"  pm.expect(responseData.description).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Description should not be empty\");",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -264,7 +266,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"isExpense\": false,\n    \"amount\": 50.00,\n    \"date\": \"2024-11-01T10:00:00\",\n    \"description\": \"Grocery Shopping\"\n}",
+							"raw": "{\n    \"TransactionId\" : 1,\n    \"isExpense\": false,\n    \"amount\": 50.00,\n    \"date\": \"2024-11-01T10:00:00\",\n    \"description\": \"Grocery Shopping\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
