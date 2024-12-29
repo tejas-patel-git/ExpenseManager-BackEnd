@@ -14,17 +14,19 @@ namespace FinanceManager.API.Controllers
     public class TransactionController : ApiController
     {
         private readonly ITransactionService _transactionService;
-        private readonly IMapper<TransactionRequest, TransactionDomain> _mapper;
+        private readonly IMapper<TransactionRequest, TransactionDomain> _requestDomainMapper;
+        private readonly IMapper<TransactionDomain, TransactionResponse> _domainResponseMapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionController"/> class.
         /// </summary>
         /// <param name="transactionService">The transaction service to manage transactions.</param>
-        /// <param name="mapper"></param>
-        public TransactionController(ITransactionService transactionService, IMapper<TransactionRequest, TransactionDomain> mapper) : base()
+        /// <param name="requestDomainMapper"></param>
+        public TransactionController(ITransactionService transactionService, IMapper<TransactionRequest, TransactionDomain> requestDomainMapper, IMapper<TransactionDomain, TransactionResponse> domainResponseMapper) : base()
         {
             _transactionService = transactionService;
-            _mapper = mapper;
+            _requestDomainMapper = requestDomainMapper;
+            _domainResponseMapper = domainResponseMapper;
         }
 
         /// <summary>
@@ -46,7 +48,7 @@ namespace FinanceManager.API.Controllers
             if (transaction == null)
                 return NotFound(PrepareResponse("No transaction found!"));
 
-            return Ok(PrepareResponse(transaction));
+            return Ok(PrepareResponse(_domainResponseMapper.Map(transaction)));
         }
 
         /// <summary>
@@ -67,7 +69,7 @@ namespace FinanceManager.API.Controllers
 
             if (!transactions.Any()) return NotFound(PrepareResponse("No transaction found!"));
 
-            return Ok(PrepareResponse(transactions));
+            return Ok(PrepareResponse(_domainResponseMapper.Map(transactions)));
         }
 
         /// <summary>
@@ -84,9 +86,9 @@ namespace FinanceManager.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var transaction = _mapper.Map(transactionRequest);
+            var transaction = _requestDomainMapper.Map(transactionRequest);
             await _transactionService.AddTransactionAsync(transaction);
-            return CreatedAtAction(nameof(GetTransactionById), new { transactionId = transaction.TransactionID }, transaction);
+            return CreatedAtAction(nameof(GetTransactionById), new { transactionId = transaction.Id }, transaction);
         }
 
         /// <summary>

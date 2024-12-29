@@ -16,13 +16,13 @@ namespace FinanceManager.Application.Mapper
 
             // transaction model mappers
             // request to domain
-            services.AddScoped<IMapper<TransactionRequest, TransactionDomain>, TransactionRequestToDomainMapper>();
+            services.AddSingleton<IMapper<TransactionRequest, TransactionDomain>, TransactionRequestToDomainMapper>();
             // domain to response
-            services.AddScoped<IMapper<TransactionDomain, TransactionResponse>, TransactionDomainToResponseMapper>();
+            services.AddSingleton<IMapper<TransactionDomain, TransactionResponse>, TransactionDomainToResponseMapper>();
             // domain to entity
-            services.AddScoped<IMapper<TransactionDomain, Transaction>, TransactionDomainToEntityMapper>();
+            services.AddSingleton<IMapper<TransactionDomain, Transaction>, TransactionDomainToEntityMapper>();
             // entity to domain
-            services.AddScoped<IMapper<Transaction, TransactionDomain>, TransactionEntityToDomainMapper>();
+            services.AddSingleton<IMapper<Transaction, TransactionDomain>, TransactionEntityToDomainMapper>();
 
 
             return services;

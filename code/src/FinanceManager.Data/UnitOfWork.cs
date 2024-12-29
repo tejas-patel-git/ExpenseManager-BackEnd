@@ -22,10 +22,12 @@ public class UnitOfWork : IUnitOfWork
     /// </summary>
     /// <param name="context">The database context.</param>
     /// <param name="loggerFactory"></param>
-    public UnitOfWork(AppDbContext context, ILoggerFactory loggerFactory)
+    /// <param name="transactionRepository"></param>
+    public UnitOfWork(AppDbContext context, ILoggerFactory loggerFactory, ITransactionRepository transactionRepository)
     {
         _context = context;
         _loggerFactory = loggerFactory;
+        _transactionRepository = transactionRepository;
         _logger = loggerFactory.CreateLogger<UnitOfWork>();
     }
 
@@ -34,8 +36,7 @@ public class UnitOfWork : IUnitOfWork
         _userRepository ??= new UserRepository(_context, _loggerFactory.CreateLogger<UserRepository>());
 
     /// <inheritdoc/>
-    public ITransactionRepository TransactionRepository =>
-        _transactionRepository ??= new TransactionRepository(_context, _loggerFactory.CreateLogger<TransactionRepository>());
+    public ITransactionRepository TransactionRepository => _transactionRepository;
 
     /// <inheritdoc/>
     public async Task<int> SaveChangesAsync()

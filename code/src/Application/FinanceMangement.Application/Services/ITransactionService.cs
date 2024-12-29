@@ -1,6 +1,5 @@
 ﻿using FinanceManager.Domain.Models;
 using FinanceManager.Models.Request;
-using FinanceManager.Models.Response;
 
 namespace FinanceManager.Application.Services
 {
@@ -14,20 +13,20 @@ namespace FinanceManager.Application.Services
         /// </summary>
         /// <param name="transactionId">The ID of the transaction to retrieve. Must be greater than zero.</param>
         /// <returns>
-        /// The <see cref="TransactionResponse"/> if found; otherwise, <c>null</c>.
+        /// The <see cref="TransactionDomain"/> if found; otherwise, <c>null</c>.
         /// </returns>
         /// <exception cref="ArgumentException">Thrown when <paramref name="transactionId"/> is less than or equal to zero.</exception>
-        Task<TransactionResponse?> GetTransactionByIdAsync(int transactionId);
+        Task<TransactionDomain?> GetTransactionByIdAsync(int transactionId);
 
         /// <summary>
         /// Retrieves all transactions for a specific user.
         /// </summary>
         /// <param name="userId">The ID of the user. Must be greater than zero.</param>
         /// <returns>
-        /// A collection of <see cref="TransactionResponse"/> objects for the specified user. If no transactions exist, returns an empty collection.
+        /// A collection of <see cref="TransactionDomain"/> objects for the specified user. If no transactions exist, returns an empty collection.
         /// </returns>
         /// <exception cref="ArgumentException">Thrown when <paramref name="userId"/> is less than or equal to zero.</exception>
-        Task<IEnumerable<TransactionResponse>> GetAllTransactionsAsync(int userId);
+        Task<IEnumerable<TransactionDomain>> GetAllTransactionsAsync(int userId);
 
         /// <summary>
         /// Adds a new transaction.

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FinanceManager.Data.Repository;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FinanceManager.Data;
 
@@ -8,6 +9,7 @@ public static class DependencyInjection
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         // register
+        services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
