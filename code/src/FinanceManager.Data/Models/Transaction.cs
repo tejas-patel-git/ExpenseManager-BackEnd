@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FinanceManager.Domain.Abstraction;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinanceManager.Data.Models
@@ -6,13 +7,13 @@ namespace FinanceManager.Data.Models
     /// <summary>
     /// Represents a financial transaction in the system.
     /// </summary>
-    public class Transaction
+    public class Transaction : IEntityModel<int>
     {
         /// <summary>
         /// Gets or sets the unique identifier for the transaction.
         /// </summary>
         [Key]
-        public int TransactionID { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the unique identifier for the user associated with the transaction.

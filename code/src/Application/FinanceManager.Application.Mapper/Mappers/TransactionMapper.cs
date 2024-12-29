@@ -11,10 +11,12 @@ namespace FinanceManager.Application.Mapper.Mappers
         public TransactionRequestToDomainMapper()
             : base(source => new()
             {
-                TransactionID = source.TransactionId,
+                // TODO : Handle null ids
+                Id = source.TransactionId ?? 0,
                 Amount = source.Amount,
                 Date = source.Date,
-                IsExpense = source.IsExpense
+                IsExpense = source.IsExpense,
+                Description = source.Description
             })
         {
         }
@@ -25,10 +27,11 @@ namespace FinanceManager.Application.Mapper.Mappers
         public TransactionDomainToResponseMapper()
             : base(source => new()
             {
-                TransactionId = source.TransactionID ?? 0,
+                TransactionId = source.Id,
                 Amount = source.Amount,
                 Date = source.Date,
-                IsExpense = source.IsExpense
+                IsExpense = source.IsExpense,
+                Description = source.Description
             })
         {
         }
@@ -40,7 +43,7 @@ namespace FinanceManager.Application.Mapper.Mappers
             : base(source => new()
             {
                 // TODO : Handle Null transaction id.
-                TransactionID = source.TransactionID ?? 0,
+                Id = source.Id,
                 IsExpense = source.IsExpense,
                 Amount = source.Amount,
                 Date = source.Date,
@@ -56,7 +59,7 @@ namespace FinanceManager.Application.Mapper.Mappers
         public TransactionEntityToDomainMapper()
             : base(source => new()
             {
-                TransactionID = source.TransactionID,
+                Id = source.Id,
                 IsExpense = source.IsExpense,
                 Amount = source.Amount,
                 Date = source.Date,

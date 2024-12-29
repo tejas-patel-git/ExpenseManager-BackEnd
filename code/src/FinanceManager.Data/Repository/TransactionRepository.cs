@@ -1,10 +1,11 @@
 ﻿using FinanceManager.Data.Models;
-using Microsoft.EntityFrameworkCore;
+using FinanceManager.Domain.Abstraction.Mappers;
+using FinanceManager.Domain.Models;
 using Microsoft.Extensions.Logging;
 
 namespace FinanceManager.Data.Repository;
 
-internal class TransactionRepository : GenericRepository<Transaction>, ITransactionRepository
+internal class TransactionRepository : Repository<TransactionDomain, Transaction, int>, ITransactionRepository
 {
     private readonly ILogger<TransactionRepository> _logger;
 
@@ -16,121 +17,40 @@ internal class TransactionRepository : GenericRepository<Transaction>, ITransact
     /// <exception cref="ArgumentNullException">
     /// Thrown when either <paramref name="context"/> or <paramref name="logger"/> is <c>null</c>.
     /// </exception>
-    internal TransactionRepository(AppDbContext context,
-                                 ILogger<TransactionRepository> logger) : base(context, logger)
+    public TransactionRepository(AppDbContext context,
+                                   ILogger<TransactionRepository> logger,
+                                   IMapper<TransactionDomain, Transaction> domainEntityMapper,
+                                   IMapper<Transaction, TransactionDomain> entityDomainMapper)
+        : base(context, logger, domainEntityMapper, entityDomainMapper)
     {
         _logger = logger;
     }
 
-    /// <inheritdoc />
-    public async Task<Transaction?> GetTransactionByIdAsync(int transactionId)
-    {
-        try
-        {
-            var transaction = await dbSet.FindAsync(transactionId);
-
-            if (transaction == null)
-            {
-                _logger.LogWarning($"Transaction with ID {transactionId} not found.");
-            }
-
-            return transaction;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Error occurred while retrieving transaction ID {transactionId}");
-            throw;
-        }
-    }
-
-    /// <inheritdoc />
-    public async Task<IEnumerable<Transaction>> GetAllTransactionsAsync()
-    {
-        try
-        {
-            return await dbSet.ToListAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error occurred while retrieving all transactions.");
-            throw;
-        }
-    }
-
-    /// <inheritdoc />
-    public async Task<IEnumerable<Transaction>> GetAllTransactionsAsync(int userID)
-    {
-        try
-        {
-            return await dbSet.Where(t => t.UserID == userID).ToListAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Error occurred while retrieving transactions for UserID {userID}");
-            throw;
-        }
-    }
-
-    /// <inheritdoc />
-    public async Task AddTransactionAsync(Transaction transaction)
-    {
-        try
-        {
-            await dbSet.AddAsync(transaction);
-            _logger.LogInformation($"Transaction added successfully with ID {transaction.TransactionID}.");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error occurred while adding a transaction.");
-            throw;
-        }
-    }
-
-    /// <inheritdoc />
-    public async Task UpdateTransactionAsync(Transaction transaction)
+    public override async Task UpdateAsync(TransactionDomain transactionDomain)
     {
         // TODO : Revisit logic - might need some tweaks related to how to handle FKs
         try
         {
-            var existingTransaction = await GetTransactionByIdAsync(transaction.TransactionID);
+            // Retrieve the existing transaction from the database
+            var existingTransaction = await dbSet.FindAsync(transactionDomain.Id);
 
-            if (existingTransaction == null) return;
-
-            existingTransaction.IsExpense = transaction.IsExpense;
-            existingTransaction.Date = transaction.Date;
-            existingTransaction.Amount = transaction.Amount;
-            existingTransaction.Description = transaction.Description;
-            existingTransaction.CreatedAt = existingTransaction.CreatedAt;
-            existingTransaction.UpdatedAt = DateTime.UtcNow;
-
-            _logger.LogInformation($"Transaction with ID {transaction.TransactionID} updated successfully.");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Error occurred while updating transaction ID {transaction.TransactionID}.");
-            throw;
-        }
-    }
-
-    /// <inheritdoc />
-    public async Task DeleteTransactionAsync(int transactionId)
-    {
-        try
-        {
-            var transaction = await GetTransactionByIdAsync(transactionId);
-
-            if (transaction == null)
+            if (existingTransaction == null)
             {
-                _logger.LogWarning($"Transaction with ID {transactionId} not found for deletion.");
+                _logger.LogWarning($"'{typeof(Transaction).Name}' with id {transactionDomain.Id} not found.");
                 return;
             }
 
-            dbSet.Remove(transaction);
-            _logger.LogInformation($"Transaction with ID {transactionId} deleted successfully.");
+            // Update the properties of the existing entity
+            existingTransaction.IsExpense = transactionDomain.IsExpense;
+            existingTransaction.Date = transactionDomain.Date;
+            existingTransaction.Amount = transactionDomain.Amount;
+            existingTransaction.Description = transactionDomain.Description;
+
+            _logger.LogInformation($"'{typeof(Transaction).Name}' with id {existingTransaction.Id} updated.");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error occurred while deleting transaction ID {transactionId}.");
+            _logger.LogError(ex, $"Error occurred while updating '{typeof(Transaction).Name}' with id {transactionDomain.Id}.");
             throw;
         }
     }

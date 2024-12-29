@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using FinanceManager.Models.Response;
 using FinanceManager.Application.Mapper.Mappers;
+using FinanceManager.Domain.Models;
+using System.Linq.Expressions;
 
 namespace FinanceManager.UnitTest;
 public class TransactionServiceTests
@@ -59,7 +61,7 @@ public class TransactionServiceTests
         _logger = new NullLogger<TransactionService>();
 
         // Inject mock into service
-        _transactionService = new TransactionService(_unitOfWorkMock.Object, _logger, new TransactionDomainToEntityMapper());
+        _transactionService = new TransactionService(_unitOfWorkMock.Object, _logger, new TransactionRequestToDomainMapper());
     }
 
     // TODO : Update the test after service update
@@ -104,15 +106,15 @@ public class TransactionServiceTests
         // Arrange
         var userId = _fixture.Create<int>();
         _transactionRepositoryMock
-            .Setup(repo => repo.GetAllTransactionsAsync(userId))
-            .ReturnsAsync(Enumerable.Empty<Transaction>());
+            .Setup(repo => repo.GetAllAsync(entity => entity.UserID == userId, null))
+            .ReturnsAsync(Enumerable.Empty<TransactionDomain>());
 
         // Act
         var result = await _transactionService.GetAllTransactionsAsync(userId);
 
         // Assert
         result.Should().BeEmpty();
-        _transactionRepositoryMock.Verify(repo => repo.GetAllTransactionsAsync(userId), Times.Once);
+        _transactionRepositoryMock.Verify(repo => repo.GetAllAsync(entity => entity.UserID == userId, null), Times.Once);
     }
 
     [Fact]
@@ -120,19 +122,19 @@ public class TransactionServiceTests
     {
         // Arrange
         var userId = _fixture.Create<int>();
-        var transactions = _fixture.CreateMany<Transaction>(3).ToList(); // Generate 3 mock transactions
+        var transactions = _fixture.CreateMany<TransactionDomain>(3).ToList(); // Generate 3 mock transactions
         _transactionRepositoryMock
-            .Setup(repo => repo.GetAllTransactionsAsync(userId))
+            .Setup(repo => repo.GetAllAsync(entity => entity.UserID == userId, null))
             .ReturnsAsync(transactions);
 
-        // Act
+        // Acts
         var result = await _transactionService.GetAllTransactionsAsync(userId);
 
         // Assert
         result.Should().NotBeNull()
               .And.HaveCount(transactions.Count)
-              .And.AllBeOfType<TransactionResponse>();
+              .And.AllBeOfType<TransactionDomain>();
 
-        _transactionRepositoryMock.Verify(repo => repo.GetAllTransactionsAsync(userId), Times.Once);
+        _transactionRepositoryMock.Verify(repo => repo.GetAllAsync(entity => entity.UserID == userId, null), Times.Once);
     }
 }

@@ -1,11 +1,13 @@
-﻿namespace FinanceManager.Domain.Models;
+﻿using FinanceManager.Domain.Abstraction;
 
-public class TransactionDomain
+namespace FinanceManager.Domain.Models;
+
+public class TransactionDomain : IDomainModel<int>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the transaction.
     /// </summary>
-    public int? TransactionID { get; set; }
+    public int Id { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier for the user associated with the transaction.
