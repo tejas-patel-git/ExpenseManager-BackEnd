@@ -1,5 +1,6 @@
 using FinanceManager.Application;
 using FinanceManager.Application.Mapper;
+using FinanceManager.Configuration;
 using FinanceManager.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +46,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     options.Audience = builder.Configuration["OAuth:Audience"] ?? throw new ArgumentNullException("Audience is null");
                     options.Authority = builder.Configuration["OAuth:Authority"] ?? throw new ArgumentNullException("Issuer is null");
                 });
+// ApiKey authentication scheme
+builder.Services.AddAuthenticationSchemes();
 builder.Services.AddAuthorization();
 
 // Configure Database
