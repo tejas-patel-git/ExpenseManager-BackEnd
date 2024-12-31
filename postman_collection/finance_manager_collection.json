@@ -338,6 +338,61 @@
 				}
 			],
 			"id": "de11a272-4942-4526-adc2-a70780a2f60d"
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get user by id",
+					"id": "2f7e7857-dd45-4000-b5c1-489997b6add3",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							}
+						],
+						"url": "{{base_url}}/User/1"
+					},
+					"response": []
+				}
+			],
+			"id": "32d156a8-666a-4745-b488-c592becda5b3",
+			"auth": {
+				"type": "apikey",
+				"apikey": {
+					"key": "X-Api-Key",
+					"value": "YOUR_SECURE_API_KEY"
+				}
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "305234de-ef74-4acd-a3a0-9279ed1f6c03",
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b5d42b87-c7cd-4737-967f-5c2439a41fe6",
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
 		}
 	],
 	"auth": {
