@@ -365,15 +365,15 @@
 			"auth": {
 				"type": "apikey",
 				"apikey": {
-					"key": "X-Api-Key",
-					"value": "YOUR_SECURE_API_KEY"
+					"value": "test",
+					"key": "X-Api-Key"
 				}
 			},
 			"event": [
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "305234de-ef74-4acd-a3a0-9279ed1f6c03",
+						"id": "1cb12839-20b3-4479-8d45-86a8e71bf697",
 						"type": "text/javascript",
 						"packages": {},
 						"exec": [
@@ -384,7 +384,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "b5d42b87-c7cd-4737-967f-5c2439a41fe6",
+						"id": "219b886b-8460-4707-9b98-c4d65cd45d11",
 						"type": "text/javascript",
 						"packages": {},
 						"exec": [
