@@ -359,6 +359,24 @@
 						"url": "{{base_url}}/User/1"
 					},
 					"response": []
+				},
+				{
+					"name": "Create User - Post Registration",
+					"id": "095c974d-110d-4780-84e4-ff2390528182",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							}
+						],
+						"url": "{{base_url}}/User/1"
+					},
+					"response": []
 				}
 			],
 			"id": "32d156a8-666a-4745-b488-c592becda5b3",
