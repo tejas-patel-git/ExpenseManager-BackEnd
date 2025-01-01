@@ -376,7 +376,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"j+smith\",\r\n    \"email\": \"j+smith@example.com\",\r\n    \"phoneNumber\": \"123-123-1234\",\r\n    \"userId\": \"auth0|5f7c8ec7c33c6c004bbafe82\",\r\n    \"createAt\": \"2025-01-01T14:00:06.130Z\",\r\n    \"email_verified\": true,\r\n    \"family_name\": \"Smith\",\r\n    \"given_name\": \"John\",\r\n    \"last_password_reset\": \"2025-01-01T14:00:06.130Z\",\r\n    \"name\": \"John Smith\",\r\n    \"nickname\": \"j+smith\",\r\n    \"phone_number\": \"123-123-1234\",\r\n    \"phoneVerified\": true,\r\n    \"picture\": \"http://www.gravatar.com/avatar/?d=identicon\",\r\n    \"updatedAt\": \"2025-01-01T14:00:06.130Z\",\r\n    \"appMetadata\": {},\r\n    \"userMetadata\": {}\r\n}",
+							"raw": "{\r\n    \"Email\": \"fm-test-1@example.com\",\r\n    \"PhoneNumber\": \"123-456-7890\",\r\n    \"UserId\": \"auth0|5f7c8ec7c33c6c004bbafe82\",\r\n    \"CreatedAt\": \"2025-01-01T14:00:06.130Z\",\r\n    \"IsEmailVerified\": true,\r\n    \"FamilyName\": \"Doe\",\r\n    \"GivenName\": \"John\",\r\n    \"LastPasswordReset\": \"2025-01-01T14:00:06.130Z\",\r\n    \"FullName\": \"John Doe\",\r\n    \"Nickname\": \"johndoe\",\r\n    \"IsPhoneVerified\": true,\r\n    \"PictureUrl\": \"http://www.gravatar.com/avatar/?d=identicon\",\r\n    \"UpdatedAt\": \"2025-01-01T14:00:06.130Z\",\r\n    \"AppMetadata\": \"{}\",\r\n    \"UserMetadata\": \"{}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
