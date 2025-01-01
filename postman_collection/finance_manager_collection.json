@@ -367,14 +367,23 @@
 						"disableBodyPruning": true
 					},
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [
 							{
 								"key": "accept",
 								"value": "*/*"
 							}
 						],
-						"url": "{{base_url}}/User/1"
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"j+smith\",\r\n    \"email\": \"j+smith@example.com\",\r\n    \"phoneNumber\": \"123-123-1234\",\r\n    \"userId\": \"auth0|5f7c8ec7c33c6c004bbafe82\",\r\n    \"createAt\": \"2025-01-01T14:00:06.130Z\",\r\n    \"email_verified\": true,\r\n    \"family_name\": \"Smith\",\r\n    \"given_name\": \"John\",\r\n    \"last_password_reset\": \"2025-01-01T14:00:06.130Z\",\r\n    \"name\": \"John Smith\",\r\n    \"nickname\": \"j+smith\",\r\n    \"phone_number\": \"123-123-1234\",\r\n    \"phoneVerified\": true,\r\n    \"picture\": \"http://www.gravatar.com/avatar/?d=identicon\",\r\n    \"updatedAt\": \"2025-01-01T14:00:06.130Z\",\r\n    \"appMetadata\": {},\r\n    \"userMetadata\": {}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/user"
 					},
 					"response": []
 				}
