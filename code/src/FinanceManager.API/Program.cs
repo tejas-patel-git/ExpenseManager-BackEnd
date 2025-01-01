@@ -1,7 +1,7 @@
 using FinanceManager.Application;
 using FinanceManager.Application.Mapper;
+using FinanceManager.Configuration;
 using FinanceManager.Data;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,15 +37,8 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Authentication setup
-// OAuth 2.0 JWT Token Validation
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-                {
-                    options.Audience = builder.Configuration["OAuth:Audience"] ?? throw new ArgumentNullException("Audience is null");
-                    options.Authority = builder.Configuration["OAuth:Authority"] ?? throw new ArgumentNullException("Issuer is null");
-                });
-builder.Services.AddAuthorization();
+// Authentication & Authorization setup
+builder.Services.AddAuthenticationSchemes(builder.Configuration);
 
 // Configure Database
 builder.Services.AddDbContext<AppDbContext>(options =>
