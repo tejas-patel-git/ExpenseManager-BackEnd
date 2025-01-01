@@ -15,7 +15,7 @@ namespace FinanceManager.API.Controllers
 
         }
 
-        protected Response<T> PrepareResponse<T>(T responseData, bool isSuccess = true)
+        protected Response<T> SuccessResponse<T>(T responseData, bool isSuccess = true)
         {
             return new()
             {
@@ -24,7 +24,16 @@ namespace FinanceManager.API.Controllers
             };
         }
 
-        protected Response PrepareResponse(string errorMessage)
+        protected Response SuccessResponse(string successMessage)
+        {
+            return new()
+            {
+                Success = true,
+                Message = successMessage
+            };
+        }
+
+        protected Response FailureResponse(string errorMessage)
         {
             return new()
             {

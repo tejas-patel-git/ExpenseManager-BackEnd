@@ -1,6 +1,5 @@
 ﻿using FinanceManager.Data;
-using FinanceManager.Data.Models;
-using FinanceManager.Data.Repository;
+using FinanceManager.Domain.Models;
 
 namespace FinanceManager.Application.Services;
 
@@ -24,17 +23,16 @@ public class UserService : IUserService
     }
 
     /// <inheritdoc/>
-    public async Task<User> GetUserByIdAsync(int id) => await _unitOfWork.UserRepository.GetUserByIdAsync(id);
+    public async Task<bool> CreateUserAsync(UserDomain user)
+    {
+        if (await _unitOfWork.UserRepository.GetByEmailAsync(user.Email) is not null)
+        {
+            return false;
+        }
 
-    /// <inheritdoc/>
-    public async Task<IEnumerable<User>> GetAllUsersAsync() => await _unitOfWork.UserRepository.GetAllUsersAsync();
+        await _unitOfWork.UserRepository.AddAsync(user);
+        await _unitOfWork.SaveChangesAsync();
 
-    /// <inheritdoc/>
-    public async Task CreateUserAsync(User user) => await _unitOfWork.UserRepository.CreateUserAsync(user);
-
-    /// <inheritdoc/>
-    public async Task UpdateUserAsync(User user) => await _unitOfWork.UserRepository.UpdateUserAsync(user);
-
-    /// <inheritdoc/>
-    public async Task DeleteUserAsync(int id) => await _unitOfWork.UserRepository.DeleteUserAsync(id);
+        return true;
+    }
 }

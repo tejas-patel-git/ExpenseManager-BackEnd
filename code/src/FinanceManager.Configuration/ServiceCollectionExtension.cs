@@ -27,7 +27,7 @@ namespace FinanceManager.Configuration
             services.AddAuthorization(options =>
             {
                 // Add a policy for the ApiKey scheme
-                options.AddPolicy(ConfigurationConstants.API_KEY__AUTH_POLICY, policy =>
+                options.AddPolicy(ConfigurationConstants.API_KEY_AUTH_SCHEME, policy =>
                 {
                     policy.AddAuthenticationSchemes(ConfigurationConstants.API_KEY_AUTH_SCHEME);
                     policy.RequireAuthenticatedUser();

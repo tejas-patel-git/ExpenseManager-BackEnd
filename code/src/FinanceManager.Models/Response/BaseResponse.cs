@@ -12,6 +12,9 @@ public abstract class BaseResponse
     /// </summary>
     public bool Success { get; set; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Message { get; set; }
+
     /// <summary>
     /// Gets or sets an optional error message if the operation failed.
     /// </summary>

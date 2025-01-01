@@ -46,9 +46,9 @@ namespace FinanceManager.API.Controllers
             var transaction = await _transactionService.GetTransactionByIdAsync(transactionId);
 
             if (transaction == null)
-                return NotFound(PrepareResponse("No transaction found!"));
+                return NotFound(FailureResponse("No transaction found!"));
 
-            return Ok(PrepareResponse(_domainResponseMapper.Map(transaction)));
+            return Ok(SuccessResponse(_domainResponseMapper.Map(transaction)));
         }
 
         /// <summary>
@@ -67,9 +67,9 @@ namespace FinanceManager.API.Controllers
 
             var transactions = await _transactionService.GetAllTransactionsAsync(userId);
 
-            if (!transactions.Any()) return NotFound(PrepareResponse("No transaction found!"));
+            if (!transactions.Any()) return NotFound(FailureResponse("No transaction found!"));
 
-            return Ok(PrepareResponse(_domainResponseMapper.Map(transactions)));
+            return Ok(SuccessResponse(_domainResponseMapper.Map(transactions)));
         }
 
         /// <summary>

@@ -1,4 +1,6 @@
 ﻿using FinanceManager.Data.Models;
+using FinanceManager.Domain.Abstraction.Mappers;
+using FinanceManager.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -7,7 +9,7 @@ namespace FinanceManager.Data.Repository;
 /// <summary>
 /// Repository for managing User entities.
 /// </summary>
-internal class UserRepository : GenericRepository<User>, IUserRepository
+internal class UserRepository : Repository<UserDomain, User, Guid>, IUserRepository
 {
     private readonly ILogger<UserRepository> _logger;
 
@@ -16,107 +18,38 @@ internal class UserRepository : GenericRepository<User>, IUserRepository
     /// </summary>
     /// <param name="context">The database context.</param>
     /// <param name="logger">The logger instance.</param>
-    internal UserRepository(AppDbContext context, ILogger<UserRepository> logger) : base(context, logger)
+    /// <param name="domainEntityMapper"></param>
+    /// <param name="entityDomainMapper"></param>
+    public UserRepository(AppDbContext context,
+                          ILogger<UserRepository> logger,
+                          IMapper<UserDomain, User> domainEntityMapper,
+                          IMapper<User, UserDomain> entityDomainMapper)
+        : base(context, logger, domainEntityMapper, entityDomainMapper)
     {
         _logger = logger;
     }
 
-    /// <inheritdoc/>
-    public async Task<User?> GetUserByIdAsync(int id)
+    public override async Task AddAsync(UserDomain domain)
     {
-        if (id <= 0)
+        try
         {
-            _logger.LogWarning("GetUserByIdAsync called with invalid ID: {Id}", id);
+            await AddAsync(domain, entity => entity.Id = Guid.NewGuid());
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while adding a '{type}'.", typeof(User).Name);
+            throw;
+        }
+    }
+    public async Task<UserDomain?> GetByEmailAsync(string email)
+    {
+        var user = await dbSet.Where(user => user.Email == email).FirstOrDefaultAsync();
+
+        if (user is null) {
+            _logger.LogDebug("{type} not found with email {email}", typeof(User).Name, email);
             return null;
         }
 
-        return await dbSet.FindAsync(id);
-    }
-
-    /// <inheritdoc/>
-    public async Task<IEnumerable<User>> GetAllUsersAsync()
-    {
-        return await dbSet.AsNoTracking().ToListAsync();
-    }
-
-    /// <inheritdoc/>
-    public async Task CreateUserAsync(User user)
-    {
-        if (user == null)
-        {
-            _logger.LogError("CreateUserAsync called with null user");
-            throw new ArgumentNullException(nameof(user), "User cannot be null");
-        }
-
-        try
-        {
-            await dbSet.AddAsync(user);
-            _logger.LogInformation("User created successfully with ID: {Id}", user.UserID);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error occurred while creating user");
-            throw;
-        }
-    }
-
-    /// <inheritdoc/>
-    public async Task UpdateUserAsync(User user)
-    {
-        if (user == null)
-        {
-            _logger.LogError("UpdateUserAsync called with null user");
-            throw new ArgumentNullException(nameof(user), "User cannot be null");
-        }
-
-        var existingUser = await GetUserByIdAsync(user.UserID);
-        if (existingUser == null)
-        {
-            _logger.LogWarning("UpdateUserAsync called for non-existing user with ID: {Id}", user.UserID);
-            throw new KeyNotFoundException($"User with ID {user.UserID} not found");
-        }
-
-        existingUser.FirstName = user.FirstName ?? existingUser.FirstName;
-        existingUser.LastName = user.LastName ?? existingUser.LastName;
-        existingUser.Email = user.Email ?? existingUser.Email;
-
-        try
-        {
-            dbSet.Update(existingUser);
-            _logger.LogInformation("User updated successfully with ID: {Id}", user.UserID);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error occurred while updating user with ID: {Id}", user.UserID);
-            throw;
-        }
-    }
-
-    /// <inheritdoc/>
-    public async Task DeleteUserAsync(int id)
-    {
-        if (id <= 0)
-        {
-            _logger.LogWarning("DeleteUserAsync called with invalid ID: {Id}", id);
-            throw new ArgumentException("ID must be greater than zero", nameof(id));
-        }
-
-        var user = await GetUserByIdAsync(id);
-        if (user == null)
-        {
-            _logger.LogWarning("DeleteUserAsync called for non-existing user with ID: {Id}", id);
-            throw new KeyNotFoundException($"User with ID {id} not found");
-        }
-
-        try
-        {
-            dbSet.Remove(user);
-            _logger.LogInformation("User deleted successfully with ID: {Id}", id);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error occurred while deleting user with ID: {Id}", id);
-            throw;
-        }
+        return entityDomainMapper.Map(user);
     }
 }

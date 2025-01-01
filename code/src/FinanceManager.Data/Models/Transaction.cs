@@ -19,7 +19,7 @@ namespace FinanceManager.Data.Models
         /// Gets or sets the unique identifier for the user associated with the transaction.
         /// </summary>
         [ForeignKey("User")]
-        public int UserID { get; set; }
+        public Guid UserId { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the transaction is an expense.

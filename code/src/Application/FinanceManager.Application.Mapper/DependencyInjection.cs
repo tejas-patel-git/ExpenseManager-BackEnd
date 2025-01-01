@@ -15,14 +15,15 @@ namespace FinanceManager.Application.Mapper
             // register mappers
 
             // transaction model mappers
-            // request to domain
             services.AddSingleton<IMapper<TransactionRequest, TransactionDomain>, TransactionRequestToDomainMapper>();
-            // domain to response
             services.AddSingleton<IMapper<TransactionDomain, TransactionResponse>, TransactionDomainToResponseMapper>();
-            // domain to entity
             services.AddSingleton<IMapper<TransactionDomain, Transaction>, TransactionDomainToEntityMapper>();
-            // entity to domain
             services.AddSingleton<IMapper<Transaction, TransactionDomain>, TransactionEntityToDomainMapper>();
+
+            // user model mappers
+            services.AddSingleton<IMapper<UserRegistrationRequest, UserDomain>, UserRegistrationRequestToDomainMapper>();
+            services.AddSingleton<IMapper<UserDomain, User>, UserDomainToEntityMapper>();
+            services.AddSingleton<IMapper<User, UserDomain>, UserEntityToDomainMapper>();
 
 
             return services;
