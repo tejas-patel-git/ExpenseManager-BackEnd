@@ -9,6 +9,7 @@ namespace FinanceManager.Data.Repository
     /// </summary>
     public interface IUserRepository : IRepository<UserDomain, User, Guid>
     {
+        Task<bool> ExistsByEmailAsync(string email);
         Task<UserDomain?> GetByEmailAsync(string email);
     }
 }

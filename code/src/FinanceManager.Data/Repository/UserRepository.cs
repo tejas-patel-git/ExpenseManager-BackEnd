@@ -41,15 +41,26 @@ internal class UserRepository : Repository<UserDomain, User, Guid>, IUserReposit
             throw;
         }
     }
+
     public async Task<UserDomain?> GetByEmailAsync(string email)
     {
-        var user = await dbSet.Where(user => user.Email == email).FirstOrDefaultAsync();
+        var user = await dbSet.AsNoTracking().FirstOrDefaultAsync(user => user.Email == email);
 
-        if (user is null) {
-            _logger.LogDebug("{type} not found with email {email}", typeof(User).Name, email);
+        if (user is default(User)) {
+            _logger.LogDebug("{type} not found with email {email}", nameof(User), email);
             return null;
         }
 
         return entityDomainMapper.Map(user);
+    }
+
+    public async Task<bool> ExistsByEmailAsync(string email)
+    {
+        var exists = await dbSet.AsNoTracking().AnyAsync(user => user.Email == email);
+
+        if (!exists)
+            _logger.LogDebug("{type} not found with email {email}", nameof(User), email);
+
+        return exists;
     }
 }

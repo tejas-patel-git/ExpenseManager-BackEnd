@@ -25,7 +25,7 @@ public class UserService : IUserService
     /// <inheritdoc/>
     public async Task<bool> CreateUserAsync(UserDomain user)
     {
-        if (await _unitOfWork.UserRepository.GetByEmailAsync(user.Email) is not null)
+        if (await _unitOfWork.UserRepository.ExistsByEmailAsync(user.Email))
         {
             return false;
         }
