@@ -1,70 +1,65 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FinanceManager.Domain.Abstraction;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinanceManager.Data.Models
 {
     /// <summary>
     /// Represents a user.
     /// </summary>
-    public class User
+    public class User : IEntityModel<Guid>
     {
-        /// <summary>
-        /// Gets or sets the unique identifier for the user.
-        /// </summary>
         [Key]
-        public int UserID { get; set; }
-
-        /// <summary>
-        /// Gets or sets the first name of the user.
-        /// </summary>
-        /// <remarks>
-        /// The maximum length is 50 characters.
-        /// </remarks>
         [Required]
         [MaxLength(50)]
-        public required string FirstName { get; set; }
+        public Guid Id { get; set; }
 
-        /// <summary>
-        /// Gets or sets the last name of the user.
-        /// </summary>
-        /// <remarks>
-        /// The maximum length is 50 characters.
-        /// </remarks>
-        [Required]
-        [MaxLength(50)]
-        public required string LastName { get; set; }
+        public string Auth0UserId { get; set; }
 
-        /// <summary>
-        /// Gets or sets the email address of the user.
-        /// </summary>
-        /// <remarks>
-        /// The maximum length is 100 characters.
-        /// </remarks>
         [Required]
-        [MaxLength(100)]
-        public string? Email { get; set; }
+        [EmailAddress]
+        [MaxLength(200)]
+        public string Email { get; set; }
 
-        /// <summary>
-        /// Gets or sets the phone number of the user.
-        /// </summary>
-        /// <remarks>
-        /// The maximum length is 15 characters.
-        /// </remarks>
-        [Required]
+        [Phone]
         [MaxLength(15)]
-        public required string Phone { get; set; }
+        public string PhoneNumber { get; set; }
 
-        /// <summary>
-        /// Gets or sets the hashed password for the user.
-        /// </summary>
         [Required]
-        public required string PasswordHash { get; set; }
+        public DateTime CreatedAt { get; set; }
 
-        /// <summary>
-        /// Gets or sets the collection of transactions associated with the user.
-        /// </summary>
-        /// <remarks>
-        /// This establishes a one-to-many relationship with the <see cref="Transaction"/> entity.
-        /// </remarks>
-        public virtual ICollection<Transaction>? Transactions { get; set; }
+        [Required]
+        public bool IsEmailVerified { get; set; }
+
+        [MaxLength(50)]
+        public string FamilyName { get; set; }
+
+        [MaxLength(50)]
+        public string GivenName { get; set; }
+
+        public DateTime? LastPasswordReset { get; set; }
+
+        [MaxLength(200)]
+        public string FullName { get; set; }
+
+        [MaxLength(100)]
+        public string Nickname { get; set; }
+
+        [Required]
+        public bool IsPhoneVerified { get; set; }
+
+        [Url]
+        public string PictureUrl { get; set; }
+
+        [Required]
+        public DateTime UpdatedAt { get; set; }
+
+        [Column(TypeName = "NVARCHAR(MAX)")] // Use NVARCHAR(MAX) for JSON data
+        public string AppMetadata { get; set; }
+
+        [Column(TypeName = "NVARCHAR(MAX)")]
+        public string UserMetadata { get; set; }
+
+        public virtual IList<Transaction> Transactions { get; set; }
     }
 }

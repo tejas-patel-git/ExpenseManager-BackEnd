@@ -85,8 +85,28 @@ internal class Repository<TDomain, TEntity, TId> : IRepository<TDomain, TEntity,
         {
             var entity = domainEntityMapper.Map(domain);
 
-            await dbSet.AddAsync(entity);
-            _logger.LogInformation($"'{typeof(TEntity).Name}' added successfully with Id {domain.Id}.");
+            await AddAsync(entity);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error occurred while adding a '{typeof(TEntity).Name}'.");
+            throw;
+        }
+    }
+
+    private async Task AddAsync(TEntity entity)
+    {
+        await dbSet.AddAsync(entity);
+        _logger.LogInformation("'{type}' added successfully with Id {id}.", typeof(TEntity).Name, entity.Id);
+    }
+
+    protected virtual async Task AddAsync(TDomain domain, Action<TEntity> updateProperties)
+    {
+        try
+        {
+            var entity = domainEntityMapper.Map(domain);
+            updateProperties(entity);
+            await AddAsync(entity);
         }
         catch (Exception ex)
         {

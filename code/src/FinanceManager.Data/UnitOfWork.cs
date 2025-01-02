@@ -14,8 +14,8 @@ public class UnitOfWork : IUnitOfWork
     private readonly ILogger<UnitOfWork> _logger;
     private IDbContextTransaction _transaction;
 
-    private IUserRepository _userRepository;
-    private ITransactionRepository _transactionRepository;
+    private readonly IUserRepository _userRepository;
+    private readonly ITransactionRepository _transactionRepository;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UnitOfWork"/> class.
@@ -23,17 +23,17 @@ public class UnitOfWork : IUnitOfWork
     /// <param name="context">The database context.</param>
     /// <param name="loggerFactory"></param>
     /// <param name="transactionRepository"></param>
-    public UnitOfWork(AppDbContext context, ILoggerFactory loggerFactory, ITransactionRepository transactionRepository)
+    public UnitOfWork(AppDbContext context, ILoggerFactory loggerFactory, ITransactionRepository transactionRepository, IUserRepository userRepository)
     {
         _context = context;
         _loggerFactory = loggerFactory;
         _transactionRepository = transactionRepository;
+        _userRepository = userRepository;
         _logger = loggerFactory.CreateLogger<UnitOfWork>();
     }
 
     /// <inheritdoc/>
-    public IUserRepository UserRepository =>
-        _userRepository ??= new UserRepository(_context, _loggerFactory.CreateLogger<UserRepository>());
+    public IUserRepository UserRepository => _userRepository;
 
     /// <inheritdoc/>
     public ITransactionRepository TransactionRepository => _transactionRepository;

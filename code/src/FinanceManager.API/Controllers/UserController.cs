@@ -1,6 +1,10 @@
-﻿using FinanceManager.Data.Models;
+﻿using FinanceManager.Application.Services;
+using FinanceManager.Configuration;
+using FinanceManager.Domain.Abstraction.Mappers;
+using FinanceManager.Domain.Models;
+using FinanceManager.Models.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using FinanceManager.Application.Services;
 
 namespace FinanceManager.API.Controllers
 {
@@ -12,90 +16,42 @@ namespace FinanceManager.API.Controllers
     public class UserController : ApiController
     {
         private readonly IUserService _userService;
+        private readonly ILogger<UserController> _logger;
+        private readonly IMapper<UserRegistrationRequest, UserDomain> _mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserController"/> class.
         /// </summary>
         /// <param name="userService">The service for user-related business logic.</param>
-        public UserController(IUserService userService)
+        /// <param name="logger"></param>
+        /// <param name="mapper"></param>
+        public UserController(IUserService userService, ILogger<UserController> logger, IMapper<UserRegistrationRequest, UserDomain> mapper)
         {
             _userService = userService;
+            _logger = logger;
+            _mapper = mapper;
         }
 
-        /// <summary>
-        /// Retrieves a user by their unique ID.
-        /// </summary>
-        /// <param name="id">The unique identifier of the user.</param>
-        /// <returns>The user object if found; otherwise, a 404 error.</returns>
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById(int id)
+        [HttpPost("register")]
+        [Authorize(ConfigurationConstants.API_KEY_AUTH_SCHEME)]
+        public async Task<IActionResult> RegisterUser([FromBody] UserRegistrationRequest request)
         {
-            if (id <= 0)
-                return BadRequest("Invalid user ID.");
+            _logger.LogInformation("Received new user registration: {UserId}", request.UserId);
 
-            var user = await _userService.GetUserByIdAsync(id);
+            if (request is null || string.IsNullOrEmpty(request.UserId))
+            {
+                return BadRequest(FailureResponse("Invalid user data"));
+            }
 
-            if (user == null)
-                return NotFound();
+            var isSuccess = await _userService.CreateUserAsync(_mapper.Map(request));
 
-            return Ok(user);
-        }
+            if (!isSuccess)
+            {
+                _logger.LogInformation("User with email {email} already exists.", request.Email);
+                return Conflict(FailureResponse("User already exists."));
+            }
 
-        /// <summary>
-        /// Retrieves all users.
-        /// </summary>
-        /// <returns>A list of all users.</returns>
-        [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
-        {
-            var users = await _userService.GetAllUsersAsync();
-            return Ok(users);
-        }
-
-        /// <summary>
-        /// Creates a new user.
-        /// </summary>
-        /// <param name="user">The user object to create.</param>
-        /// <returns>A 201 Created response if successful.</returns>
-        [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] User user)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            await _userService.CreateUserAsync(user);
-            return CreatedAtAction(nameof(GetUserById), new { id = user.UserID }, user);
-        }
-
-        /// <summary>
-        /// Updates an existing user.
-        /// </summary>
-        /// <param name="id">The ID of the user to update.</param>
-        /// <param name="user">The updated user object.</param>
-        /// <returns>A 204 No Content response if successful.</returns>
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] User user)
-        {
-            if (id != user.UserID)
-                return BadRequest("User ID mismatch.");
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            await _userService.UpdateUserAsync(user);
-            return NoContent();
-        }
-
-        /// <summary>
-        /// Deletes a user by their ID.
-        /// </summary>
-        /// <param name="id">The ID of the user to delete.</param>
-        /// <returns>A 204 No Content response if successful.</returns>
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
-        {
-            await _userService.DeleteUserAsync(id);
-            return NoContent();
+            return Ok(SuccessResponse("User registered successfully"));
         }
     }
 
