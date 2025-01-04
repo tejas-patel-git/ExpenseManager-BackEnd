@@ -70,7 +70,7 @@ public class TransactionServiceTests
             .ReturnsAsync((TransactionDomain?)null);
 
         // Act
-        var result = await _transactionService.GetTransactionByIdAsync(transactionId);
+        var result = await _transactionService.GetUserTransactionByIdAsync(transactionId, " ");
 
         // Assert
         result.Should().BeNull();
@@ -87,7 +87,7 @@ public class TransactionServiceTests
             .ReturnsAsync(transaction);
 
         // Act
-        var result = await _transactionService.GetTransactionByIdAsync(transaction.Id);
+        var result = await _transactionService.GetUserTransactionByIdAsync(transaction.Id, transaction.UserID);
 
         // Assert
         result.Should().Be(transaction);
