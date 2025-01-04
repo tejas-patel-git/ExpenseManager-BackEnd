@@ -9,53 +9,6 @@
 			"name": "Transaction",
 			"item": [
 				{
-					"name": "Get all transactions",
-					"id": "ea9cc526-b98e-4a4a-9ef4-c9890cc3d262",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": "{{base_url}}/Transactions"
-					},
-					"response": [
-						{
-							"id": "58886c17-6f66-4237-b924-119064e5b4b1",
-							"name": "Success Response",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": "{{base_url}}/Transactions"
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 06 Dec 2024 05:33:32 GMT"
-								},
-								{
-									"key": "Server",
-									"value": "Kestrel"
-								},
-								{
-									"key": "Transfer-Encoding",
-									"value": "chunked"
-								}
-							],
-							"cookie": [],
-							"responseTime": null,
-							"body": "[\n    {\n        \"transactionID\": 1,\n        \"isExpense\": true,\n        \"amount\": 50,\n        \"date\": \"2024-11-01T10:00:00\",\n        \"description\": \"Grocery Shopping\"\n    },\n    {\n        \"transactionID\": 2,\n        \"isExpense\": false,\n        \"amount\": 1500,\n        \"date\": \"2024-11-01T15:00:00\",\n        \"description\": \"Salary\"\n    },\n    {\n        \"transactionID\": 3,\n        \"isExpense\": true,\n        \"amount\": 20,\n        \"date\": \"2024-11-02T12:00:00\",\n        \"description\": \"Coffee\"\n    },\n    {\n        \"transactionID\": 4,\n        \"isExpense\": true,\n        \"amount\": 200,\n        \"date\": \"2024-11-01T09:00:00\",\n        \"description\": \"Online Shopping\"\n    },\n    {\n        \"transactionID\": 5,\n        \"isExpense\": false,\n        \"amount\": 1000,\n        \"date\": \"2024-11-01T16:30:00\",\n        \"description\": \"Freelance Payment\"\n    },\n    {\n        \"transactionID\": 6,\n        \"isExpense\": true,\n        \"amount\": 100,\n        \"date\": \"2024-11-02T13:00:00\",\n        \"description\": \"Dining Out\"\n    },\n    {\n        \"transactionID\": 7,\n        \"isExpense\": true,\n        \"amount\": 75,\n        \"date\": \"2024-11-01T11:00:00\",\n        \"description\": \"Gym Membership\"\n    },\n    {\n        \"transactionID\": 8,\n        \"isExpense\": false,\n        \"amount\": 2000,\n        \"date\": \"2024-11-01T17:00:00\",\n        \"description\": \"Bonus\"\n    },\n    {\n        \"transactionID\": 9,\n        \"isExpense\": true,\n        \"amount\": 40,\n        \"date\": \"2024-11-02T14:00:00\",\n        \"description\": \"Gas\"\n    },\n    {\n        \"transactionID\": 10,\n        \"isExpense\": true,\n        \"amount\": 150,\n        \"date\": \"2024-11-01T08:30:00\",\n        \"description\": \"Electronics Purchase\"\n    },\n    {\n        \"transactionID\": 11,\n        \"isExpense\": false,\n        \"amount\": 1800,\n        \"date\": \"2024-11-01T14:00:00\",\n        \"description\": \"Investment Return\"\n    },\n    {\n        \"transactionID\": 12,\n        \"isExpense\": true,\n        \"amount\": 60,\n        \"date\": \"2024-11-02T10:30:00\",\n        \"description\": \"Clothing\"\n    },\n    {\n        \"transactionID\": 13,\n        \"isExpense\": true,\n        \"amount\": 120,\n        \"date\": \"2024-11-01T07:45:00\",\n        \"description\": \"Utilities\"\n    },\n    {\n        \"transactionID\": 14,\n        \"isExpense\": false,\n        \"amount\": 1500,\n        \"date\": \"2024-11-01T13:45:00\",\n        \"description\": \"Salary\"\n    },\n    {\n        \"transactionID\": 15,\n        \"isExpense\": true,\n        \"amount\": 35,\n        \"date\": \"2024-11-02T09:45:00\",\n        \"description\": \"Snacks\"\n    }\n]"
-						}
-					]
-				},
-				{
 					"name": "Get Transaction by ID",
 					"event": [
 						{
@@ -109,17 +62,31 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/transaction/2",
+						"url": {
+							"raw": "{{base_url}}/transaction?id=8A8E06DB-F848-43BB-B47C-1B3844413237",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"transaction"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "8A8E06DB-F848-43BB-B47C-1B3844413237"
+								}
+							]
+						},
 						"description": "Retrieves a transaction by its ID."
 					},
 					"response": [
 						{
-							"id": "41133c20-6ada-4c1b-8a03-9d9b0bab3543",
+							"id": "cd9952fa-70cd-411e-8e47-b5e41aafca41",
 							"name": "Success Response",
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"url": "{{base_url}}/transaction/2"
+								"url": "{{base_url}}/transaction/1"
 							},
 							"status": "OK",
 							"code": 200,
@@ -131,7 +98,7 @@
 								},
 								{
 									"key": "Date",
-									"value": "Sun, 22 Dec 2024 05:10:26 GMT"
+									"value": "Fri, 27 Dec 2024 17:27:12 GMT"
 								},
 								{
 									"key": "Server",
@@ -144,7 +111,40 @@
 							],
 							"cookie": [],
 							"responseTime": null,
-							"body": "{\n    \"transactionID\": 2,\n    \"isExpense\": false,\n    \"amount\": 1500,\n    \"date\": \"2024-11-01T15:00:00\",\n    \"description\": \"Salary\"\n}"
+							"body": "{\n    \"data\": {\n        \"transactionID\": 1,\n        \"isExpense\": true,\n        \"amount\": 60,\n        \"date\": \"0001-01-01T00:00:00\",\n        \"description\": \"UPDATE Grocery Shopping\"\n    },\n    \"success\": true\n}"
+						},
+						{
+							"id": "79c8244d-ff53-450d-b00f-45a92c5a080a",
+							"name": "Transaction Not Found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": "{{base_url}}/transaction/190"
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 27 Dec 2024 17:44:10 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"responseTime": null,
+							"body": "{\n    \"success\": false,\n    \"errorMessage\": \"No transaction found!\"\n}"
 						}
 					]
 				},
@@ -219,6 +219,7 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "06716b22-52f9-4922-8287-b640cca094db",
 								"exec": [
 									"pm.test(\"Response status code is 201\", function () {",
 									"    pm.expect(pm.response.code).to.equal(201);",
@@ -260,7 +261,8 @@
 									"  pm.expect(responseData.description).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Description should not be empty\");",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -278,7 +280,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"isExpense\": false,\n    \"amount\": 50.00,\n    \"date\": \"2024-11-01T10:00:00\",\n    \"description\": \"Grocery Shopping\"\n}",
+							"raw": "{\n    \"TransactionId\" : 1,\n    \"isExpense\": false,\n    \"amount\": 50.00,\n    \"date\": \"2024-11-01T10:00:00\",\n    \"description\": \"Grocery Shopping\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -350,12 +352,95 @@
 				}
 			],
 			"id": "de11a272-4942-4526-adc2-a70780a2f60d"
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get user by id",
+					"id": "2f7e7857-dd45-4000-b5c1-489997b6add3",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							}
+						],
+						"url": "{{base_url}}/User/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Create User - Post Registration",
+					"id": "095c974d-110d-4780-84e4-ff2390528182",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Email\": \"fm-test-01@gmail.com\",\r\n    \"PhoneNumber\": \"123-456-7890\",\r\n    \"UserId\": \"auth0|5f7c8ec7c33c6c004bbafe82\",\r\n    \"CreatedAt\": \"2025-01-01T14:00:06.130Z\",\r\n    \"IsEmailVerified\": false,\r\n    \"FamilyName\": \"Doe\",\r\n    \"GivenName\": \"John\",\r\n    \"LastPasswordReset\": \"2025-01-01T14:00:06.130Z\",\r\n    \"FullName\": \"John Doe\",\r\n    \"Nickname\": \"johndoe\",\r\n    \"IsPhoneVerified\": false,\r\n    \"PictureUrl\": \"http://www.gravatar.com/avatar/?d=identicon\",\r\n    \"UpdatedAt\": \"2025-01-01T14:00:06.130Z\",\r\n    \"AppMetadata\": \"{}\",\r\n    \"UserMetadata\": \"{}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/user/register"
+					},
+					"response": []
+				}
+			],
+			"id": "32d156a8-666a-4745-b488-c592becda5b3",
+			"auth": {
+				"type": "apikey",
+				"apikey": {
+					"value": "ee30f1ba6e3f6e3a11105e7fb6053cb7d699290ef94acb2d9c437b22b8a83455",
+					"key": "X-Api-Key"
+				}
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f4df6dd6-b3be-4cc0-980a-b001a8aa5a4a",
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "6dbbfb2f-2c6d-4a4a-a765-3fc116d47c78",
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
 		}
 	],
 	"auth": {
 		"type": "oauth2",
 		"oauth2": {
-			"scope": "openid profile email",
+			"refreshTokenUrl": "{{vault:oauth-auth-url}}",
+			"scope": "",
 			"grant_type": "authorization_code_with_pkce",
 			"authRequestParams": [
 				{
@@ -388,7 +473,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "816e3679-5f83-4442-9236-d073cbbd4c2c",
+				"id": "0771fdd1-9f71-4fbe-a699-182be74990e7",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -399,7 +484,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "ba6b5e69-afd3-47e6-adb2-503782a672fc",
+				"id": "5a0f23e2-cb70-42b8-9e32-88da131877e6",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
