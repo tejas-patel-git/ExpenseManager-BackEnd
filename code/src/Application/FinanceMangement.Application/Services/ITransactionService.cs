@@ -12,11 +12,12 @@ namespace FinanceManager.Application.Services
         /// Retrieves a transaction by its unique ID.
         /// </summary>
         /// <param name="transactionId">The ID of the transaction to retrieve. Must be greater than zero.</param>
+        /// <param name="userId"></param>
         /// <returns>
         /// The <see cref="TransactionDomain"/> if found; otherwise, <c>null</c>.
         /// </returns>
         /// <exception cref="ArgumentException">Thrown when <paramref name="transactionId"/> is less than or equal to zero.</exception>
-        Task<TransactionDomain?> GetTransactionByIdAsync(Guid transactionId);
+        Task<TransactionDomain?> GetUserTransactionByIdAsync(Guid transactionId, string userId);
 
         /// <summary>
         /// Retrieves all transactions for a specific user.

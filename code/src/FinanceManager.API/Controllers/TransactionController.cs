@@ -39,18 +39,29 @@ namespace FinanceManager.API.Controllers
         /// <summary>
         /// Retrieves a transaction by its ID.
         /// </summary>
-        /// <param name="transactionId">The ID of the transaction to retrieve.</param>
+        /// <param name="id">The ID of the transaction to retrieve.</param>
         /// <returns>
         /// A <see cref="IActionResult"/> representing the result of the operation.
         /// </returns>
-        [HttpGet("{transactionId}")]
-        [ProducesResponseType(typeof(TransactionResponse), 200)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> GetTransactionById(Guid transactionId)
+        [HttpGet]
+        [ProducesResponseType(typeof(Response<TransactionResponse>), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [ProducesResponseType(typeof(Response), 401)]
+        [ProducesResponseType(typeof(Response), 404)]
+        public async Task<IActionResult> GetTransactionById([FromQuery]Guid id)
         {
+            // check if transaction id is provided
+            if(id.Equals(Guid.Empty))
+                return BadRequest(FailureResponse("Transaction id is empty."));
 
-            var transaction = await _transactionService.GetTransactionByIdAsync(transactionId);
+            // retrieve user id from claims
+            string? userId = GetUserIdOfRequest();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User Id is missing in the token.");
+            }
+
+            var transaction = await _transactionService.GetUserTransactionByIdAsync(id, userId);
 
             if (transaction == null)
                 return NotFound(FailureResponse("No transaction found!"));
@@ -91,7 +102,7 @@ namespace FinanceManager.API.Controllers
                 return BadRequest(ModelState);
 
             // retrieve user id from claims
-            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            string? userId = GetUserIdOfRequest();
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized("User Id is missing in the token.");
@@ -142,6 +153,12 @@ namespace FinanceManager.API.Controllers
         {
             await _transactionService.DeleteTransactionAsync(transactionId);
             return NoContent();
+        }
+
+
+        private string? GetUserIdOfRequest()
+        {
+            return User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
         }
     }
 }

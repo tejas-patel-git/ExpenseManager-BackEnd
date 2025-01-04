@@ -60,6 +60,7 @@ namespace FinanceManager.Application.Mapper.Mappers
             : base(source => new()
             {
                 Id = source.Id,
+                UserID = source.UserId,
                 IsExpense = source.IsExpense,
                 Amount = source.Amount,
                 Date = source.Date,
