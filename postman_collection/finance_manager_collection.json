@@ -149,6 +149,146 @@
 					]
 				},
 				{
+					"name": "Get all",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "13168e85-b43d-4252-9af5-048b6212c307",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content-Type is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"TransactionID is a non-negative integer\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.be.an('object');",
+									"  pm.expect(responseData.transactionID).to.exist.and.to.be.a('number').and.to.satisfy((value) => value >= 0, \"TransactionID should be a non-negative integer\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Amount is a non-negative number\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.amount).to.be.a('number');",
+									"    pm.expect(responseData.amount).to.be.at.least(0);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Date is in a valid date format\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.be.an('object');",
+									"  pm.expect(responseData.date).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "477d5fe0-6c71-4962-bdb3-2954bafcca3a",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/transaction?id=8A8E06DB-F848-43BB-B47C-1B3844413237",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"transaction"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "8A8E06DB-F848-43BB-B47C-1B3844413237"
+								}
+							]
+						},
+						"description": "Retrieves a transaction by its ID."
+					},
+					"response": [
+						{
+							"id": "6387de6e-9d51-4e4c-8f17-4b5184f9f540",
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": "{{base_url}}/transaction/1"
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 27 Dec 2024 17:27:12 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"responseTime": null,
+							"body": "{\n    \"data\": {\n        \"transactionID\": 1,\n        \"isExpense\": true,\n        \"amount\": 60,\n        \"date\": \"0001-01-01T00:00:00\",\n        \"description\": \"UPDATE Grocery Shopping\"\n    },\n    \"success\": true\n}"
+						},
+						{
+							"id": "867304ce-75ca-43c7-8d16-f39cab02e8ee",
+							"name": "Transaction Not Found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": "{{base_url}}/transaction/190"
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 27 Dec 2024 17:44:10 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"responseTime": null,
+							"body": "{\n    \"success\": false,\n    \"errorMessage\": \"No transaction found!\"\n}"
+						}
+					]
+				},
+				{
 					"name": "Get All Transactions by User ID",
 					"event": [
 						{
