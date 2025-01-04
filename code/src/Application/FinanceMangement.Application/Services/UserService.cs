@@ -35,4 +35,14 @@ public class UserService : IUserService
 
         return true;
     }
+
+    public async Task<bool> UserExistsAsync(string userId)
+    {
+        if (await _unitOfWork.UserRepository.ExistsAsync(userId))
+        {
+            return true;
+        }
+
+        return false;
+    }
 }

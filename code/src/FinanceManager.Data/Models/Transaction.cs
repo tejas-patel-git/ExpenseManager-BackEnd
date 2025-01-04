@@ -7,19 +7,19 @@ namespace FinanceManager.Data.Models
     /// <summary>
     /// Represents a financial transaction in the system.
     /// </summary>
-    public class Transaction : IEntityModel<int>
+    public class Transaction : IEntityModel<Guid>
     {
         /// <summary>
         /// Gets or sets the unique identifier for the transaction.
         /// </summary>
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// Gets or sets the unique identifier for the user associated with the transaction.
         /// </summary>
         [ForeignKey("User")]
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the transaction is an expense.

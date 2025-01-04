@@ -8,13 +8,6 @@ namespace FinanceManager.Models.Request;
 public class TransactionRequest : BaseRequest
 {
     /// <summary>
-    /// Gets or sets the unique transaction identifier.
-    /// This is automatically generated to ensure uniqueness.
-    /// </summary>
-    [Required]
-    public int? TransactionId { get; set; }
-
-    /// <summary>
     /// Gets or sets the amount for the transaction.
     /// </summary>
     [Required]

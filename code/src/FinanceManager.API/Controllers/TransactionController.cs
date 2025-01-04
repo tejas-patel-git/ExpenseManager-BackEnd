@@ -13,6 +13,7 @@ namespace FinanceManager.API.Controllers
     /// </summary>
     public class TransactionController : ApiController
     {
+        private readonly ILogger<TransactionController> _logger;
         private readonly ITransactionService _transactionService;
         private readonly IMapper<TransactionRequest, TransactionDomain> _requestDomainMapper;
         private readonly IMapper<TransactionDomain, TransactionResponse> _domainResponseMapper;
@@ -20,10 +21,16 @@ namespace FinanceManager.API.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionController"/> class.
         /// </summary>
+        /// <param name="logger"></param>
         /// <param name="transactionService">The transaction service to manage transactions.</param>
         /// <param name="requestDomainMapper"></param>
-        public TransactionController(ITransactionService transactionService, IMapper<TransactionRequest, TransactionDomain> requestDomainMapper, IMapper<TransactionDomain, TransactionResponse> domainResponseMapper) : base()
+        /// <param name="domainResponseMapper"></param>
+        public TransactionController(ILogger<TransactionController> logger,
+                                     ITransactionService transactionService,
+                                     IMapper<TransactionRequest, TransactionDomain> requestDomainMapper,
+                                     IMapper<TransactionDomain, TransactionResponse> domainResponseMapper) : base()
         {
+            _logger = logger;
             _transactionService = transactionService;
             _requestDomainMapper = requestDomainMapper;
             _domainResponseMapper = domainResponseMapper;
@@ -40,7 +47,7 @@ namespace FinanceManager.API.Controllers
         [ProducesResponseType(typeof(TransactionResponse), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetTransactionById(int transactionId)
+        public async Task<IActionResult> GetTransactionById(Guid transactionId)
         {
 
             var transaction = await _transactionService.GetTransactionByIdAsync(transactionId);
@@ -60,11 +67,8 @@ namespace FinanceManager.API.Controllers
         [ProducesResponseType(typeof(IEnumerable<TransactionResponse>), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetAllTransactions(int userId)
+        public async Task<IActionResult> GetAllTransactions(string userId)
         {
-            if (userId <= 0)
-                return BadRequest($"User ID {userId} is invalid.");
-
             var transactions = await _transactionService.GetAllTransactionsAsync(userId);
 
             if (!transactions.Any()) return NotFound(FailureResponse("No transaction found!"));
@@ -86,9 +90,20 @@ namespace FinanceManager.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            // retrieve user id from claims
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User Id is missing in the token.");
+            }
+
             var transaction = _requestDomainMapper.Map(transactionRequest);
-            await _transactionService.AddTransactionAsync(transaction);
-            return CreatedAtAction(nameof(GetTransactionById), new { transactionId = transaction.Id }, transaction);
+            transaction.UserID = userId;
+
+            if (!await _transactionService.AddTransactionAsync(transaction))
+                return Conflict(FailureResponse("User does not exists"));
+
+            return Ok(SuccessResponse(_domainResponseMapper.Map(transaction)));
         }
 
         /// <summary>
@@ -103,8 +118,8 @@ namespace FinanceManager.API.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> UpdateTransaction(int transactionId, [FromBody] TransactionRequest transaction)
         {
-            if (transactionId != transaction.TransactionId)
-                return BadRequest("Transaction ID mismatch.");
+            //if (transactionId != transaction.TransactionId)
+            //    return BadRequest("Transaction ID mismatch.");
 
             // TODO : Add Validations
 
@@ -123,7 +138,7 @@ namespace FinanceManager.API.Controllers
         [HttpDelete("{transactionId}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> DeleteTransaction(int transactionId)
+        public async Task<IActionResult> DeleteTransaction(Guid transactionId)
         {
             await _transactionService.DeleteTransactionAsync(transactionId);
             return NoContent();

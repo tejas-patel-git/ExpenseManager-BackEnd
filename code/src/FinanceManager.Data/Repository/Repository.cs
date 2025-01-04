@@ -163,7 +163,7 @@ internal class Repository<TDomain, TEntity, TId> : IRepository<TDomain, TEntity,
         }
     }
 
-    public async Task<bool> ExistsAsync(TId id)
+    public virtual async Task<bool> ExistsAsync(TId id)
     {
         return await GetByIdAsync(id) != null;
     }
