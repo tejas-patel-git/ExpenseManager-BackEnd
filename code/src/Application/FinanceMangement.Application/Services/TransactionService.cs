@@ -26,19 +26,23 @@ public class TransactionService : ITransactionService
     }
 
     /// <inheritdoc/>
-    public async Task<TransactionDomain?> GetTransactionByIdAsync(Guid transactionId)
+    public async Task<TransactionDomain?> GetUserTransactionByIdAsync(Guid transactionId, string userId)
     {
-        //if (transactionId <= 0)
-        //{
-        //    _logger.LogWarning($"Invalid transaction ID: {transactionId}");
-        //    throw new ArgumentException($"Transaction ID must be greater than zero.", nameof(transactionId));
-        //}
+        if (transactionId.Equals(Guid.Empty))
+        {
+            throw new ArgumentException($"Invalid transaction id.", nameof(transactionId));
+        }
+        ArgumentNullException.ThrowIfNullOrEmpty(userId);
+
 
         // Fetch data from repository
         var transactions = await _unitOfWork.TransactionRepository.GetByIdAsync(transactionId);
 
         // Return null if not found
         if (transactions == null) return null;
+
+        // validate if transaction belongs to the user
+        if (transactions.UserID != userId) return null;
 
         // Return dto of fetched data
         return transactions;
