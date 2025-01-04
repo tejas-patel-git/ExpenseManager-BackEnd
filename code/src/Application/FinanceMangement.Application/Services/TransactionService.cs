@@ -11,25 +11,28 @@ public class TransactionService : ITransactionService
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<TransactionService> _logger;
     private readonly IMapper<TransactionRequest, TransactionDomain> _requestDomainMapper;
+    private readonly IUserService _userService;
 
     /// <inheritdoc/>
     public TransactionService(IUnitOfWork unitOfWork,
                               ILogger<TransactionService> logger,
-                              IMapper<TransactionRequest, TransactionDomain> requestDomainMapper)
+                              IMapper<TransactionRequest, TransactionDomain> requestDomainMapper,
+                              IUserService userService)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
         _requestDomainMapper = requestDomainMapper;
+        _userService = userService;
     }
 
     /// <inheritdoc/>
-    public async Task<TransactionDomain?> GetTransactionByIdAsync(int transactionId)
+    public async Task<TransactionDomain?> GetTransactionByIdAsync(Guid transactionId)
     {
-        if (transactionId <= 0)
-        {
-            _logger.LogWarning($"Invalid transaction ID: {transactionId}");
-            throw new ArgumentException($"Transaction ID must be greater than zero.", nameof(transactionId));
-        }
+        //if (transactionId <= 0)
+        //{
+        //    _logger.LogWarning($"Invalid transaction ID: {transactionId}");
+        //    throw new ArgumentException($"Transaction ID must be greater than zero.", nameof(transactionId));
+        //}
 
         // Fetch data from repository
         var transactions = await _unitOfWork.TransactionRepository.GetByIdAsync(transactionId);
@@ -42,13 +45,9 @@ public class TransactionService : ITransactionService
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<TransactionDomain>> GetAllTransactionsAsync(int userId)
+    public async Task<IEnumerable<TransactionDomain>> GetAllTransactionsAsync(string userId)
     {
-        if (userId <= 0)
-        {
-            _logger.LogWarning($"Invalid user ID: {userId}");
-            throw new ArgumentException($"User ID must be greater than zero.", nameof(userId));
-        }
+        ArgumentNullException.ThrowIfNullOrEmpty(userId, nameof(userId));
 
         // Fetch data from repository
         var transactions = await _unitOfWork.TransactionRepository.GetAllAsync(filter: entity => entity.UserID == userId);
@@ -61,15 +60,23 @@ public class TransactionService : ITransactionService
     }
 
     /// <inheritdoc/>
-    public async Task AddTransactionAsync(TransactionDomain transactionDomain)
+    public async Task<bool> AddTransactionAsync(TransactionDomain transactionDomain)
     {
         ArgumentNullException.ThrowIfNull(transactionDomain);
 
-        // TODO : Validate userId with the transaction's userId
+        // check if user exists
+        if (!await _userService.UserExistsAsync(transactionDomain.UserID))
+            return false;
 
         // Add data to repository
+        transactionDomain.Id = Guid.NewGuid();
         await _unitOfWork.TransactionRepository.AddAsync(transactionDomain);
-        await _unitOfWork.SaveChangesAsync();
+        var rowsUpdated = await _unitOfWork.SaveChangesAsync();
+        
+        _logger.LogDebug($"{rowsUpdated} rows updated");
+
+
+        return true;
     }
 
     /// <inheritdoc/>
@@ -88,13 +95,13 @@ public class TransactionService : ITransactionService
     }
 
     /// <inheritdoc/>
-    public async Task DeleteTransactionAsync(int transactionId)
+    public async Task DeleteTransactionAsync(Guid transactionId)
     {
-        if (transactionId <= 0)
-        {
-            _logger.LogWarning($"Invalid transaction ID: {transactionId}");
-            throw new ArgumentException($"Transaction ID must be greater than zero.", nameof(transactionId));
-        }
+        //if (transactionId <= 0)
+        //{
+        //    _logger.LogWarning($"Invalid transaction ID: {transactionId}");
+        //    throw new ArgumentException($"Transaction ID must be greater than zero.", nameof(transactionId));
+        //}
 
         // Delete data from repository
         await _unitOfWork.TransactionRepository.DeleteByIdAsync(transactionId);

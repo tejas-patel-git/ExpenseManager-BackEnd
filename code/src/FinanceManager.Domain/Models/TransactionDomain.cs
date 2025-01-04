@@ -2,17 +2,17 @@
 
 namespace FinanceManager.Domain.Models;
 
-public class TransactionDomain : IDomainModel<int>
+public class TransactionDomain : IDomainModel<Guid>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the transaction.
     /// </summary>
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier for the user associated with the transaction.
     /// </summary>
-    public int UserID { get; set; }
+    public string UserID { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the transaction is an expense.

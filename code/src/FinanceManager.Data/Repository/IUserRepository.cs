@@ -7,7 +7,7 @@ namespace FinanceManager.Data.Repository
     /// <summary>
     /// Interface for managing User entities in the data store.
     /// </summary>
-    public interface IUserRepository : IRepository<UserDomain, User, Guid>
+    public interface IUserRepository : IRepository<UserDomain, User, string>
     {
         Task<bool> ExistsByEmailAsync(string email);
         Task<UserDomain?> GetByEmailAsync(string email);

@@ -10,7 +10,7 @@ namespace FinanceManager.Application.Mapper.Mappers
         public UserRegistrationRequestToDomainMapper()
             : base(source => new()
             {
-                UserId = source.UserId,
+                Id = source.UserId,
                 Email = source.Email,
                 PhoneNumber = source.PhoneNumber,
                 CreatedAt = source.CreatedAt,
@@ -35,7 +35,7 @@ namespace FinanceManager.Application.Mapper.Mappers
         public UserDomainToEntityMapper()
             : base(source => new()
             {
-                Auth0UserId = source.UserId,
+                Id = source.Id,
                 Email = source.Email,
                 PhoneNumber = source.PhoneNumber,
                 CreatedAt = source.CreatedAt,

@@ -7,14 +7,12 @@ namespace FinanceManager.Data.Models
     /// <summary>
     /// Represents a user.
     /// </summary>
-    public class User : IEntityModel<Guid>
+    public class User : IEntityModel<string>
     {
         [Key]
         [Required]
         [MaxLength(50)]
-        public Guid Id { get; set; }
-
-        public string Auth0UserId { get; set; }
+        public string Id { get; set; }
 
         [Required]
         [EmailAddress]

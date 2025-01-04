@@ -9,7 +9,7 @@ namespace FinanceManager.Data.Repository;
 /// <summary>
 /// Repository for managing User entities.
 /// </summary>
-internal class UserRepository : Repository<UserDomain, User, Guid>, IUserRepository
+internal class UserRepository : Repository<UserDomain, User, string>, IUserRepository
 {
     private readonly ILogger<UserRepository> _logger;
 
@@ -29,15 +29,23 @@ internal class UserRepository : Repository<UserDomain, User, Guid>, IUserReposit
         _logger = logger;
     }
 
-    public override async Task AddAsync(UserDomain domain)
+    public async Task<string?> GetUserIdAsync(string id)
     {
         try
         {
-            await AddAsync(domain, entity => entity.Id = Guid.NewGuid());
+            var user = await dbSet.FirstOrDefaultAsync(user => user.Id == id);
+
+            if (user is null)
+            {
+                _logger.LogDebug("{type} not found with Auth Id {auth0Id}", nameof(User), id);
+                return null;
+            }
+
+            return user.Id;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occurred while adding a '{type}'.", typeof(User).Name);
+            _logger.LogError(ex, "Error occurred while fetching User '{type}'.", nameof(Guid));
             throw;
         }
     }
@@ -46,7 +54,8 @@ internal class UserRepository : Repository<UserDomain, User, Guid>, IUserReposit
     {
         var user = await dbSet.AsNoTracking().FirstOrDefaultAsync(user => user.Email == email);
 
-        if (user is default(User)) {
+        if (user is null)
+        {
             _logger.LogDebug("{type} not found with email {email}", nameof(User), email);
             return null;
         }
@@ -62,5 +71,10 @@ internal class UserRepository : Repository<UserDomain, User, Guid>, IUserReposit
             _logger.LogDebug("{type} not found with email {email}", nameof(User), email);
 
         return exists;
+    }
+
+    public override async Task<bool> ExistsAsync(string id)
+    {
+        return await dbSet.AsNoTracking().AnyAsync(user => user.Id == id);
     }
 }

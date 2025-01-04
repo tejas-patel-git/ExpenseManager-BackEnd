@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FinanceManager.Data.Repository;
 
-internal class TransactionRepository : Repository<TransactionDomain, Transaction, int>, ITransactionRepository
+internal class TransactionRepository : Repository<TransactionDomain, Transaction, Guid>, ITransactionRepository
 {
     private readonly ILogger<TransactionRepository> _logger;
 
@@ -18,9 +18,9 @@ internal class TransactionRepository : Repository<TransactionDomain, Transaction
     /// Thrown when either <paramref name="context"/> or <paramref name="logger"/> is <c>null</c>.
     /// </exception>
     public TransactionRepository(AppDbContext context,
-                                   ILogger<TransactionRepository> logger,
-                                   IMapper<TransactionDomain, Transaction> domainEntityMapper,
-                                   IMapper<Transaction, TransactionDomain> entityDomainMapper)
+                                 ILogger<TransactionRepository> logger,
+                                 IMapper<TransactionDomain, Transaction> domainEntityMapper,
+                                 IMapper<Transaction, TransactionDomain> entityDomainMapper)
         : base(context, logger, domainEntityMapper, entityDomainMapper)
     {
         _logger = logger;

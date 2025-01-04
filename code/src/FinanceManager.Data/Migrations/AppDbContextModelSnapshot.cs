@@ -24,11 +24,9 @@ namespace FinanceManager.Data.Migrations
 
             modelBuilder.Entity("FinanceManager.Data.Models.Transaction", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(10, 2)");
@@ -49,8 +47,9 @@ namespace FinanceManager.Data.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -61,18 +60,13 @@ namespace FinanceManager.Data.Migrations
 
             modelBuilder.Entity("FinanceManager.Data.Models.User", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("Id")
                         .HasMaxLength(50)
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("AppMetadata")
                         .IsRequired()
                         .HasColumnType("NVARCHAR(MAX)");
-
-                    b.Property<string>("Auth0UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -128,9 +122,6 @@ namespace FinanceManager.Data.Migrations
                         .HasColumnType("NVARCHAR(MAX)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
 
                     b.ToTable("Users");
                 });

@@ -12,5 +12,6 @@ namespace FinanceManager.Application.Services
         /// </summary>
         /// <param name="user">The user object to create.</param>
         Task<bool> CreateUserAsync(UserDomain user);
+        Task<bool> UserExistsAsync(string userId);
     }
 }

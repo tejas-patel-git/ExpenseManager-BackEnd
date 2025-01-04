@@ -7,6 +7,6 @@ namespace FinanceManager.Data.Repository;
 /// <summary>
 /// Defines the contract for repository operations related to transactions.
 /// </summary>
-public interface ITransactionRepository : IRepository<TransactionDomain, Transaction, int>
+public interface ITransactionRepository : IRepository<TransactionDomain, Transaction, Guid>
 {
 }

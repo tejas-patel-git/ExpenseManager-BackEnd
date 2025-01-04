@@ -12,7 +12,6 @@ namespace FinanceManager.Application.Mapper.Mappers
             : base(source => new()
             {
                 // TODO : Handle null ids
-                Id = source.TransactionId ?? 0,
                 Amount = source.Amount,
                 Date = source.Date,
                 IsExpense = source.IsExpense,
@@ -44,6 +43,7 @@ namespace FinanceManager.Application.Mapper.Mappers
             {
                 // TODO : Handle Null transaction id.
                 Id = source.Id,
+                UserId = source.UserID,
                 IsExpense = source.IsExpense,
                 Amount = source.Amount,
                 Date = source.Date,
