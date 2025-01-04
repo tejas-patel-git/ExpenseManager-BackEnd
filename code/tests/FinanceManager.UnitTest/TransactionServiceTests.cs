@@ -1,22 +1,24 @@
 using AutoFixture;
-using FinanceManager.Data;
-using FinanceManager.Data.Models;
-using FinanceManager.Data.Repository;
 using FinanceManager.Application.Services;
+using FinanceManager.Data;
+using FinanceManager.Data.Repository;
+using FinanceManager.Domain.Abstraction.Mappers;
+using FinanceManager.Domain.Models;
+using FinanceManager.Models.Request;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using FinanceManager.Models.Response;
-using FinanceManager.Application.Mapper.Mappers;
-using FinanceManager.Domain.Models;
 using System.Linq.Expressions;
 
 namespace FinanceManager.UnitTest;
+
 public class TransactionServiceTests
 {
     private readonly IFixture _fixture;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<ITransactionRepository> _transactionRepositoryMock;
+    private readonly Mock<IUserService> _userServiceMock;
+    private readonly Mock<IMapper<TransactionRequest, TransactionDomain>> _requestDomainMapperMock;
     private readonly NullLogger<TransactionService> _logger;
     private readonly TransactionService _transactionService;
 
@@ -32,81 +34,73 @@ public class TransactionServiceTests
 
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-        // Custom builder for creating controlled circular references
-        _fixture.Customize<User>(c => c
-            .Without(u => u.Transactions) // Prevent auto-population of Transactions
-            .Do(u =>
-            {
-                // Manually create transactions
-                var transactions = new List<Transaction>();
-                for (int i = 0; i < 3; i++)
-                {
-                    var transaction = _fixture.Build<Transaction>()
-                        .Without(t => t.User) // Prevent recursion during initial creation
-                        .Create();
+        // Customize decimal range for Amount to avoid overflow
+        _fixture.Customize<TransactionRequest>(c => c
+            .With(tr => tr.Amount, _fixture.Create<decimal>() % 10000m + 0.01m)); // Ensure values are within a safe range
 
-                    transaction.User = u; // Set circular reference manually
-                    transactions.Add(transaction);
-                }
-
-                u.Transactions = transactions;
-            }));
 
         // Mock repository
         _transactionRepositoryMock = new();
         _unitOfWorkMock = new();
         _unitOfWorkMock.SetupGet(un => un.TransactionRepository).Returns(_transactionRepositoryMock.Object);
 
+        // Mock services and mappers
+        _userServiceMock = new();
+        _requestDomainMapperMock = new();
+
         // Mock Logger
         _logger = new NullLogger<TransactionService>();
 
         // Inject mock into service
-        _transactionService = new TransactionService(_unitOfWorkMock.Object, _logger, new TransactionRequestToDomainMapper());
+        _transactionService = new TransactionService(
+            _unitOfWorkMock.Object,
+            _logger,
+            _requestDomainMapperMock.Object,
+            _userServiceMock.Object
+        );
     }
 
-    // TODO : Update the test after service update
-    //[Fact]
-    //public async Task GetAllTransactionsAsync_ShouldReturnEmpty_WhenNoTransactionsExist()
-    //{
-    //    // Arrange
-    //   _repositoryMock.Setup(set => set.GetAllTransactionsAsync()).ReturnsAsync(Enumerable.Empty<Transaction>());
-
-    //    // Act
-    //    var result = await _transactionService.GetAllTransactionsAsync();
-
-    //    // Assert
-    //    result.Should().BeEmpty();
-    //    _repositoryMock.Verify(repo => repo.GetAllTransactionsAsync(), Times.Once);
-    //}
-
-    // TODO : Update the test after service update
-    //[Fact]
-    //public async Task GetAllTransactionsAsync_ShouldReturnMappedDtos_WhenTransactionsExist()
-    //{
-    //    // Arrange
-    //    var transactions = _fixture.CreateMany<Transaction>(5).ToList(); // Generate 5 mock transactions
-    //    _repositoryMock
-    //        .Setup(repo => repo.GetAllTransactionsAsync())
-    //        .ReturnsAsync(transactions);
-
-    //    // Act
-    //    var result = await _transactionService.GetAllTransactionsAsync();
-
-    //    // Assert
-    //    result.Should().NotBeNull()
-    //          .And.HaveCount(transactions.Count)
-    //          .And.AllBeOfType<TransactionDto>();
-
-    //    _repositoryMock.Verify(repo => repo.GetAllTransactionsAsync(), Times.Once);
-    //}
-
     [Fact]
-    public async Task GetAllTransactionsAsync_ByUserId_ShouldReturnEmpty_WhenNoTransactionsExistForUser()
+    public async Task GetTransactionByIdAsync_ShouldReturnNull_WhenTransactionNotFound()
     {
         // Arrange
-        var userId = _fixture.Create<int>();
+        var transactionId = Guid.NewGuid();
         _transactionRepositoryMock
-            .Setup(repo => repo.GetAllAsync(entity => entity.UserID == userId, null))
+            .Setup(repo => repo.GetByIdAsync(transactionId))
+            .ReturnsAsync((TransactionDomain?)null);
+
+        // Act
+        var result = await _transactionService.GetTransactionByIdAsync(transactionId);
+
+        // Assert
+        result.Should().BeNull();
+        _transactionRepositoryMock.Verify(repo => repo.GetByIdAsync(transactionId), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetTransactionByIdAsync_ShouldReturnTransaction_WhenTransactionExists()
+    {
+        // Arrange
+        var transaction = _fixture.Create<TransactionDomain>();
+        _transactionRepositoryMock
+            .Setup(repo => repo.GetByIdAsync(transaction.Id))
+            .ReturnsAsync(transaction);
+
+        // Act
+        var result = await _transactionService.GetTransactionByIdAsync(transaction.Id);
+
+        // Assert
+        result.Should().Be(transaction);
+        _transactionRepositoryMock.Verify(repo => repo.GetByIdAsync(transaction.Id), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetAllTransactionsAsync_ShouldReturnEmpty_WhenNoTransactionsExist()
+    {
+        // Arrange
+        var userId = _fixture.Create<string>();
+        _transactionRepositoryMock
+            .Setup(repo => repo.GetAllAsync(It.IsAny<Expression<Func<TransactionDomain, bool>>>(), null))
             .ReturnsAsync(Enumerable.Empty<TransactionDomain>());
 
         // Act
@@ -114,27 +108,98 @@ public class TransactionServiceTests
 
         // Assert
         result.Should().BeEmpty();
-        _transactionRepositoryMock.Verify(repo => repo.GetAllAsync(entity => entity.UserID == userId, null), Times.Once);
+        _transactionRepositoryMock.Verify(repo => repo.GetAllAsync(It.IsAny<Expression<Func<TransactionDomain, bool>>>(), null), Times.Once);
     }
 
     [Fact]
-    public async Task GetAllTransactionsAsync_ByUserId_ShouldReturnMappedDtos_WhenTransactionsExistForUser()
+    public async Task AddTransactionAsync_ShouldReturnFalse_WhenUserDoesNotExist()
     {
         // Arrange
-        var userId = _fixture.Create<int>();
-        var transactions = _fixture.CreateMany<TransactionDomain>(3).ToList(); // Generate 3 mock transactions
-        _transactionRepositoryMock
-            .Setup(repo => repo.GetAllAsync(entity => entity.UserID == userId, null))
-            .ReturnsAsync(transactions);
+        var transaction = _fixture.Create<TransactionDomain>();
+        _userServiceMock
+            .Setup(service => service.UserExistsAsync(transaction.UserID))
+            .ReturnsAsync(false);
 
-        // Acts
-        var result = await _transactionService.GetAllTransactionsAsync(userId);
+        // Act
+        var result = await _transactionService.AddTransactionAsync(transaction);
 
         // Assert
-        result.Should().NotBeNull()
-              .And.HaveCount(transactions.Count)
-              .And.AllBeOfType<TransactionDomain>();
+        result.Should().BeFalse();
+        _userServiceMock.Verify(service => service.UserExistsAsync(transaction.UserID), Times.Once);
+    }
 
-        _transactionRepositoryMock.Verify(repo => repo.GetAllAsync(entity => entity.UserID == userId, null), Times.Once);
+    [Fact]
+    public async Task AddTransactionAsync_ShouldAddTransaction_WhenUserExists()
+    {
+        // Arrange
+        var transaction = _fixture.Create<TransactionDomain>();
+        _userServiceMock
+            .Setup(service => service.UserExistsAsync(transaction.UserID))
+            .ReturnsAsync(true);
+
+        _transactionRepositoryMock
+            .Setup(repo => repo.AddAsync(transaction))
+            .Returns(Task.CompletedTask);
+
+        _unitOfWorkMock
+            .Setup(u => u.SaveChangesAsync())
+            .ReturnsAsync(1);
+
+        // Act
+        var result = await _transactionService.AddTransactionAsync(transaction);
+
+        // Assert
+        result.Should().BeTrue();
+        _transactionRepositoryMock.Verify(repo => repo.AddAsync(transaction), Times.Once);
+        _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Once);
+    }
+
+    [Fact]
+    public async Task UpdateTransactionAsync_ShouldUpdateTransaction()
+    {
+        // Arrange
+        var transactionRequest = _fixture.Create<TransactionRequest>();
+        var transactionDomain = _fixture.Create<TransactionDomain>();
+
+        _requestDomainMapperMock
+            .Setup(mapper => mapper.Map(transactionRequest))
+            .Returns(transactionDomain);
+        
+        _transactionRepositoryMock
+            .Setup(repo => repo.UpdateAsync(transactionDomain))
+            .Returns(Task.CompletedTask);
+
+        _unitOfWorkMock
+            .Setup(u => u.SaveChangesAsync())
+            .ReturnsAsync(1);
+
+        // Act
+        await _transactionService.UpdateTransactionAsync(transactionRequest);
+
+        // Assert
+        _transactionRepositoryMock.Verify(repo => repo.UpdateAsync(transactionDomain), Times.Once);
+        _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Once);
+    }
+
+    [Fact]
+    public async Task DeleteTransactionAsync_ShouldDeleteTransaction()
+    {
+        // Arrange
+        var transactionId = Guid.NewGuid();
+
+        _transactionRepositoryMock
+            .Setup(repo => repo.DeleteByIdAsync(transactionId))
+            .Returns(Task.CompletedTask);
+
+        _unitOfWorkMock
+            .Setup(u => u.SaveChangesAsync())
+            .ReturnsAsync(1);
+
+        // Act
+        await _transactionService.DeleteTransactionAsync(transactionId);
+
+        // Assert
+        _transactionRepositoryMock.Verify(repo => repo.DeleteByIdAsync(transactionId), Times.Once);
+        _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Once);
     }
 }
