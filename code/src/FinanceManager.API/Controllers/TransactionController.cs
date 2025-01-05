@@ -155,11 +155,14 @@ namespace FinanceManager.API.Controllers
             string? userId = GetUserIdOfRequest();
             if (string.IsNullOrEmpty(userId))
             {
-                return Unauthorized("User Id is missing in the token.");
+                return BadRequest("User id is missing in the token.");
             }
 
-            await _transactionService.DeleteTransactionAsync(id, userId);
-            return NoContent();
+            var isSuccess = await _transactionService.DeleteTransactionAsync(id, userId);
+
+            if (!isSuccess) return NotFound(FailureResponse("Transaction not found."));
+
+            return Ok(SuccessResponse($"Transaction with id '{id}' deleted successfully."));
         }
 
         private string? GetUserIdOfRequest()
