@@ -60,7 +60,7 @@ internal class TransactionRepository : Repository<TransactionDomain, Transaction
     {
         try
         {
-            var entity = await dbSet.FirstAsync(entity => entity.UserId == userId && entity.Id == id);
+            var entity = await dbSet.FirstOrDefaultAsync(entity => entity.UserId == userId && entity.Id == id);
 
             if (entity == null)
             {
