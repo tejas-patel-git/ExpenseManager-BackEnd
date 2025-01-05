@@ -15,6 +15,11 @@ namespace FinanceManager.API.Controllers
 
         }
 
+        protected string? GetUserIdOfRequest()
+        {
+            return User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        }
+
         protected Response<T> SuccessResponse<T>(T responseData, bool isSuccess = true)
         {
             return new()

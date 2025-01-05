@@ -104,4 +104,16 @@ public class TransactionService : ITransactionService
 
         return isSuccess;
     }
+
+    /// <inheritdoc/>
+    public async Task<BalanceDomain?> GetBalanceAsync(string userId)
+    {
+        var transactions = await _unitOfWork.TransactionRepository.GetAllAsync(entity =>  entity.UserId == userId);
+
+        if(transactions == null || !transactions.Any()) return null;
+
+        var balance = transactions.Sum(d => d.IsExpense ? -d.Amount : d.Amount);
+
+        return new() { CurrentBalance = balance };
+    }
 }

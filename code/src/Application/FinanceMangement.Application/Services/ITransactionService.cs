@@ -58,5 +58,6 @@ namespace FinanceManager.Application.Services
         /// </returns>
         /// <exception cref="ArgumentException">Thrown when <paramref name="transactionId"/> is less than or equal to zero.</exception>
         Task<bool> DeleteTransactionAsync(Guid transactionId, string userId);
+        Task<BalanceDomain?> GetBalanceAsync(string userId);
     }
 }

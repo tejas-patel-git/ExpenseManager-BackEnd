@@ -164,10 +164,5 @@ namespace FinanceManager.API.Controllers
 
             return Ok(SuccessResponse($"Transaction with id '{id}' deleted successfully."));
         }
-
-        private string? GetUserIdOfRequest()
-        {
-            return User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        }
     }
 }
