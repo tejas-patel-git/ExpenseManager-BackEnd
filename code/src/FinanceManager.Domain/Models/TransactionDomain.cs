@@ -12,7 +12,7 @@ public class TransactionDomain : IDomainModel<Guid>
     /// <summary>
     /// Gets or sets the unique identifier for the user associated with the transaction.
     /// </summary>
-    public string UserID { get; set; }
+    public string UserId { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the transaction is an expense.

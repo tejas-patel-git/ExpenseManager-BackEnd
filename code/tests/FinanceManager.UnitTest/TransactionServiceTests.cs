@@ -1,6 +1,7 @@
 using AutoFixture;
 using FinanceManager.Application.Services;
 using FinanceManager.Data;
+using FinanceManager.Data.Models;
 using FinanceManager.Data.Repository;
 using FinanceManager.Domain.Abstraction.Mappers;
 using FinanceManager.Domain.Models;
@@ -70,7 +71,7 @@ public class TransactionServiceTests
             .ReturnsAsync((TransactionDomain?)null);
 
         // Act
-        var result = await _transactionService.GetUserTransactionByIdAsync(transactionId, " ");
+        var result = await _transactionService.GetUserTransactionAsync(transactionId, " ");
 
         // Assert
         result.Should().BeNull();
@@ -87,7 +88,7 @@ public class TransactionServiceTests
             .ReturnsAsync(transaction);
 
         // Act
-        var result = await _transactionService.GetUserTransactionByIdAsync(transaction.Id, transaction.UserID);
+        var result = await _transactionService.GetUserTransactionAsync(transaction.Id, transaction.UserId);
 
         // Assert
         result.Should().Be(transaction);
@@ -100,15 +101,15 @@ public class TransactionServiceTests
         // Arrange
         var userId = _fixture.Create<string>();
         _transactionRepositoryMock
-            .Setup(repo => repo.GetAllAsync(It.IsAny<Expression<Func<TransactionDomain, bool>>>(), null))
+            .Setup(repo => repo.GetAllAsync(It.IsAny<Expression<Func<Transaction, bool>>>()))
             .ReturnsAsync(Enumerable.Empty<TransactionDomain>());
 
         // Act
-        var result = await _transactionService.GetAllTransactionsAsync(userId);
+        var result = await _transactionService.GetUserTransactionsAsync(userId);
 
         // Assert
         result.Should().BeEmpty();
-        _transactionRepositoryMock.Verify(repo => repo.GetAllAsync(It.IsAny<Expression<Func<TransactionDomain, bool>>>(), null), Times.Once);
+        _transactionRepositoryMock.Verify(repo => repo.GetAllAsync(It.IsAny<Expression<Func<Transaction, bool>>>()), Times.Once);
     }
 
     [Fact]
@@ -117,7 +118,7 @@ public class TransactionServiceTests
         // Arrange
         var transaction = _fixture.Create<TransactionDomain>();
         _userServiceMock
-            .Setup(service => service.UserExistsAsync(transaction.UserID))
+            .Setup(service => service.UserExistsAsync(transaction.UserId))
             .ReturnsAsync(false);
 
         // Act
@@ -125,7 +126,7 @@ public class TransactionServiceTests
 
         // Assert
         result.Should().BeFalse();
-        _userServiceMock.Verify(service => service.UserExistsAsync(transaction.UserID), Times.Once);
+        _userServiceMock.Verify(service => service.UserExistsAsync(transaction.UserId), Times.Once);
     }
 
     [Fact]
@@ -134,7 +135,7 @@ public class TransactionServiceTests
         // Arrange
         var transaction = _fixture.Create<TransactionDomain>();
         _userServiceMock
-            .Setup(service => service.UserExistsAsync(transaction.UserID))
+            .Setup(service => service.UserExistsAsync(transaction.UserId))
             .ReturnsAsync(true);
 
         _transactionRepositoryMock
