@@ -9,7 +9,7 @@
 			"name": "Transaction",
 			"item": [
 				{
-					"name": "Get Transaction by ID",
+					"name": "get transaction by id",
 					"event": [
 						{
 							"listen": "test",
@@ -81,39 +81,6 @@
 					},
 					"response": [
 						{
-							"id": "cd9952fa-70cd-411e-8e47-b5e41aafca41",
-							"name": "Success Response",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": "{{base_url}}/transaction/1"
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 27 Dec 2024 17:27:12 GMT"
-								},
-								{
-									"key": "Server",
-									"value": "Kestrel"
-								},
-								{
-									"key": "Transfer-Encoding",
-									"value": "chunked"
-								}
-							],
-							"cookie": [],
-							"responseTime": null,
-							"body": "{\n    \"data\": {\n        \"transactionID\": 1,\n        \"isExpense\": true,\n        \"amount\": 60,\n        \"date\": \"0001-01-01T00:00:00\",\n        \"description\": \"UPDATE Grocery Shopping\"\n    },\n    \"success\": true\n}"
-						},
-						{
 							"id": "79c8244d-ff53-450d-b00f-45a92c5a080a",
 							"name": "Transaction Not Found",
 							"originalRequest": {
@@ -149,7 +116,7 @@
 					]
 				},
 				{
-					"name": "Get all",
+					"name": "get all transactions",
 					"event": [
 						{
 							"listen": "test",
@@ -202,22 +169,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{base_url}}/transaction",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"transaction"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "8A8E06DB-F848-43BB-B47C-1B3844413237",
-									"disabled": true
-								}
-							]
-						},
+						"url": "{{base_url}}/transaction",
 						"description": "Retrieves a transaction by its ID."
 					},
 					"response": [
@@ -290,7 +242,7 @@
 					]
 				},
 				{
-					"name": "Add Transaction",
+					"name": "add new transaction",
 					"event": [
 						{
 							"listen": "test",
@@ -369,7 +321,7 @@
 					"response": []
 				},
 				{
-					"name": "Update Transaction",
+					"name": "update transaction",
 					"id": "96b68887-8c85-4791-8059-fe7c5b970b64",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -412,7 +364,7 @@
 					"response": []
 				},
 				{
-					"name": "Delete Transaction",
+					"name": "delete transaction",
 					"id": "9051ceec-f87d-4231-9cd5-4968600b4c09",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -496,7 +448,7 @@
 			"auth": {
 				"type": "apikey",
 				"apikey": {
-					"value": "ee30f1ba6e3f6e3a11105e7fb6053cb7d699290ef94acb2d9c437b22b8a83455",
+					"value": "{{vault:auth0-provider-api-key}}",
 					"key": "X-Api-Key"
 				}
 			},
@@ -504,7 +456,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "f4df6dd6-b3be-4cc0-980a-b001a8aa5a4a",
+						"id": "7ee27ea1-9449-4f58-8218-2684bd054a4f",
 						"type": "text/javascript",
 						"packages": {},
 						"exec": [
@@ -515,7 +467,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "6dbbfb2f-2c6d-4a4a-a765-3fc116d47c78",
+						"id": "47910316-8370-452f-bde6-94d95399fc28",
 						"type": "text/javascript",
 						"packages": {},
 						"exec": [
