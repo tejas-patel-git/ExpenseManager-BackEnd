@@ -144,15 +144,25 @@ namespace FinanceManager.API.Controllers
         /// <summary>
         /// Deletes a transaction by its ID.
         /// </summary>
-        /// <param name="transactionId">The ID of the transaction to delete.</param>
+        /// <param name="id">The ID of the transaction to delete.</param>
         /// <returns>A <see cref="IActionResult"/> indicating the deletion status.</returns>
-        [HttpDelete("{transactionId}")]
+        [HttpDelete]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> DeleteTransaction(Guid transactionId)
+        public async Task<IActionResult> DeleteTransaction([FromQuery] Guid id)
         {
-            await _transactionService.DeleteTransactionAsync(transactionId);
-            return NoContent();
+            // retrieve user id from claims
+            string? userId = GetUserIdOfRequest();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User id is missing in the token.");
+            }
+
+            var isSuccess = await _transactionService.DeleteTransactionAsync(id, userId);
+
+            if (!isSuccess) return NotFound(FailureResponse("Transaction not found."));
+
+            return Ok(SuccessResponse($"Transaction with id '{id}' deleted successfully."));
         }
 
         private string? GetUserIdOfRequest()

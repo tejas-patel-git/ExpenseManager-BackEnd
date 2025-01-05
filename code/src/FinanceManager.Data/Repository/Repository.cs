@@ -87,6 +87,27 @@ internal class Repository<TDomain, TEntity, TId> : IRepository<TDomain, TEntity,
         }
     }
 
+    protected virtual async Task<TEntity?> GetEntity(TId id)
+    {
+        try
+        {
+            var entity = await dbSet.FindAsync(id);
+
+            if (entity == null)
+            {
+                _logger.LogInformation($"'{typeof(TEntity).Name}' having id {id} not found.");
+                return null;
+            }
+
+            return entity;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error occurred while retrieving '{typeof(TEntity).Name}' having id {id}");
+            throw;
+        }
+    }
+
     public virtual async Task AddAsync(TDomain domain)
     {
         try
@@ -123,27 +144,27 @@ internal class Repository<TDomain, TEntity, TId> : IRepository<TDomain, TEntity,
         }
     }
 
-    private void Delete(TDomain domainToDelete)
+    protected void Delete(TEntity entity)
     {
-        var entityToDelete = domainEntityMapper.Map(domainToDelete);
-
-        dbSet.Remove(entityToDelete);
+        dbSet.Remove(entity);
     }
 
-    public async Task DeleteByIdAsync(TId id)
+    public virtual async Task<bool> DeleteByIdAsync(TId id)
     {
         try
         {
-            var domain = await GetByIdAsync(id);
+            var entity = await GetEntity(id);
 
-            if (domain == null)
+            if (entity == null)
             {
                 _logger.LogInformation($"'{typeof(TEntity).Name}' with id {id} not found for deletion.");
-                return;
+                return false;
             }
 
-            Delete(domain);
+            Delete(entity);
             _logger.LogInformation($"'{typeof(TEntity).Name}' with id {id} deleted successfully.");
+
+            return true;
         }
         catch (Exception ex)
         {

@@ -96,17 +96,12 @@ public class TransactionService : ITransactionService
     }
 
     /// <inheritdoc/>
-    public async Task DeleteTransactionAsync(Guid transactionId)
+    public async Task<bool> DeleteTransactionAsync(Guid transactionId, string userId)
     {
-        //if (transactionId <= 0)
-        //{
-        //    _logger.LogWarning($"Invalid transaction ID: {transactionId}");
-        //    throw new ArgumentException($"Transaction ID must be greater than zero.", nameof(transactionId));
-        //}
-
         // Delete data from repository
-        await _unitOfWork.TransactionRepository.DeleteByIdAsync(transactionId);
+        var isSuccess = await _unitOfWork.TransactionRepository.DeleteByIdAsync(transactionId, userId);
         await _unitOfWork.SaveChangesAsync();
 
+        return isSuccess;
     }
 }
