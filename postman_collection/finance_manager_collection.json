@@ -203,7 +203,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/transaction?id=8A8E06DB-F848-43BB-B47C-1B3844413237",
+							"raw": "{{base_url}}/transaction",
 							"host": [
 								"{{base_url}}"
 							],
@@ -213,7 +213,8 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "8A8E06DB-F848-43BB-B47C-1B3844413237"
+									"value": "8A8E06DB-F848-43BB-B47C-1B3844413237",
+									"disabled": true
 								}
 							]
 						},
