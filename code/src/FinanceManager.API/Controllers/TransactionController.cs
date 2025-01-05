@@ -112,24 +112,32 @@ namespace FinanceManager.API.Controllers
         /// <summary>
         /// Updates an existing transaction.
         /// </summary>
-        /// <param name="transactionId">The ID of the transaction to update.</param>
-        /// <param name="transaction">The updated transaction entity.</param>
+        /// <param name="id">The ID of the transaction to update.</param>
+        /// <param name="transactionRequest">The updated transaction entity.</param>
         /// <returns>A <see cref="IActionResult"/> representing the status of the operation.</returns>
-        [HttpPut("{transactionId}")]
+        [HttpPut]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateTransaction(int transactionId, [FromBody] TransactionRequest transaction)
+        public async Task<IActionResult> UpdateTransaction([FromQuery]Guid id, [FromBody] TransactionRequest transactionRequest)
         {
-            //if (transactionId != transaction.TransactionId)
-            //    return BadRequest("Transaction ID mismatch.");
-
             // TODO : Add Validations
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await _transactionService.UpdateTransactionAsync(transaction);
+            // retrieve user id from claims
+            string? userId = GetUserIdOfRequest();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User Id is missing in the token.");
+            }
+
+            var transactionDomain = _requestDomainMapper.Map(transactionRequest);
+            transactionDomain.Id = id;
+            transactionDomain.UserId = userId;
+
+            await _transactionService.UpdateTransactionAsync(transactionDomain);
             return NoContent();
         }
 

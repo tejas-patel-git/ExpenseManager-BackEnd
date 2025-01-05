@@ -159,12 +159,7 @@ public class TransactionServiceTests
     public async Task UpdateTransactionAsync_ShouldUpdateTransaction()
     {
         // Arrange
-        var transactionRequest = _fixture.Create<TransactionRequest>();
         var transactionDomain = _fixture.Create<TransactionDomain>();
-
-        _requestDomainMapperMock
-            .Setup(mapper => mapper.Map(transactionRequest))
-            .Returns(transactionDomain);
         
         _transactionRepositoryMock
             .Setup(repo => repo.UpdateAsync(transactionDomain))
@@ -175,7 +170,7 @@ public class TransactionServiceTests
             .ReturnsAsync(1);
 
         // Act
-        await _transactionService.UpdateTransactionAsync(transactionRequest);
+        await _transactionService.UpdateTransactionAsync(transactionDomain);
 
         // Assert
         _transactionRepositoryMock.Verify(repo => repo.UpdateAsync(transactionDomain), Times.Once);
