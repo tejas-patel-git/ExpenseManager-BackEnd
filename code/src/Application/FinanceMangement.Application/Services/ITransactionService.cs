@@ -47,7 +47,7 @@ namespace FinanceManager.Application.Services
         /// A task representing the asynchronous operation.
         /// </returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="transaction"/> is <c>null</c>.</exception>
-        Task UpdateTransactionAsync(TransactionRequest transaction);
+        Task UpdateTransactionAsync(TransactionDomain transaction);
 
         /// <summary>
         /// Deletes a transaction from the system by its unique ID.

@@ -84,15 +84,12 @@ public class TransactionService : ITransactionService
     }
 
     /// <inheritdoc/>
-    public async Task UpdateTransactionAsync(TransactionRequest transactionDto)
+    public async Task UpdateTransactionAsync(TransactionDomain transactionDto)
     {
         ArgumentNullException.ThrowIfNull(transactionDto);
 
-        // Map dto model to domain model
-        var transaction = _requestDomainMapper.Map(transactionDto);
-
         // Update data to repository
-        await _unitOfWork.TransactionRepository.UpdateAsync(transaction);
+        await _unitOfWork.TransactionRepository.UpdateAsync(transactionDto);
         var rowsUpdated = await _unitOfWork.SaveChangesAsync();
 
         _logger.LogInformation($"{rowsUpdated} rows updated while updating {typeof(TransactionDomain).Name}");
