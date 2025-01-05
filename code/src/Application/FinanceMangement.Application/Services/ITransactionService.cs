@@ -17,7 +17,7 @@ namespace FinanceManager.Application.Services
         /// The <see cref="TransactionDomain"/> if found; otherwise, <c>null</c>.
         /// </returns>
         /// <exception cref="ArgumentException">Thrown when <paramref name="transactionId"/> is less than or equal to zero.</exception>
-        Task<TransactionDomain?> GetUserTransactionByIdAsync(Guid transactionId, string userId);
+        Task<TransactionDomain?> GetUserTransactionAsync(Guid transactionId, string userId);
 
         /// <summary>
         /// Retrieves all transactions for a specific user.
@@ -27,7 +27,7 @@ namespace FinanceManager.Application.Services
         /// A collection of <see cref="TransactionDomain"/> objects for the specified user. If no transactions exist, returns an empty collection.
         /// </returns>
         /// <exception cref="ArgumentException">Thrown when <paramref name="userId"/> is less than or equal to zero.</exception>
-        Task<IEnumerable<TransactionDomain>> GetAllTransactionsAsync(string userId);
+        Task<IEnumerable<TransactionDomain>> GetUserTransactionsAsync(string userId);
 
         /// <summary>
         /// Adds a new transaction.

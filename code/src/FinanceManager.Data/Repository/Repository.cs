@@ -29,33 +29,41 @@ internal class Repository<TDomain, TEntity, TId> : IRepository<TDomain, TEntity,
         dbSet = context.Set<TEntity>();
     }
 
-    public virtual async Task<IEnumerable<TDomain>> GetAllAsync(Expression<Func<TDomain, bool>>? filter = null,
-                                            Func<IQueryable<TDomain>, IOrderedQueryable<TDomain>>? orderBy = null)
+    protected IQueryable<TEntity> FilterQuery(Expression<Func<TEntity, bool>> filter, IQueryable<TEntity>? query = null)
     {
-        // TODO : Adding mapping for Func delegates.W
+        query ??= dbSet;
+        return query.Where(filter);
+    }
 
-        //IQueryable<TEntity> query = dbSet;
+    protected IOrderedQueryable<TEntity> OrderQuery<TResult>(Expression<Func<TEntity, TResult>> orderBy,
+                                                             IQueryable<TEntity>? query = null)
+    {
+        query ??= dbSet;
+        return query.OrderBy(orderBy);
+    }
 
-        //if (filter != null)
-        //{
-        //    query = query.Where(filter);
-        //}
+    public virtual async Task<IEnumerable<TDomain>> GetAllAsync(Expression<Func<TEntity, bool>> filter)
+    {
+        var entities = await FilterQuery(filter).ToListAsync();
+        return entityDomainMapper.Map(entities);
+    }
 
-        //foreach (var includeProperty in includeProperties.Split
-        //    ([','], StringSplitOptions.RemoveEmptyEntries))
-        //{
-        //    query = query.Include(includeProperty);
-        //}
+    public virtual async Task<IEnumerable<TDomain>> GetAllAsync<TResult>(Expression<Func<TEntity, TResult>> orderBy)
+    {
+        var entities = await OrderQuery(orderBy).ToListAsync();
+        return entityDomainMapper.Map(entities);
+    }
 
-        //if (orderBy != null)
-        //{
-        //    return await orderBy(query).ToListAsync();
-        //}
-        //else
-        //{
-        //    return await query.ToListAsync();
-        //}
-        throw new NotImplementedException();
+    public virtual async Task<IEnumerable<TDomain>> GetAllAsync<TResult>(Expression<Func<TEntity, bool>> filter,
+                                                                         Expression<Func<TEntity, TResult>> orderBy)
+    {
+        IQueryable<TEntity> query = dbSet;
+
+        query = FilterQuery(filter, query);
+        query = OrderQuery(orderBy, query);
+
+        var entities = await query.ToListAsync();
+        return entityDomainMapper.Map(entities);
     }
 
     public virtual async Task<TDomain?> GetByIdAsync(TId id)

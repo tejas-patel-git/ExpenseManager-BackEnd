@@ -1,5 +1,4 @@
 using FinanceManager.Application.Services;
-using FinanceManager.Data.Models;
 using FinanceManager.Domain.Abstraction.Mappers;
 using FinanceManager.Domain.Models;
 using FinanceManager.Models.Request;
@@ -48,12 +47,8 @@ namespace FinanceManager.API.Controllers
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 404)]
-        public async Task<IActionResult> GetTransactionById([FromQuery]Guid id)
+        public async Task<IActionResult> GetTransactionById([FromQuery] Guid? id = null)
         {
-            // check if transaction id is provided
-            if(id.Equals(Guid.Empty))
-                return BadRequest(FailureResponse("Transaction id is empty."));
-
             // retrieve user id from claims
             string? userId = GetUserIdOfRequest();
             if (string.IsNullOrEmpty(userId))
@@ -61,30 +56,27 @@ namespace FinanceManager.API.Controllers
                 return Unauthorized("User Id is missing in the token.");
             }
 
-            var transaction = await _transactionService.GetUserTransactionByIdAsync(id, userId);
+            if (id.HasValue)
+            {
+                // check if transaction id is provided
+                if (id.Equals(Guid.Empty))
+                    return BadRequest(FailureResponse("Invalid transaction id."));
 
-            if (transaction == null)
-                return NotFound(FailureResponse("No transaction found!"));
+                var transaction = await _transactionService.GetUserTransactionAsync(id.Value, userId);
 
-            return Ok(SuccessResponse(_domainResponseMapper.Map(transaction)));
-        }
+                if (transaction == null)
+                    return NotFound(FailureResponse("No transaction found!"));
 
-        /// <summary>
-        /// Retrieves all transactions for a specific user.
-        /// </summary>
-        /// <param name="userId">The user ID to filter transactions.</param>
-        /// <returns>A collection of <see cref="Transaction"/> for the specified user.</returns>
-        [HttpGet("user/{userId}")]
-        [ProducesResponseType(typeof(IEnumerable<TransactionResponse>), 200)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> GetAllTransactions(string userId)
-        {
-            var transactions = await _transactionService.GetAllTransactionsAsync(userId);
+                return Ok(SuccessResponse(_domainResponseMapper.Map(transaction)));
+            }
+            else
+            {
+                var transactions = await _transactionService.GetUserTransactionsAsync(userId);
 
-            if (!transactions.Any()) return NotFound(FailureResponse("No transaction found!"));
+                if (!transactions.Any()) return NotFound(FailureResponse("No transaction found!"));
 
-            return Ok(SuccessResponse(_domainResponseMapper.Map(transactions)));
+                return Ok(SuccessResponse(_domainResponseMapper.Map(transactions)));
+            }
         }
 
         /// <summary>
@@ -109,7 +101,7 @@ namespace FinanceManager.API.Controllers
             }
 
             var transaction = _requestDomainMapper.Map(transactionRequest);
-            transaction.UserID = userId;
+            transaction.UserId = userId;
 
             if (!await _transactionService.AddTransactionAsync(transaction))
                 return Conflict(FailureResponse("User does not exists"));
@@ -154,7 +146,6 @@ namespace FinanceManager.API.Controllers
             await _transactionService.DeleteTransactionAsync(transactionId);
             return NoContent();
         }
-
 
         private string? GetUserIdOfRequest()
         {

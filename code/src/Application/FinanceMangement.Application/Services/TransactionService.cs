@@ -26,7 +26,7 @@ public class TransactionService : ITransactionService
     }
 
     /// <inheritdoc/>
-    public async Task<TransactionDomain?> GetUserTransactionByIdAsync(Guid transactionId, string userId)
+    public async Task<TransactionDomain?> GetUserTransactionAsync(Guid transactionId, string userId)
     {
         if (transactionId.Equals(Guid.Empty))
         {
@@ -42,22 +42,22 @@ public class TransactionService : ITransactionService
         if (transactions == null) return null;
 
         // validate if transaction belongs to the user
-        if (transactions.UserID != userId) return null;
+        if (transactions.UserId != userId) return null;
 
         // Return dto of fetched data
         return transactions;
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<TransactionDomain>> GetAllTransactionsAsync(string userId)
+    public async Task<IEnumerable<TransactionDomain>> GetUserTransactionsAsync(string userId)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(userId, nameof(userId));
 
         // Fetch data from repository
-        var transactions = await _unitOfWork.TransactionRepository.GetAllAsync(filter: entity => entity.UserID == userId);
+        var transactions = await _unitOfWork.TransactionRepository.GetAllAsync(entity => entity.UserId == userId);
 
         // Return empty collection if not found
-        if (!transactions.Any()) return Enumerable.Empty<TransactionDomain>();
+        if (!transactions.Any()) return [];
 
         // Return dto of fetched data
         return transactions;
@@ -69,7 +69,7 @@ public class TransactionService : ITransactionService
         ArgumentNullException.ThrowIfNull(transactionDomain);
 
         // check if user exists
-        if (!await _userService.UserExistsAsync(transactionDomain.UserID))
+        if (!await _userService.UserExistsAsync(transactionDomain.UserId))
             return false;
 
         // Add data to repository
