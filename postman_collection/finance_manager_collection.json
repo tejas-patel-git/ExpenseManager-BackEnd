@@ -79,41 +79,7 @@
 						},
 						"description": "Retrieves a transaction by its ID."
 					},
-					"response": [
-						{
-							"id": "79c8244d-ff53-450d-b00f-45a92c5a080a",
-							"name": "Transaction Not Found",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": "{{base_url}}/transaction/190"
-							},
-							"status": "Not Found",
-							"code": 404,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 27 Dec 2024 17:44:10 GMT"
-								},
-								{
-									"key": "Server",
-									"value": "Kestrel"
-								},
-								{
-									"key": "Transfer-Encoding",
-									"value": "chunked"
-								}
-							],
-							"cookie": [],
-							"responseTime": null,
-							"body": "{\n    \"success\": false,\n    \"errorMessage\": \"No transaction found!\"\n}"
-						}
-					]
+					"response": []
 				},
 				{
 					"name": "get all transactions",
@@ -172,74 +138,7 @@
 						"url": "{{base_url}}/transaction",
 						"description": "Retrieves a transaction by its ID."
 					},
-					"response": [
-						{
-							"id": "6387de6e-9d51-4e4c-8f17-4b5184f9f540",
-							"name": "Success Response",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": "{{base_url}}/transaction/1"
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 27 Dec 2024 17:27:12 GMT"
-								},
-								{
-									"key": "Server",
-									"value": "Kestrel"
-								},
-								{
-									"key": "Transfer-Encoding",
-									"value": "chunked"
-								}
-							],
-							"cookie": [],
-							"responseTime": null,
-							"body": "{\n    \"data\": {\n        \"transactionID\": 1,\n        \"isExpense\": true,\n        \"amount\": 60,\n        \"date\": \"0001-01-01T00:00:00\",\n        \"description\": \"UPDATE Grocery Shopping\"\n    },\n    \"success\": true\n}"
-						},
-						{
-							"id": "867304ce-75ca-43c7-8d16-f39cab02e8ee",
-							"name": "Transaction Not Found",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": "{{base_url}}/transaction/190"
-							},
-							"status": "Not Found",
-							"code": 404,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 27 Dec 2024 17:44:10 GMT"
-								},
-								{
-									"key": "Server",
-									"value": "Kestrel"
-								},
-								{
-									"key": "Transfer-Encoding",
-									"value": "chunked"
-								}
-							],
-							"cookie": [],
-							"responseTime": null,
-							"body": "{\n    \"success\": false,\n    \"errorMessage\": \"No transaction found!\"\n}"
-						}
-					]
+					"response": []
 				},
 				{
 					"name": "add new transaction",
