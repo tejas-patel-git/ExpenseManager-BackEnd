@@ -298,24 +298,6 @@
 			"name": "User",
 			"item": [
 				{
-					"name": "Get user by id",
-					"id": "2f7e7857-dd45-4000-b5c1-489997b6add3",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "accept",
-								"value": "*/*"
-							}
-						],
-						"url": "{{base_url}}/User/1"
-					},
-					"response": []
-				},
-				{
 					"name": "Create User - Post Registration",
 					"id": "095c974d-110d-4780-84e4-ff2390528182",
 					"protocolProfileBehavior": {
