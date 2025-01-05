@@ -57,6 +57,6 @@ namespace FinanceManager.Application.Services
         /// A task representing the asynchronous operation.
         /// </returns>
         /// <exception cref="ArgumentException">Thrown when <paramref name="transactionId"/> is less than or equal to zero.</exception>
-        Task DeleteTransactionAsync(Guid transactionId);
+        Task<bool> DeleteTransactionAsync(Guid transactionId, string userId);
     }
 }

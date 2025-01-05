@@ -9,4 +9,5 @@ namespace FinanceManager.Data.Repository;
 /// </summary>
 public interface ITransactionRepository : IRepository<TransactionDomain, Transaction, Guid>
 {
+    Task<bool> DeleteByIdAsync(Guid id, string userId);
 }

@@ -184,18 +184,18 @@ public class TransactionServiceTests
         var transactionId = Guid.NewGuid();
 
         _transactionRepositoryMock
-            .Setup(repo => repo.DeleteByIdAsync(transactionId))
-            .Returns(Task.CompletedTask);
+            .Setup(repo => repo.DeleteByIdAsync(transactionId, ""))
+            .ReturnsAsync(true);
 
         _unitOfWorkMock
             .Setup(u => u.SaveChangesAsync())
             .ReturnsAsync(1);
 
         // Act
-        await _transactionService.DeleteTransactionAsync(transactionId);
+        await _transactionService.DeleteTransactionAsync(transactionId, "");
 
         // Assert
-        _transactionRepositoryMock.Verify(repo => repo.DeleteByIdAsync(transactionId), Times.Once);
+        _transactionRepositoryMock.Verify(repo => repo.DeleteByIdAsync(transactionId, ""), Times.Once);
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Once);
     }
 }

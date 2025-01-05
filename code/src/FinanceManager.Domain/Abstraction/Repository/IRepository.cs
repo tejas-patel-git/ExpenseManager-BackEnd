@@ -9,7 +9,7 @@ namespace FinanceManager.Domain.Abstraction.Repository
         Task<TDomain?> GetByIdAsync(TId id);
         Task AddAsync(TDomain domainModel);
         Task UpdateAsync(TDomain domainModel);
-        Task DeleteByIdAsync(TId id);
+        Task<bool> DeleteByIdAsync(TId id);
         Task<bool> ExistsAsync(TId id);
         Task<IEnumerable<TDomain>> GetAllAsync<TResult>(Expression<Func<TEntity, bool>> filter, Expression<Func<TEntity, TResult>> orderBy);
         Task<IEnumerable<TDomain>> GetAllAsync<TResult>(Expression<Func<TEntity, TResult>> orderBy);
