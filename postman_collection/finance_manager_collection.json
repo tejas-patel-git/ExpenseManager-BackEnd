@@ -449,14 +449,29 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"transactionID\": 1,\n    \"isExpense\": false,\n    \"amount\": 50.00,\n    \"description\": \"UPDATE Grocery Shopping\"\n}",
+							"raw": "{\n    \"isExpense\": false,\n    \"amount\": 50.00,\n    \"date\": \"2024-11-01T10:00:00\",\n    \"description\": \"Test Grocery Shopping\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{base_url}}/transaction/1",
+						"url": {
+							"raw": "{{base_url}}/transaction/?id=8a8e06db-f848-43bb-b47c-1b3844413237",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"transaction",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "8a8e06db-f848-43bb-b47c-1b3844413237"
+								}
+							]
+						},
 						"description": "Updates an existing transaction."
 					},
 					"response": []
