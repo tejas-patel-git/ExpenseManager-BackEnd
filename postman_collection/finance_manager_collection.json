@@ -486,7 +486,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/transaction/?transactionId",
+							"raw": "{{base_url}}/transaction/?id=E0BA8E58-C0D0-4568-8F5C-EF1B9FD364A4",
 							"host": [
 								"{{base_url}}"
 							],
@@ -496,9 +496,8 @@
 							],
 							"query": [
 								{
-									"key": "transactionId",
-									"value": null,
-									"type": "text"
+									"key": "id",
+									"value": "E0BA8E58-C0D0-4568-8F5C-EF1B9FD364A4"
 								}
 							]
 						},
