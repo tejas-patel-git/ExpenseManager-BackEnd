@@ -299,6 +299,19 @@
 			"item": [
 				{
 					"name": "Create User - Post Registration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "971249d2-1ab0-49de-b403-7e51fe7df71f",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"id": "095c974d-110d-4780-84e4-ff2390528182",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
