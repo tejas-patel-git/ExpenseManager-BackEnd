@@ -9,7 +9,7 @@
 			"name": "Transaction",
 			"item": [
 				{
-					"name": "Get Transaction by ID",
+					"name": "get transaction by id",
 					"event": [
 						{
 							"listen": "test",
@@ -63,7 +63,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/transaction?id=8A8E06DB-F848-43BB-B47C-1B3844413237",
+							"raw": "{{base_url}}/transaction?id=8a8e06db-f848-43bb-b47c-1b3844413237",
 							"host": [
 								"{{base_url}}"
 							],
@@ -73,148 +73,75 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "8A8E06DB-F848-43BB-B47C-1B3844413237"
+									"value": "8a8e06db-f848-43bb-b47c-1b3844413237"
 								}
 							]
 						},
 						"description": "Retrieves a transaction by its ID."
 					},
-					"response": [
-						{
-							"id": "cd9952fa-70cd-411e-8e47-b5e41aafca41",
-							"name": "Success Response",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": "{{base_url}}/transaction/1"
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 27 Dec 2024 17:27:12 GMT"
-								},
-								{
-									"key": "Server",
-									"value": "Kestrel"
-								},
-								{
-									"key": "Transfer-Encoding",
-									"value": "chunked"
-								}
-							],
-							"cookie": [],
-							"responseTime": null,
-							"body": "{\n    \"data\": {\n        \"transactionID\": 1,\n        \"isExpense\": true,\n        \"amount\": 60,\n        \"date\": \"0001-01-01T00:00:00\",\n        \"description\": \"UPDATE Grocery Shopping\"\n    },\n    \"success\": true\n}"
-						},
-						{
-							"id": "79c8244d-ff53-450d-b00f-45a92c5a080a",
-							"name": "Transaction Not Found",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": "{{base_url}}/transaction/190"
-							},
-							"status": "Not Found",
-							"code": 404,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Date",
-									"value": "Fri, 27 Dec 2024 17:44:10 GMT"
-								},
-								{
-									"key": "Server",
-									"value": "Kestrel"
-								},
-								{
-									"key": "Transfer-Encoding",
-									"value": "chunked"
-								}
-							],
-							"cookie": [],
-							"responseTime": null,
-							"body": "{\n    \"success\": false,\n    \"errorMessage\": \"No transaction found!\"\n}"
-						}
-					]
+					"response": []
 				},
 				{
-					"name": "Get All Transactions by User ID",
+					"name": "get all transactions",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
+								"id": "13168e85-b43d-4252-9af5-048b6212c307",
 								"exec": [
 									"pm.test(\"Response status code is 200\", function () {",
-									"    pm.expect(pm.response.code).to.equal(200);",
+									"    pm.response.to.have.status(200);",
 									"});",
 									"",
 									"",
-									"pm.test(\"Response has the required fields\", function () {",
-									"    const responseData = pm.response.json();",
-									"    ",
-									"    pm.expect(responseData).to.be.an('array');",
-									"    responseData.forEach(function(transaction) {",
-									"        pm.expect(transaction).to.have.property('transactionID');",
-									"        pm.expect(transaction).to.have.property('isExpense');",
-									"        pm.expect(transaction).to.have.property('amount');",
-									"        pm.expect(transaction).to.have.property('date');",
-									"        pm.expect(transaction).to.have.property('description');",
-									"    });",
+									"pm.test(\"Content-Type is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"TransactionID is a non-negative integer\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.be.an('object');",
+									"  pm.expect(responseData.transactionID).to.exist.and.to.be.a('number').and.to.satisfy((value) => value >= 0, \"TransactionID should be a non-negative integer\");",
 									"});",
 									"",
 									"",
 									"pm.test(\"Amount is a non-negative number\", function () {",
-									"  const responseData = pm.response.json();",
-									"  ",
-									"  responseData.forEach(function(transaction) {",
-									"    pm.expect(transaction.amount).to.be.a('number').and.to.be.at.least(0);",
-									"  });",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.amount).to.be.a('number');",
+									"    pm.expect(responseData.amount).to.be.at.least(0);",
 									"});",
 									"",
 									"",
 									"pm.test(\"Date is in a valid date format\", function () {",
 									"  const responseData = pm.response.json();",
 									"  ",
-									"  pm.expect(responseData).to.be.an('array');",
-									"  responseData.forEach(function(transaction) {",
-									"    pm.expect(transaction.date).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);",
-									"  });",
-									"});",
-									"",
-									"",
-									"pm.test(\"Content-Type header is application/json\", function () {",
-									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"  pm.expect(responseData).to.be.an('object');",
+									"  pm.expect(responseData.date).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
-					"id": "36b1c3a4-d721-46da-8a06-e1ed7c10eb4f",
+					"id": "477d5fe0-6c71-4962-bdb3-2954bafcca3a",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/transaction/user/1",
-						"description": "Retrieves all transactions for a specific user."
+						"url": "{{base_url}}/transaction",
+						"description": "Retrieves a transaction by its ID."
 					},
 					"response": []
 				},
 				{
-					"name": "Add Transaction",
+					"name": "add new transaction",
 					"event": [
 						{
 							"listen": "test",
@@ -280,7 +207,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"TransactionId\" : 1,\n    \"isExpense\": false,\n    \"amount\": 50.00,\n    \"date\": \"2024-11-01T10:00:00\",\n    \"description\": \"Grocery Shopping\"\n}",
+							"raw": "{\n    \"isExpense\": false,\n    \"amount\": 50.00,\n    \"date\": \"2024-11-01T10:00:00\",\n    \"description\": \"Grocery Shopping\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -293,7 +220,7 @@
 					"response": []
 				},
 				{
-					"name": "Update Transaction",
+					"name": "update transaction",
 					"id": "96b68887-8c85-4791-8059-fe7c5b970b64",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -308,29 +235,15 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"transactionID\": 1,\n    \"isExpense\": false,\n    \"amount\": 50.00,\n    \"description\": \"UPDATE Grocery Shopping\"\n}",
+							"raw": "{\n    \"isExpense\": false,\n    \"amount\": 50.00,\n    \"date\": \"2024-11-01T10:00:00\",\n    \"description\": \"Test Grocery Shopping\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{base_url}}/transaction/1",
-						"description": "Updates an existing transaction."
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Transaction",
-					"id": "9051ceec-f87d-4231-9cd5-4968600b4c09",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "DELETE",
-						"header": [],
 						"url": {
-							"raw": "{{base_url}}/transaction/?transactionId",
+							"raw": "{{base_url}}/transaction/?id=8a8e06db-f848-43bb-b47c-1b3844413237",
 							"host": [
 								"{{base_url}}"
 							],
@@ -340,9 +253,37 @@
 							],
 							"query": [
 								{
-									"key": "transactionId",
-									"value": null,
-									"type": "text"
+									"key": "id",
+									"value": "8a8e06db-f848-43bb-b47c-1b3844413237"
+								}
+							]
+						},
+						"description": "Updates an existing transaction."
+					},
+					"response": []
+				},
+				{
+					"name": "delete transaction",
+					"id": "9051ceec-f87d-4231-9cd5-4968600b4c09",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/transaction/?id=E0BA8E58-C0D0-4568-8F5C-EF1B9FD364A4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"transaction",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "E0BA8E58-C0D0-4568-8F5C-EF1B9FD364A4"
 								}
 							]
 						},
@@ -406,7 +347,7 @@
 			"auth": {
 				"type": "apikey",
 				"apikey": {
-					"value": "ee30f1ba6e3f6e3a11105e7fb6053cb7d699290ef94acb2d9c437b22b8a83455",
+					"value": "{{vault:auth0-provider-api-key}}",
 					"key": "X-Api-Key"
 				}
 			},
@@ -414,7 +355,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "f4df6dd6-b3be-4cc0-980a-b001a8aa5a4a",
+						"id": "7ee27ea1-9449-4f58-8218-2684bd054a4f",
 						"type": "text/javascript",
 						"packages": {},
 						"exec": [
@@ -425,7 +366,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "6dbbfb2f-2c6d-4a4a-a765-3fc116d47c78",
+						"id": "47910316-8370-452f-bde6-94d95399fc28",
 						"type": "text/javascript",
 						"packages": {},
 						"exec": [
