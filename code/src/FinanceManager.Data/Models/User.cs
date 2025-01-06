@@ -7,7 +7,7 @@ namespace FinanceManager.Data.Models
     /// <summary>
     /// Represents a user.
     /// </summary>
-    public class User : IEntityModel<string>
+    public class User : IEntityModel<string>, IAuditableEntity
     {
         [Key]
         [Required]
