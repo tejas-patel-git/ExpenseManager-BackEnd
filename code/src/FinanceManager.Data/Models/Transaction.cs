@@ -7,7 +7,7 @@ namespace FinanceManager.Data.Models
     /// <summary>
     /// Represents a financial transaction in the system.
     /// </summary>
-    public class Transaction : IEntityModel<Guid>
+    public class Transaction : IEntityModel<Guid>, IAuditableEntity
     {
         /// <summary>
         /// Gets or sets the unique identifier for the transaction.
