@@ -295,11 +295,11 @@
 			"id": "de11a272-4942-4526-adc2-a70780a2f60d"
 		},
 		{
-			"name": "User",
+			"name": "Balance",
 			"item": [
 				{
-					"name": "Get user by id",
-					"id": "2f7e7857-dd45-4000-b5c1-489997b6add3",
+					"name": "get current balance",
+					"id": "5ff1fb21-a809-4ec7-9538-ef64d5db81ea",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -311,12 +311,31 @@
 								"value": "*/*"
 							}
 						],
-						"url": "{{base_url}}/User/1"
+						"url": "{{base_url}}/balance"
 					},
 					"response": []
-				},
+				}
+			],
+			"id": "3c6b0de2-daab-4a8b-bc55-ce8576c0b3b5"
+		},
+		{
+			"name": "User",
+			"item": [
 				{
 					"name": "Create User - Post Registration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "971249d2-1ab0-49de-b403-7e51fe7df71f",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"id": "095c974d-110d-4780-84e4-ff2390528182",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
