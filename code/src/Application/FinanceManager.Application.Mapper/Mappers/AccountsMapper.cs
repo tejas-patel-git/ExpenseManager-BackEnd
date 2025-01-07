@@ -4,6 +4,7 @@ using FinanceManager.Domain.Enums;
 using FinanceManager.Domain.Models;
 using FinanceManager.Domain.Util;
 using FinanceManager.Models.Request;
+using FinanceManager.Models.Response;
 
 namespace FinanceManager.Application.Mapper.Mappers
 {
@@ -50,6 +51,22 @@ namespace FinanceManager.Application.Mapper.Mappers
                 AccountNumber = source.AccountNumber,
                 AccountType = source.AccountType.ToEnum<AccountType>(),
                 BankName = source.BankName.ToEnum<BankName>(),
+                Balance = source.Balance,
+            })
+        {
+        }
+    }
+
+    public class AccountsDomainToResponseMapper : BaseMapper<AccountsDomain, AccountsResponse>
+    {
+        public AccountsDomainToResponseMapper()
+            : base(source => new()
+            {
+                AccountId = source.Id,
+                AccountName = source.AccountName,
+                AccountNumber = source.AccountNumber,
+                AccountType = source.AccountType.ToString(),
+                BankName = source.BankName.ToString(),
                 Balance = source.Balance,
             })
         {

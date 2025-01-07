@@ -17,6 +17,29 @@ namespace FinanceManager.Application.Services
             _unitOfWork = unitOfWork;
         }
 
+        /// <inheritdoc/>
+        public async Task<AccountsDomain?> GetAccounts(Guid accountId, string userId)
+        {
+            if (accountId.Equals(Guid.Empty))
+            {
+                throw new ArgumentException($"Invalid transaction id.", nameof(accountId));
+            }
+            ArgumentNullException.ThrowIfNullOrEmpty(userId, nameof(userId));
+
+
+            // Fetch data from repository
+            var accountsDomain = await _unitOfWork.AccountsRepository.GetByIdAsync(accountId);
+
+            // Return null if not found
+            if (accountsDomain == null) return null;
+
+            // validate if transaction belongs to the user
+            if (accountsDomain.UserId != userId) return null;
+
+            // Return dto of fetched data
+            return accountsDomain;
+        }
+
         public async Task<bool> AddAccount(AccountsDomain accountsDomain)
         {
             ArgumentNullException.ThrowIfNull(accountsDomain, nameof(accountsDomain));
