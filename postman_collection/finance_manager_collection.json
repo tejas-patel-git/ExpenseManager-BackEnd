@@ -428,6 +428,24 @@
 						"url": "http://localhost:5277/api/Accounts"
 					},
 					"response": []
+				},
+				{
+					"name": "get account by id",
+					"id": "584ee2e2-cc39-4244-b071-c7e7d0a50367",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							}
+						],
+						"url": "{{base_url}}/accounts"
+					},
+					"response": []
 				}
 			],
 			"id": "a76d54de-f23f-4a7a-8e35-76d4057579c4"
