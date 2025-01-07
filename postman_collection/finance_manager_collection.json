@@ -418,7 +418,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"accountName\": \"string\",\n  \"accountNumber\": \"string\",\n  \"bankName\": 0,\n  \"accountType\": 0,\n  \"balance\": 0\n}",
+							"raw": "{\n  \"accountName\": \"string\",\n  \"accountNumber\": \"string\",\n  \"bankName\": \"StateBankOfIndia\",\n  \"accountType\": \"Savings\",\n  \"balance\": 10.6\n}",
 							"options": {
 								"raw": {
 									"language": "json"
