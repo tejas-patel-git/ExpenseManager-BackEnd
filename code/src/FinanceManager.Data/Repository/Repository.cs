@@ -114,6 +114,12 @@ internal class Repository<TDomain, TEntity, TId> : IRepository<TDomain, TEntity,
         {
             var entity = domainEntityMapper.Map(domain);
 
+            if (entity is IAuditableEntity auditableEntity)
+            {
+                auditableEntity.CreatedAt = DateTime.UtcNow;
+                auditableEntity.UpdatedAt = DateTime.UtcNow;
+            }
+
             await AddAsync(entity);
         }
         catch (Exception ex)
