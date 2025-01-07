@@ -1,6 +1,5 @@
 ﻿using FinanceManager.Data.Repository;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Logging;
 
 namespace FinanceManager.Data;
 
@@ -10,26 +9,27 @@ namespace FinanceManager.Data;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly AppDbContext _context;
-    private readonly ILoggerFactory _loggerFactory;
-    private readonly ILogger<UnitOfWork> _logger;
     private IDbContextTransaction _transaction;
-
     private readonly IUserRepository _userRepository;
     private readonly ITransactionRepository _transactionRepository;
+    private readonly IAccountsRepository _accountsRepository;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UnitOfWork"/> class.
     /// </summary>
     /// <param name="context">The database context.</param>
-    /// <param name="loggerFactory"></param>
     /// <param name="transactionRepository"></param>
-    public UnitOfWork(AppDbContext context, ILoggerFactory loggerFactory, ITransactionRepository transactionRepository, IUserRepository userRepository)
+    /// <param name="userRepository"></param>
+    /// <param name="accountsRepository"></param>
+    public UnitOfWork(AppDbContext context,
+                      ITransactionRepository transactionRepository,
+                      IUserRepository userRepository,
+                      IAccountsRepository accountsRepository)
     {
         _context = context;
-        _loggerFactory = loggerFactory;
         _transactionRepository = transactionRepository;
         _userRepository = userRepository;
-        _logger = loggerFactory.CreateLogger<UnitOfWork>();
+        _accountsRepository = accountsRepository;
     }
 
     /// <inheritdoc/>
@@ -37,6 +37,9 @@ public class UnitOfWork : IUnitOfWork
 
     /// <inheritdoc/>
     public ITransactionRepository TransactionRepository => _transactionRepository;
+
+    /// <inheritdoc/>
+    public IAccountsRepository AccountsRepository => _accountsRepository;
 
     /// <inheritdoc/>
     public async Task<int> SaveChangesAsync()

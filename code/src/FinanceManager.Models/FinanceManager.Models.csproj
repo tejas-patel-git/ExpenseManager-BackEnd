@@ -7,4 +7,8 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FinanceManager.Domain\FinanceManager.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -21,5 +21,6 @@ namespace FinanceManager.Data
         internal DbSet<Transaction> Transactions { get; set; }
 
         internal DbSet<User> Users { get; set; }
+        internal DbSet<UserBankAccounts> UserBankAccounts { get; set; }
     }
 }

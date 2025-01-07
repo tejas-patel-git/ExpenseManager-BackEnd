@@ -25,6 +25,11 @@ namespace FinanceManager.Application.Mapper
             services.AddSingleton<IMapper<UserDomain, User>, UserDomainToEntityMapper>();
             services.AddSingleton<IMapper<User, UserDomain>, UserEntityToDomainMapper>();
 
+            // accounts model mappers
+            services.AddSingleton<IMapper<AccountsRequest, AccountsDomain>, AccountsRequestToDomainMapper>();
+            services.AddSingleton<IMapper<AccountsDomain, UserBankAccounts>, AccountsMapper>();
+            services.AddSingleton<IMapper<UserBankAccounts, AccountsDomain>, AccountsEntityToDomainMapper>();
+
 
             return services;
         }
