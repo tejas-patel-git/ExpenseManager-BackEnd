@@ -394,6 +394,43 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "Accounts",
+			"item": [
+				{
+					"name": "add account",
+					"id": "a6d140ed-c170-4d40-9c40-d0af0b681564",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountName\": \"string\",\n  \"accountNumber\": \"string\",\n  \"bankName\": 0,\n  \"accountType\": 0,\n  \"balance\": 0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5277/api/Accounts"
+					},
+					"response": []
+				}
+			],
+			"id": "a76d54de-f23f-4a7a-8e35-76d4057579c4"
 		}
 	],
 	"auth": {
