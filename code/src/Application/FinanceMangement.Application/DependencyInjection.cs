@@ -10,6 +10,7 @@ namespace FinanceManager.Application
             // register services
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAccountsService, AccountsService>();
 
             return services;
         }
