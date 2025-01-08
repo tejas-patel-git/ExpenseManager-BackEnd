@@ -418,14 +418,14 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"accountName\": \"string\",\n  \"accountNumber\": \"string\",\n  \"bankName\": \"StateBankOfIndia\",\n  \"accountType\": \"Savings\",\n  \"balance\": 10.6\n}",
+							"raw": "{\n  \"accountName\": \"accounNameTest\",\n  \"accountNumber\": \"12345\",\n  \"bankName\": 1,\n  \"accountType\": 1,\n  \"balance\": 10.6\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://localhost:5277/api/Accounts"
+						"url": "{{base_url}}/Accounts"
 					},
 					"response": []
 				},
@@ -458,6 +458,24 @@
 								}
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all accounts by user",
+					"id": "e348c56e-e983-43ed-b7f3-93ab217ebc75",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							}
+						],
+						"url": "{{base_url}}/accounts"
 					},
 					"response": []
 				}
