@@ -532,18 +532,18 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/transaction/?id=E0BA8E58-C0D0-4568-8F5C-EF1B9FD364A4",
+							"raw": "{{base_url}}/accounts/?id=BD9F720D-B61B-4515-ACBD-77436FFA44B9",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"transaction",
+								"accounts",
 								""
 							],
 							"query": [
 								{
 									"key": "id",
-									"value": "E0BA8E58-C0D0-4568-8F5C-EF1B9FD364A4"
+									"value": "BD9F720D-B61B-4515-ACBD-77436FFA44B9"
 								}
 							]
 						},
