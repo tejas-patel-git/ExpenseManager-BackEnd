@@ -23,7 +23,7 @@ namespace FinanceManager.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAccount([FromQuery] Guid id)
+        public async Task<IActionResult> GetAccount([FromQuery] Guid? id)
         {
             // retrieve user id from claims
             string? userId = GetUserIdOfRequest();
@@ -32,17 +32,32 @@ namespace FinanceManager.API.Controllers
                 return Unauthorized(FailureResponse("User Id is missing in the token."));
             }
 
-            // check if transaction id is provided
-            if (id.Equals(Guid.Empty))
-                return BadRequest(FailureResponse("Invalid account id."));
+            // check if an account id is provided
+            if (id.HasValue)
+            {
+                // return an account if exists
 
-            var accountsDomain = await _accountsService.GetAccounts(id, userId);
+                if (id.Equals(Guid.Empty))
+                    return BadRequest(FailureResponse("Invalid account id."));
 
-            if (accountsDomain == null)
-                return NotFound(FailureResponse("No account found!"));
+                var accountsDomain = await _accountsService.GetAccounts(id.Value, userId);
 
+                if (accountsDomain == null)
+                    return NotFound(FailureResponse("No account found!"));
 
-            return Ok(SuccessResponse(_domainResponseMapper.Map(accountsDomain)));
+                return Ok(SuccessResponse(_domainResponseMapper.Map(accountsDomain)));
+            }
+            else
+            {
+                // return list of accounts of user if exists
+
+                var accountsDomain = await _accountsService.GetAccounts(userId);
+
+                if (!accountsDomain.Any())
+                    return NotFound(FailureResponse("No account found!"));
+
+                return Ok(SuccessResponse(_domainResponseMapper.Map(accountsDomain)));
+            }
         }
 
         [HttpPost]

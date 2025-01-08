@@ -40,6 +40,20 @@ namespace FinanceManager.Application.Services
             return accountsDomain;
         }
 
+        public async Task<IEnumerable<AccountsDomain>> GetAccounts(string userId)
+        {
+            ArgumentNullException.ThrowIfNullOrEmpty(userId, nameof(userId));
+
+            // fetch data from repository
+            var accounts = await _unitOfWork.AccountsRepository.GetAllAsync(entity => entity.UserId == userId);
+
+            // return empty collection if not found
+            if (!accounts.Any()) return [];
+
+            // Return dto of fetched data
+            return accounts;
+        }
+
         public async Task<bool> AddAccount(AccountsDomain accountsDomain)
         {
             ArgumentNullException.ThrowIfNull(accountsDomain, nameof(accountsDomain));
