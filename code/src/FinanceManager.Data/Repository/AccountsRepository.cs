@@ -1,6 +1,7 @@
 ﻿using FinanceManager.Data.Models;
 using FinanceManager.Domain.Abstraction.Mappers;
 using FinanceManager.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace FinanceManager.Data.Repository
@@ -17,7 +18,6 @@ namespace FinanceManager.Data.Repository
         {
             _logger = logger;
         }
-
 
         public override async Task<bool> UpdateAsync(AccountsDomain accountsDomain)
         {
@@ -47,6 +47,30 @@ namespace FinanceManager.Data.Repository
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error occurred while updating '{typeof(Transaction).Name}' with id {accountsDomain.Id}.");
+                throw;
+            }
+        }
+
+        public virtual async Task<bool> DeleteByIdAsync(Guid id, string userId)
+        {
+            try
+            {
+                var entity = await dbSet.FirstOrDefaultAsync(entity => entity.UserId == userId && entity.Id == id);
+
+                if (entity == null)
+                {
+                    _logger.LogInformation("'{type}' with id {id} not found for deletion.", nameof(UserBankAccounts), id);
+                    return false;
+                }
+
+                Delete(entity);
+                _logger.LogInformation("'{type}' with id {id} deleted successfully.", nameof(UserBankAccounts), id);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting '{type}' id {id}.", nameof(UserBankAccounts), id);
                 throw;
             }
         }
