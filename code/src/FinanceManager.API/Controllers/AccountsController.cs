@@ -73,5 +73,30 @@ namespace FinanceManager.API.Controllers
 
             return Ok(SuccessResponse("Account added successfully."));
         }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateAccount([FromQuery] Guid id, [FromBody] AccountsRequest accountRequest)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            // validate id
+            if (id.Equals(Guid.Empty))
+                return BadRequest(FailureResponse("Invalid account id."));
+
+            // retrieve user id from claims
+            string? userId = GetUserIdOfRequest();
+            if (string.IsNullOrEmpty(userId)) return Unauthorized("User Id is missing in the token.");
+
+            var accountsDomain = _requestDomainMapper.Map(accountRequest);
+            accountsDomain.Id = id;
+            accountsDomain.UserId = userId;
+
+            var isSuccess = await _accountsService.UpdateAccountAsync(accountsDomain);
+            if (!isSuccess) return NotFound(FailureResponse("Account does not exist."));
+
+            return NoContent();
+        }
+
     }
 }

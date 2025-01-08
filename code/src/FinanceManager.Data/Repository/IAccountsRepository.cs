@@ -6,5 +6,6 @@ namespace FinanceManager.Data.Repository
 {
     public interface IAccountsRepository : IRepository<AccountsDomain, UserBankAccounts, Guid>
     {
+        Task<bool> UpdateAsync(AccountsDomain accountsDomain);
     }
 }
