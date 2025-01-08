@@ -98,5 +98,21 @@ namespace FinanceManager.API.Controllers
             return NoContent();
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> DeleteTransaction([FromQuery] Guid id)
+        {
+            // retrieve user id from claims
+            string? userId = GetUserIdOfRequest();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User id is missing in the token.");
+            }
+
+            var isSuccess = await _accountsService.DeleteTransactionAsync(id, userId);
+
+            if (!isSuccess) return NotFound(FailureResponse("Account not found."));
+
+            return Ok(SuccessResponse($"Account with id '{id}' deleted successfully."));
+        }
     }
 }

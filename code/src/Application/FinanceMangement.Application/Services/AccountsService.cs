@@ -83,5 +83,14 @@ namespace FinanceManager.Application.Services
 
             return true;
         }
+
+        public async Task<bool> DeleteTransactionAsync(Guid id, string userId)
+        {
+            // Delete data from repository
+            var isSuccess = await _unitOfWork.AccountsRepository.DeleteByIdAsync(id, userId);
+            await _unitOfWork.SaveChangesAsync();
+
+            return isSuccess;
+        }
     }
 }
