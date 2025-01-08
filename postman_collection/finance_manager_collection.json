@@ -521,6 +521,35 @@
 						"description": "Updates an existing transaction."
 					},
 					"response": []
+				},
+				{
+					"name": "delete account",
+					"id": "dcd2b8b2-dec6-4afb-b741-c3bdade1ec07",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/transaction/?id=E0BA8E58-C0D0-4568-8F5C-EF1B9FD364A4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"transaction",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "E0BA8E58-C0D0-4568-8F5C-EF1B9FD364A4"
+								}
+							]
+						},
+						"description": "Deletes a transaction by its ID."
+					},
+					"response": []
 				}
 			],
 			"id": "a76d54de-f23f-4a7a-8e35-76d4057579c4"
