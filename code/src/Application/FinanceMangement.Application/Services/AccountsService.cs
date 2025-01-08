@@ -68,5 +68,20 @@ namespace FinanceManager.Application.Services
 
             return true;
         }
+
+        /// <inheritdoc/>
+        public async Task<bool> UpdateAccountAsync(AccountsDomain accountsDomain)
+        {
+            ArgumentNullException.ThrowIfNull(accountsDomain);
+
+            // update data to repository
+            var isSuccess = await _unitOfWork.AccountsRepository.UpdateAsync(accountsDomain);
+            if (!isSuccess) return false;
+
+            var rowsUpdated = await _unitOfWork.SaveChangesAsync();
+            _logger.LogInformation($"{rowsUpdated} rows updated while updating {typeof(TransactionDomain).Name}");
+
+            return true;
+        }
     }
 }
