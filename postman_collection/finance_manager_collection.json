@@ -478,6 +478,49 @@
 						"url": "{{base_url}}/accounts"
 					},
 					"response": []
+				},
+				{
+					"name": "update account",
+					"id": "74b4902a-cd00-440f-a716-ea977bda5291",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountName\": \"accounNameTestUpdate\",\n  \"accountNumber\": \"12345\",\n  \"bankName\": 0,\n  \"accountType\": 1,\n  \"balance\": 10.6\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/accounts/?id=B569B0DA-930C-4134-5C40-08DD2EE6E4B3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounts",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "B569B0DA-930C-4134-5C40-08DD2EE6E4B3"
+								}
+							]
+						},
+						"description": "Updates an existing transaction."
+					},
+					"response": []
 				}
 			],
 			"id": "a76d54de-f23f-4a7a-8e35-76d4057579c4"
