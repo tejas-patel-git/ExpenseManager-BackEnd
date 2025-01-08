@@ -394,6 +394,93 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "Accounts",
+			"item": [
+				{
+					"name": "add account",
+					"id": "a6d140ed-c170-4d40-9c40-d0af0b681564",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountName\": \"accounNameTest\",\n  \"accountNumber\": \"12345\",\n  \"bankName\": 1,\n  \"accountType\": 1,\n  \"balance\": 10.6\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/Accounts"
+					},
+					"response": []
+				},
+				{
+					"name": "get account by id",
+					"id": "584ee2e2-cc39-4244-b071-c7e7d0a50367",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/accounts?id=BD9F720D-B61B-4515-ACBD-77436FFA44B9",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounts"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "BD9F720D-B61B-4515-ACBD-77436FFA44B9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all accounts by user",
+					"id": "e348c56e-e983-43ed-b7f3-93ab217ebc75",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							}
+						],
+						"url": "{{base_url}}/accounts"
+					},
+					"response": []
+				}
+			],
+			"id": "a76d54de-f23f-4a7a-8e35-76d4057579c4"
 		}
 	],
 	"auth": {
