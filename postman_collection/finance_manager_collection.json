@@ -495,7 +495,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"accountName\": \"accounNameTest\",\n  \"accountNumber\": \"12345\",\n  \"bankName\": 1,\n  \"accountType\": 1,\n  \"balance\": 10.6\n}",
+							"raw": "{\n  \"accountName\": \"accounNameTestUpdate\",\n  \"accountNumber\": \"12345\",\n  \"bankName\": 0,\n  \"accountType\": 1,\n  \"balance\": 10.6\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -503,7 +503,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/accounts/?id=8a8e06db-f848-43bb-b47c-1b3844413237",
+							"raw": "{{base_url}}/accounts/?id=B569B0DA-930C-4134-5C40-08DD2EE6E4B3",
 							"host": [
 								"{{base_url}}"
 							],
@@ -514,7 +514,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "8a8e06db-f848-43bb-b47c-1b3844413237"
+									"value": "B569B0DA-930C-4134-5C40-08DD2EE6E4B3"
 								}
 							]
 						},
