@@ -21,7 +21,6 @@ namespace FinanceManager.Data.Repository
 
         public override async Task<bool> UpdateAsync(AccountsDomain accountsDomain)
         {
-            // TODO : Revisit logic - might need some tweaks related to how to handle FKs
             try
             {
                 // Retrieve the existing transaction from the database

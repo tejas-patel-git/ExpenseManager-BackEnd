@@ -77,8 +77,6 @@ namespace FinanceManager.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateAccount([FromQuery] Guid id, [FromBody] AccountsRequest accountRequest)
         {
-            // TODO : Add Validations
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
