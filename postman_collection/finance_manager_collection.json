@@ -518,9 +518,9 @@
 	"auth": {
 		"type": "oauth2",
 		"oauth2": {
+			"grant_type": "implicit",
 			"refreshTokenUrl": "{{vault:oauth-auth-url}}",
 			"scope": "",
-			"grant_type": "authorization_code_with_pkce",
 			"authRequestParams": [
 				{
 					"key": "audience",
@@ -552,7 +552,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "0771fdd1-9f71-4fbe-a699-182be74990e7",
+				"id": "eff51996-c78e-4a61-8fbb-efafbc75934d",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -563,7 +563,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "5a0f23e2-cb70-42b8-9e32-88da131877e6",
+				"id": "f10ac0a4-5105-46db-a75c-b300f6dd19a4",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
