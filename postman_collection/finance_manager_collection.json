@@ -428,7 +428,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/accounts?id=BD9F720D-B61B-4515-ACBD-77436FFA44B9",
+							"raw": "{{base_url}}/accounts?id={{accountId}}",
 							"host": [
 								"{{base_url}}"
 							],
@@ -438,7 +438,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "BD9F720D-B61B-4515-ACBD-77436FFA44B9"
+									"value": "{{accountId}}"
 								}
 							]
 						}
@@ -487,18 +487,17 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/accounts/?id=B569B0DA-930C-4134-5C40-08DD2EE6E4B3",
+							"raw": "{{base_url}}/accounts?id={{accountId}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"accounts",
-								""
+								"accounts"
 							],
 							"query": [
 								{
 									"key": "id",
-									"value": "B569B0DA-930C-4134-5C40-08DD2EE6E4B3"
+									"value": "{{accountId}}"
 								}
 							]
 						},
@@ -516,7 +515,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/accounts/?id=BD9F720D-B61B-4515-ACBD-77436FFA44B9",
+							"raw": "{{base_url}}/accounts/?id={{accountId}}",
 							"host": [
 								"{{base_url}}"
 							],
@@ -527,7 +526,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "BD9F720D-B61B-4515-ACBD-77436FFA44B9"
+									"value": "{{accountId}}"
 								}
 							]
 						},
