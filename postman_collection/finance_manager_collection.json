@@ -541,7 +541,15 @@
 	"auth": {
 		"type": "oauth2",
 		"oauth2": {
-			"grant_type": "implicit",
+			"tokenRequestParams": [
+				{
+					"key": "audience",
+					"value": "{{vault:audience-dev}}",
+					"enabled": false,
+					"send_as": "request_url"
+				}
+			],
+			"grant_type": "authorization_code_with_pkce",
 			"refreshTokenUrl": "{{vault:oauth-auth-url}}",
 			"scope": "",
 			"authRequestParams": [
@@ -553,14 +561,6 @@
 				}
 			],
 			"client_authentication": "body",
-			"tokenRequestParams": [
-				{
-					"key": "audience",
-					"value": "{{vault:audience-dev}}",
-					"enabled": true,
-					"send_as": "request_url"
-				}
-			],
 			"clientSecret": "{{vault:client-secret-web-dev}}",
 			"state": "1234",
 			"redirect_uri": "http://localhost:5277",
@@ -575,7 +575,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "eff51996-c78e-4a61-8fbb-efafbc75934d",
+				"id": "09cfa769-c289-46f4-b440-bb7248f29b97",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -586,7 +586,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "f10ac0a4-5105-46db-a75c-b300f6dd19a4",
+				"id": "f9bec626-3cce-4e35-9ff4-5f112afd3241",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
