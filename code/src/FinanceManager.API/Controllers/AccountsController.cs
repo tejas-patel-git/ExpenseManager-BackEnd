@@ -43,7 +43,7 @@ namespace FinanceManager.API.Controllers
                 var accountsDomain = await _accountsService.GetAccounts(id.Value, userId);
 
                 if (accountsDomain == null)
-                    return NotFound(FailureResponse("No account found!"));
+                    return NotFound(FailureResponse("Account does not exist."));
 
                 return Ok(SuccessResponse(_domainResponseMapper.Map(accountsDomain)));
             }
@@ -54,7 +54,7 @@ namespace FinanceManager.API.Controllers
                 var accountsDomain = await _accountsService.GetAccounts(userId);
 
                 if (!accountsDomain.Any())
-                    return NotFound(FailureResponse("No account found!"));
+                    return NotFound(FailureResponse("Account does not exist."));
 
                 return Ok(SuccessResponse(_domainResponseMapper.Map(accountsDomain)));
             }
@@ -71,7 +71,7 @@ namespace FinanceManager.API.Controllers
 
             if (!await _accountsService.AddAccount(accountsDomain)) return Conflict(FailureResponse("User does not exists"));
 
-            return Ok(SuccessResponse("Account added successfully."));
+            return Ok(SuccessResponse(_domainResponseMapper.Map(accountsDomain)));
         }
 
         [HttpPut]
@@ -110,7 +110,7 @@ namespace FinanceManager.API.Controllers
 
             var isSuccess = await _accountsService.DeleteTransactionAsync(id, userId);
 
-            if (!isSuccess) return NotFound(FailureResponse("Account not found."));
+            if (!isSuccess) return NotFound(FailureResponse("Account does not exist."));
 
             return Ok(SuccessResponse($"Account with id '{id}' deleted successfully."));
         }
