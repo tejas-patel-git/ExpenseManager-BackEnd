@@ -360,6 +360,30 @@
 			"item": [
 				{
 					"name": "add account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a5f42e33-2b3b-4aeb-8d3f-c1bc44775f3c",
+								"exec": [
+									"// Parse the response body\r",
+									"let response = pm.response.json();\r",
+									"\r",
+									"// Check if the response is successful and contains the accountId\r",
+									"if (response.success && response.data && response.data.accountId) {\r",
+									"    // Store the accountId in a Postman variable\r",
+									"    pm.environment.set(\"accountId\", response.data.accountId);\r",
+									"    console.log(\"accountId stored:\", response.data.accountId);\r",
+									"} else {\r",
+									"    console.error(\"Failed to retrieve accountId from the response.\");\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"id": "a6d140ed-c170-4d40-9c40-d0af0b681564",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -385,7 +409,7 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/Accounts"
+						"url": "{{base_url}}/accounts"
 					},
 					"response": []
 				},
