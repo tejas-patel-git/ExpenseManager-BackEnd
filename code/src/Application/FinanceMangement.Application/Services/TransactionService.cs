@@ -112,7 +112,12 @@ public class TransactionService : ITransactionService
 
         if(transactions == null || !transactions.Any()) return null;
 
+        // get the balance after accounting transactions
         var balance = transactions.Sum(d => d.IsExpense ? -d.Amount : d.Amount);
+        
+        // add the initial balance of the all accounts of user
+        var accounts = await _unitOfWork.AccountsRepository.GetAllAsync(acc => acc.UserId == userId);
+        if (accounts.Any()) balance += accounts.Sum(acc => acc.Balance);
 
         return new() { CurrentBalance = balance };
     }
