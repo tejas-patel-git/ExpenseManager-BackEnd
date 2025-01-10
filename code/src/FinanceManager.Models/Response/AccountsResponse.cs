@@ -1,6 +1,4 @@
-﻿using FinanceManager.Domain.Enums;
-
-namespace FinanceManager.Models.Response
+﻿namespace FinanceManager.Models.Response
 {
     public class AccountsResponse
     {
@@ -9,6 +7,7 @@ namespace FinanceManager.Models.Response
         public string? AccountNumber { get; set; }
         public string BankName { get; set; }
         public string AccountType { get; set; }
-        public decimal Balance { get; set; }
+        public decimal InitialBalance { get; set; }
+        public decimal CurrentBalance { get; set; }
     }
 }

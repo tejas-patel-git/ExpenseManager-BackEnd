@@ -22,6 +22,9 @@ namespace FinanceManager.Data.Models
 
         [Column(TypeName = "decimal(10, 2)")]
         public decimal InitialBalance { get; set; }
+
+        [Column(TypeName = "decimal(10, 2)")]
+        public decimal CurrentBalance { get; set; }
         
         public DateTime CreatedAt { get; set; }
         
