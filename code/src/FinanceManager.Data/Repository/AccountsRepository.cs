@@ -37,7 +37,7 @@ namespace FinanceManager.Data.Repository
                 existingAccount.AccountName = accountsDomain.AccountName;
                 existingAccount.BankName = accountsDomain.BankName.ToString();
                 existingAccount.AccountType = accountsDomain.AccountType.ToString();
-                existingAccount.Balance = accountsDomain.Balance;
+                existingAccount.InitialBalance = accountsDomain.Balance;
                 existingAccount.UpdatedAt = DateTime.UtcNow;
 
 

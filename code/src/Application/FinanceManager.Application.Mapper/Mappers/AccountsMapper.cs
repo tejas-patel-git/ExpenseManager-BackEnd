@@ -34,7 +34,7 @@ namespace FinanceManager.Application.Mapper.Mappers
                 AccountNumber = source.AccountNumber,
                 AccountType = source.AccountType.ToString(),
                 BankName = source.BankName.ToString(),
-                Balance = source.Balance,
+                InitialBalance = source.Balance,
             })
         {
         }
@@ -51,7 +51,7 @@ namespace FinanceManager.Application.Mapper.Mappers
                 AccountNumber = source.AccountNumber,
                 AccountType = source.AccountType.ToEnum<AccountType>(),
                 BankName = source.BankName.ToEnum<BankName>(),
-                Balance = source.Balance,
+                Balance = source.InitialBalance,
             })
         {
         }
