@@ -11,6 +11,7 @@ namespace FinanceManager.Domain.Models
         public string? AccountNumber { get; set; }
         public BankName BankName { get; set; }
         public AccountType AccountType { get; set; }
-        public decimal Balance { get; set; }
+        public decimal InitialBalance { get; set; }
+        public decimal CurrentBalance { get; set; }
     }
 }

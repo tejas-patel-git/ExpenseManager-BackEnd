@@ -117,7 +117,7 @@ public class TransactionService : ITransactionService
         
         // add the initial balance of the all accounts of user
         var accounts = await _unitOfWork.AccountsRepository.GetAllAsync(acc => acc.UserId == userId);
-        if (accounts.Any()) balance += accounts.Sum(acc => acc.Balance);
+        if (accounts.Any()) balance += accounts.Sum(acc => acc.InitialBalance);
 
         return new() { CurrentBalance = balance };
     }
