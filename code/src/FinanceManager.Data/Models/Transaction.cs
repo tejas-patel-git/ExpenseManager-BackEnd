@@ -68,6 +68,9 @@ namespace FinanceManager.Data.Models
         /// <remarks>
         /// This establishes a navigation property to the <see cref="User"/> entity.
         /// </remarks>
-        public virtual User? User { get; set; }
+        public virtual User User { get; set; }
+
+        // Navigation property for many-to-many relationship
+        public virtual ICollection<TransactionPayment> Payments { get; set; }
     }
 }
