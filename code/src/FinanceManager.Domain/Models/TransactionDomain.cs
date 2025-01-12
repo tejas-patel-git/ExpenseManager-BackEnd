@@ -39,4 +39,6 @@ public class TransactionDomain : IDomainModel<Guid>
     /// Gets or sets a description of the transaction.
     /// </summary>
     public string? Description { get; set; }
+
+    public ICollection<PaymentDomain> Payments { get; set; }
 }
