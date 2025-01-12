@@ -11,7 +11,7 @@ public class TransactionRequest : BaseRequest
     /// Gets or sets the amount for the transaction.
     /// </summary>
     [Required]
-    [Range(0.01, double.MaxValue, ErrorMessage = "Amount must be greater than 0.")]
+    [Range(0, double.MaxValue, ErrorMessage = "Amount must be greater than 0.")]
     public decimal Amount { get; set; }
 
     /// <summary>
@@ -32,4 +32,7 @@ public class TransactionRequest : BaseRequest
     /// </summary>
     [Required]
     public bool IsExpense { get; set; }
+
+    [Required]
+    public Payment Payments { get; set; }
 }
