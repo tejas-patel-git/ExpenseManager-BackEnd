@@ -167,7 +167,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"isExpense\": false,\n    \"amount\": 50.00,\n    \"date\": \"2024-11-01T10:00:00\",\n    \"description\": \"Grocery Shopping\"\n}",
+							"raw": "{\n    \"isExpense\": false,\n    \"amount\": 50.00,\n    \"date\": \"2024-11-01T10:00:00\",\n    \"description\": \"Grocery Shopping\",\n    \"payments\" : {}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
