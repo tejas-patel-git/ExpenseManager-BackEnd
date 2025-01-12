@@ -9,13 +9,21 @@ namespace FinanceManager.Application.Mapper.Mappers
     public class TransactionRequestToDomainMapper : BaseMapper<TransactionRequest, TransactionDomain>
     {
         public TransactionRequestToDomainMapper()
-            : base(source => new()
+            : base(source =>
             {
-                // TODO : Handle null ids
-                Amount = source.Amount,
-                Date = source.Date,
-                IsExpense = source.IsExpense,
-                Description = source.Description
+                List<PaymentDomain> payments = [];
+
+                foreach (var account in source.Payments.Accounts)
+                    payments.Add(new() { AccountId = account.AccountId, Amount = account.Amount });
+
+                return new()
+                {
+                    Amount = source.Amount,
+                    Date = source.Date,
+                    IsExpense = source.IsExpense,
+                    Description = source.Description,
+                    Payments = payments
+                };
             })
         {
         }
