@@ -72,12 +72,20 @@ public class TransactionService : ITransactionService
         if (!await _userService.UserExistsAsync(transactionDomain.UserId))
             return false;
 
-        // Add data to repository
+        // check if payment accounts exists
+        foreach (var accounts in transactionDomain.Payments)
+            if (!await _unitOfWork.AccountsRepository.ExistsAsync(accounts.AccountId))
+                return false;
+            else accounts.Id = Guid.NewGuid();
+
         transactionDomain.Id = Guid.NewGuid();
+
+
+        // Add data to repository
         await _unitOfWork.TransactionRepository.AddAsync(transactionDomain);
         var rowsUpdated = await _unitOfWork.SaveChangesAsync();
-        
-        _logger.LogDebug($"{rowsUpdated} rows updated");
+
+        _logger.LogDebug("{rowsUpdated} rows updated", rowsUpdated);
 
 
         return true;
@@ -108,13 +116,13 @@ public class TransactionService : ITransactionService
     /// <inheritdoc/>
     public async Task<BalanceDomain?> GetBalanceAsync(string userId)
     {
-        var transactions = await _unitOfWork.TransactionRepository.GetAllAsync(entity =>  entity.UserId == userId);
+        var transactions = await _unitOfWork.TransactionRepository.GetAllAsync(entity => entity.UserId == userId);
 
-        if(transactions == null || !transactions.Any()) return null;
+        if (transactions == null || !transactions.Any()) return null;
 
         // get the balance after accounting transactions
         var balance = transactions.Sum(d => d.IsExpense ? -d.Amount : d.Amount);
-        
+
         // add the initial balance of the all accounts of user
         var accounts = await _unitOfWork.AccountsRepository.GetAllAsync(acc => acc.UserId == userId);
         if (accounts.Any()) balance += accounts.Sum(acc => acc.InitialBalance);
