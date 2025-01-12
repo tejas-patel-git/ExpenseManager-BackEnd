@@ -47,16 +47,30 @@ namespace FinanceManager.Application.Mapper.Mappers
     public class TransactionDomainToEntityMapper : BaseMapper<TransactionDomain, Transaction>
     {
         public TransactionDomainToEntityMapper()
-            : base(source => new()
+            : base(source =>
             {
-                // TODO : Handle Null transaction id.
-                Id = source.Id,
-                UserId = source.UserId,
-                IsExpense = source.IsExpense,
-                Amount = source.Amount,
-                Date = source.Date,
-                Description = source.Description,
-                UpdatedAt = DateTime.UtcNow
+                List<TransactionPayment> payments = [];
+
+                foreach (var payment in source.Payments)
+                    payments.Add(new()
+                    {
+                        TransactionId = source.Id,
+                        UserBankAccountId = payment.AccountId,
+                        Amount = payment.Amount,
+                    });
+
+                return new()
+                {
+                    // TODO : Handle Null transaction id.
+                    Id = source.Id,
+                    UserId = source.UserId,
+                    IsExpense = source.IsExpense,
+                    Amount = source.Amount,
+                    Date = source.Date,
+                    Description = source.Description,
+                    Payments = payments,
+                    UpdatedAt = DateTime.UtcNow
+                };
             })
         {
         }
