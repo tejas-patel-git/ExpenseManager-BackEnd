@@ -167,7 +167,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"isExpense\": false,\n    \"amount\": 50.00,\n    \"date\": \"2024-11-01T10:00:00\",\n    \"description\": \"Grocery Shopping\",\n    \"payments\" : {}\n}",
+							"raw": "{\n    \"isExpense\": false,\n    \"amount\": 50.00,\n    \"date\": \"2024-11-01T10:00:00\",\n    \"description\": \"Grocery Shopping\",\n    \"payments\": {\n        \"accounts\": [\n            {\n                // \"accountId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n                // \"amount\": 0\n            },\n            {\n                // \"accountId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n                // \"amount\": 0\n            }\n        ]\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
