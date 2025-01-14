@@ -108,7 +108,7 @@ internal class Repository<TDomain, TEntity, TId> : IRepository<TDomain, TEntity,
         }
     }
 
-    public virtual async Task AddAsync(TDomain domain)
+    public virtual async Task<TDomain> AddAsync(TDomain domain)
     {
         try
         {
@@ -121,6 +121,8 @@ internal class Repository<TDomain, TEntity, TId> : IRepository<TDomain, TEntity,
             }
 
             await AddAsync(entity);
+
+            return entityDomainMapper.Map(entity);
         }
         catch (Exception ex)
         {
@@ -201,5 +203,17 @@ internal class Repository<TDomain, TEntity, TId> : IRepository<TDomain, TEntity,
     public virtual async Task<bool> ExistsAsync(TId id)
     {
         return await GetByIdAsync(id) != null;
+    }
+
+    public virtual async Task<bool> ExistsAsync(ICollection<TId> ids)
+    {
+        var validIds = await dbSet.Select(x => x.Id).ToListAsync();
+        return ids.All(x => validIds.Contains(x));
+    }
+
+    public virtual async Task<bool> ExistsAsync(ICollection<TId> ids, Expression<Func<TEntity, bool>> filter)
+    {
+        var validIds = await FilterQuery(filter).Select(x => x.Id).ToListAsync();
+        return ids.All(x => validIds.Contains(x));
     }
 }

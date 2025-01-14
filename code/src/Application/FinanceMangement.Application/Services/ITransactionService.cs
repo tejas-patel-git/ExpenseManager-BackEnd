@@ -6,7 +6,7 @@ namespace FinanceManager.Application.Services
     /// <summary>
     /// Defines methods for managing transactions in the system.
     /// </summary>
-    public interface ITransactionService
+    public interface ITransactionService : IBaseService
     {
         /// <summary>
         /// Retrieves a transaction by its unique ID.
@@ -37,7 +37,7 @@ namespace FinanceManager.Application.Services
         /// A task representing the asynchronous operation.
         /// </returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="transaction"/> is <c>null</c>.</exception>
-        Task<bool> AddTransactionAsync(TransactionDomain transaction);
+        Task<TransactionDomain> AddTransactionAsync(TransactionDomain transaction);
 
         /// <summary>
         /// Updates an existing transaction.

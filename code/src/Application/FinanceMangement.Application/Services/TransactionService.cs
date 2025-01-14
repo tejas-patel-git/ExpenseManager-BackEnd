@@ -1,28 +1,22 @@
 ﻿using FinanceManager.Data;
-using FinanceManager.Domain.Abstraction.Mappers;
 using FinanceManager.Domain.Models;
-using FinanceManager.Models.Request;
 using Microsoft.Extensions.Logging;
 
 namespace FinanceManager.Application.Services;
 
-public class TransactionService : ITransactionService
+internal class TransactionService : BaseService, ITransactionService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<TransactionService> _logger;
-    private readonly IMapper<TransactionRequest, TransactionDomain> _requestDomainMapper;
-    private readonly IUserService _userService;
 
     /// <inheritdoc/>
     public TransactionService(IUnitOfWork unitOfWork,
                               ILogger<TransactionService> logger,
-                              IMapper<TransactionRequest, TransactionDomain> requestDomainMapper,
                               IUserService userService)
+        : base(unitOfWork.UserRepository)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
-        _requestDomainMapper = requestDomainMapper;
-        _userService = userService;
     }
 
     /// <inheritdoc/>
@@ -64,31 +58,24 @@ public class TransactionService : ITransactionService
     }
 
     /// <inheritdoc/>
-    public async Task<bool> AddTransactionAsync(TransactionDomain transactionDomain)
+    public async Task<TransactionDomain> AddTransactionAsync(TransactionDomain transactionDomain)
     {
         ArgumentNullException.ThrowIfNull(transactionDomain);
 
-        // check if user exists
-        if (!await _userService.UserExistsAsync(transactionDomain.UserId))
-            return false;
-
-        // check if payment accounts exists
+        // create new guid for each payments
         foreach (var accounts in transactionDomain.Payments)
-            if (!await _unitOfWork.AccountsRepository.ExistsAsync(accounts.AccountId))
-                return false;
-            else accounts.Id = Guid.NewGuid();
+            accounts.Id = Guid.NewGuid();
 
+        // create new guid for transaction
         transactionDomain.Id = Guid.NewGuid();
 
-
         // Add data to repository
-        await _unitOfWork.TransactionRepository.AddAsync(transactionDomain);
+        var transaction = await _unitOfWork.TransactionRepository.AddAsync(transactionDomain);
         var rowsUpdated = await _unitOfWork.SaveChangesAsync();
 
         _logger.LogDebug("{rowsUpdated} rows updated", rowsUpdated);
 
-
-        return true;
+        return transaction;
     }
 
     /// <inheritdoc/>
