@@ -7,14 +7,17 @@ namespace FinanceManager.Application.Services;
 internal class TransactionService : BaseService, ITransactionService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IAccountsService _accountsService;
     private readonly ILogger<TransactionService> _logger;
 
     /// <inheritdoc/>
     public TransactionService(IUnitOfWork unitOfWork,
+                              IAccountsService accountsService,
                               ILogger<TransactionService> logger)
         : base(unitOfWork.UserRepository)
     {
         _unitOfWork = unitOfWork;
+        _accountsService = accountsService;
         _logger = logger;
     }
 
@@ -68,8 +71,14 @@ internal class TransactionService : BaseService, ITransactionService
         // create new guid for transaction
         transactionDomain.Id = Guid.NewGuid();
 
-        // Add data to repository
+        // add transaction & payment to repository
         var transaction = await _unitOfWork.TransactionRepository.AddAsync(transactionDomain);
+        
+        // update current balance in respective accounts
+        foreach (var account in transaction.Payments)
+            await _accountsService.UpdateCurrentBalance(account.AccountId, transaction.IsExpense ? -account.Amount : account.Amount);
+
+        // save repository changes
         var rowsUpdated = await _unitOfWork.SaveChangesAsync();
 
         _logger.LogDebug("{rowsUpdated} rows updated", rowsUpdated);
