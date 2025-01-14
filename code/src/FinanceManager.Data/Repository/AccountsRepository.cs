@@ -74,5 +74,31 @@ namespace FinanceManager.Data.Repository
                 throw;
             }
         }
+
+        public async Task<bool> UpdateBalance(Guid id, decimal amount)
+        {
+            try
+            {
+                // retrieve the existing account from the database
+                var existingAccount = await dbSet.FindAsync(id);
+
+                if (existingAccount == null)
+                {
+                    _logger.LogWarning("'{type}' with id {id} not found.", nameof(UserBankAccounts), id);
+                    return false;
+                }
+
+                // update current balance
+                existingAccount.CurrentBalance += amount;
+
+                _logger.LogInformation("Balance updated for '{type}' id {id}.", nameof(UserBankAccounts), id);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while updating balance of '{type}' id {id}.", nameof(UserBankAccounts), id);
+                throw;
+            }
+        }
     }
 }

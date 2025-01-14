@@ -104,5 +104,10 @@ namespace FinanceManager.Application.Services
             ArgumentNullException.ThrowIfNull(ids, nameof(ids));
             return await _unitOfWork.AccountsRepository.ExistsAsync(ids, acc => acc.UserId == userId);
         }
+
+        public async Task<bool> UpdateCurrentBalance(Guid id, decimal amount)
+        {
+            return await _unitOfWork.AccountsRepository.UpdateBalance(id, amount);
+        }
     }
 }
