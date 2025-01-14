@@ -13,4 +13,8 @@
     <ProjectReference Include="..\FinanceManager.Application.Mapper\FinanceManager.Application.Mapper.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+  	<InternalsVisibleTo Include="FinanceManager.UnitTest" />
+  </ItemGroup>
+	
 </Project>

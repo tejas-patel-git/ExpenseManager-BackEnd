@@ -11,8 +11,7 @@ internal class TransactionService : BaseService, ITransactionService
 
     /// <inheritdoc/>
     public TransactionService(IUnitOfWork unitOfWork,
-                              ILogger<TransactionService> logger,
-                              IUserService userService)
+                              ILogger<TransactionService> logger)
         : base(unitOfWork.UserRepository)
     {
         _unitOfWork = unitOfWork;
