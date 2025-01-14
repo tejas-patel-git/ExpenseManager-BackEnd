@@ -6,6 +6,8 @@ namespace FinanceManager.Application.Services
     {
         Task<bool> AddAccount(AccountsDomain accountsDomain);
         Task<bool> DeleteTransactionAsync(Guid id, string userId);
+        Task<bool> Exists(ICollection<Guid> ids);
+        Task<bool> Exists(ICollection<Guid> ids, string userId);
         Task<AccountsDomain?> GetAccounts(Guid accountId, string userId);
         Task<IEnumerable<AccountsDomain>> GetAccounts(string userId);
         Task<bool> UpdateAccountAsync(AccountsDomain accountsDomain);

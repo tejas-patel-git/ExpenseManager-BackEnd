@@ -58,11 +58,11 @@ namespace FinanceManager.Application.Services
         {
             ArgumentNullException.ThrowIfNull(accountsDomain, nameof(accountsDomain));
 
-            if(!await DoesUserExists(accountsDomain.UserId))
+            if (!await UserExists(accountsDomain.UserId))
                 return false;
- 
+
             accountsDomain.Id = Guid.NewGuid();
-            
+
             await _unitOfWork.AccountsRepository.AddAsync(accountsDomain);
             await _unitOfWork.SaveChangesAsync();
 
@@ -91,6 +91,18 @@ namespace FinanceManager.Application.Services
             await _unitOfWork.SaveChangesAsync();
 
             return isSuccess;
+        }
+
+        public async Task<bool> Exists(ICollection<Guid> ids)
+        {
+            ArgumentNullException.ThrowIfNull(ids, nameof(ids));
+            return await _unitOfWork.AccountsRepository.ExistsAsync(ids);
+        }
+
+        public async Task<bool> Exists(ICollection<Guid> ids, string userId)
+        {
+            ArgumentNullException.ThrowIfNull(ids, nameof(ids));
+            return await _unitOfWork.AccountsRepository.ExistsAsync(ids, acc => acc.UserId == userId);
         }
     }
 }
