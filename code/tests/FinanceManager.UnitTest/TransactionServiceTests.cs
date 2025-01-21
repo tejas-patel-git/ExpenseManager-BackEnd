@@ -19,6 +19,7 @@ public class TransactionServiceTests
     private readonly Mock<ITransactionRepository> _transactionRepositoryMock;
     private readonly NullLogger<TransactionService> _logger;
     private readonly TransactionService _transactionService;
+    private readonly Mock<IAccountsService> _accountService;
 
     public TransactionServiceTests()
     {
@@ -39,8 +40,11 @@ public class TransactionServiceTests
 
         // Mock repository
         _transactionRepositoryMock = new();
+        
         _unitOfWorkMock = new();
         _unitOfWorkMock.SetupGet(un => un.TransactionRepository).Returns(_transactionRepositoryMock.Object);
+
+        _accountService = new();
 
         // Mock Logger
         _logger = new NullLogger<TransactionService>();
@@ -48,6 +52,7 @@ public class TransactionServiceTests
         // Inject mock into service
         _transactionService = new TransactionService(
             _unitOfWorkMock.Object,
+            _accountService.Object,
             _logger
         );
     }
