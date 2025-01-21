@@ -167,7 +167,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"isExpense\": false,\n    \"amount\": 50.00,\n    \"date\": \"2024-11-01T10:00:00\",\n    \"description\": \"Grocery Shopping\"\n}",
+							"raw": "{\n    \"isExpense\": true,\n    \"amount\": 20.6,\n    \"date\": \"2024-11-01T10:00:00\",\n    \"description\": \"Grocery Shopping\",\n    \"payments\": {\n        \"accounts\": [\n            {\n                \"accountId\": \"07250AAA-6E32-4389-837E-2F60CB7FED42\",\n                \"amount\": 0.2\n            },\n            {\n                \"accountId\": \"D95654CE-DBF3-4C3B-876B-6C3A2B41808A\",\n                \"amount\": 0.2\n            }\n        ]\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -310,7 +310,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"Email\": \"fm-test-01@gmail.com\",\r\n    \"PhoneNumber\": \"123-456-7890\",\r\n    \"UserId\": \"auth0|5f7c8ec7c33c6c004bbafe82\",\r\n    \"CreatedAt\": \"2025-01-01T14:00:06.130Z\",\r\n    \"IsEmailVerified\": false,\r\n    \"FamilyName\": \"Doe\",\r\n    \"GivenName\": \"John\",\r\n    \"LastPasswordReset\": \"2025-01-01T14:00:06.130Z\",\r\n    \"FullName\": \"John Doe\",\r\n    \"Nickname\": \"johndoe\",\r\n    \"IsPhoneVerified\": false,\r\n    \"PictureUrl\": \"http://www.gravatar.com/avatar/?d=identicon\",\r\n    \"UpdatedAt\": \"2025-01-01T14:00:06.130Z\",\r\n    \"AppMetadata\": \"{}\",\r\n    \"UserMetadata\": \"{}\"\r\n}",
+							"raw": "{\r\n    \"Email\": \"fm-test-01@gmail.com\",\r\n    \"PhoneNumber\": \"123-456-7890\",\r\n    \"UserId\": \"auth0|6760fe94d2fd73731fecec89\",\r\n    \"CreatedAt\": \"2025-01-01T14:00:06.130Z\",\r\n    \"IsEmailVerified\": false,\r\n    \"FamilyName\": \"Doe\",\r\n    \"GivenName\": \"John\",\r\n    \"LastPasswordReset\": \"2025-01-01T14:00:06.130Z\",\r\n    \"FullName\": \"John Doe\",\r\n    \"Nickname\": \"johndoe\",\r\n    \"IsPhoneVerified\": false,\r\n    \"PictureUrl\": \"http://www.gravatar.com/avatar/?d=identicon\",\r\n    \"UpdatedAt\": \"2025-01-01T14:00:06.130Z\",\r\n    \"AppMetadata\": \"{}\",\r\n    \"UserMetadata\": \"{}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -360,6 +360,30 @@
 			"item": [
 				{
 					"name": "add account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a5f42e33-2b3b-4aeb-8d3f-c1bc44775f3c",
+								"exec": [
+									"// Parse the response body\r",
+									"let response = pm.response.json();\r",
+									"\r",
+									"// Check if the response is successful and contains the accountId\r",
+									"if (response.success && response.data && response.data.accountId) {\r",
+									"    // Store the accountId in a Postman variable\r",
+									"    pm.environment.set(\"accountId\", response.data.accountId);\r",
+									"    console.log(\"accountId stored:\", response.data.accountId);\r",
+									"} else {\r",
+									"    console.error(\"Failed to retrieve accountId from the response.\");\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"id": "a6d140ed-c170-4d40-9c40-d0af0b681564",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -385,7 +409,7 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/Accounts"
+						"url": "{{base_url}}/accounts"
 					},
 					"response": []
 				},
@@ -404,7 +428,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/accounts?id=BD9F720D-B61B-4515-ACBD-77436FFA44B9",
+							"raw": "{{base_url}}/accounts?id={{accountId}}",
 							"host": [
 								"{{base_url}}"
 							],
@@ -414,7 +438,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "BD9F720D-B61B-4515-ACBD-77436FFA44B9"
+									"value": "{{accountId}}"
 								}
 							]
 						}
@@ -463,18 +487,17 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/accounts/?id=B569B0DA-930C-4134-5C40-08DD2EE6E4B3",
+							"raw": "{{base_url}}/accounts?id={{accountId}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"accounts",
-								""
+								"accounts"
 							],
 							"query": [
 								{
 									"key": "id",
-									"value": "B569B0DA-930C-4134-5C40-08DD2EE6E4B3"
+									"value": "{{accountId}}"
 								}
 							]
 						},
@@ -492,7 +515,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/accounts/?id=BD9F720D-B61B-4515-ACBD-77436FFA44B9",
+							"raw": "{{base_url}}/accounts/?id={{accountId}}",
 							"host": [
 								"{{base_url}}"
 							],
@@ -503,7 +526,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "BD9F720D-B61B-4515-ACBD-77436FFA44B9"
+									"value": "{{accountId}}"
 								}
 							]
 						},
@@ -518,9 +541,17 @@
 	"auth": {
 		"type": "oauth2",
 		"oauth2": {
+			"tokenRequestParams": [
+				{
+					"key": "audience",
+					"value": "{{vault:audience-dev}}",
+					"enabled": false,
+					"send_as": "request_url"
+				}
+			],
+			"grant_type": "authorization_code_with_pkce",
 			"refreshTokenUrl": "{{vault:oauth-auth-url}}",
 			"scope": "",
-			"grant_type": "authorization_code_with_pkce",
 			"authRequestParams": [
 				{
 					"key": "audience",
@@ -530,14 +561,6 @@
 				}
 			],
 			"client_authentication": "body",
-			"tokenRequestParams": [
-				{
-					"key": "audience",
-					"value": "{{vault:audience-dev}}",
-					"enabled": true,
-					"send_as": "request_url"
-				}
-			],
 			"clientSecret": "{{vault:client-secret-web-dev}}",
 			"state": "1234",
 			"redirect_uri": "http://localhost:5277",
@@ -552,7 +575,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "0771fdd1-9f71-4fbe-a699-182be74990e7",
+				"id": "09cfa769-c289-46f4-b440-bb7248f29b97",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -563,7 +586,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "5a0f23e2-cb70-42b8-9e32-88da131877e6",
+				"id": "f9bec626-3cce-4e35-9ff4-5f112afd3241",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
