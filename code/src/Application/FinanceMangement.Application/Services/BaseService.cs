@@ -2,7 +2,7 @@
 
 namespace FinanceManager.Application.Services
 {
-    internal class BaseService
+    internal class BaseService : IBaseService
     {
         private readonly IUserRepository _userRepository;
 
@@ -11,7 +11,7 @@ namespace FinanceManager.Application.Services
             _userRepository = userRepository;
         }
 
-        protected async Task<bool> DoesUserExists(string userId)
+        public async Task<bool> UserExists(string userId)
         {
             // check if user exists
             return await _userRepository.ExistsAsync(userId);

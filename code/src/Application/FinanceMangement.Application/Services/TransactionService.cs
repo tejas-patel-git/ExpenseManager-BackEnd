@@ -1,28 +1,24 @@
 ﻿using FinanceManager.Data;
-using FinanceManager.Domain.Abstraction.Mappers;
 using FinanceManager.Domain.Models;
-using FinanceManager.Models.Request;
 using Microsoft.Extensions.Logging;
 
 namespace FinanceManager.Application.Services;
 
-public class TransactionService : ITransactionService
+internal class TransactionService : BaseService, ITransactionService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IAccountsService _accountsService;
     private readonly ILogger<TransactionService> _logger;
-    private readonly IMapper<TransactionRequest, TransactionDomain> _requestDomainMapper;
-    private readonly IUserService _userService;
 
     /// <inheritdoc/>
     public TransactionService(IUnitOfWork unitOfWork,
-                              ILogger<TransactionService> logger,
-                              IMapper<TransactionRequest, TransactionDomain> requestDomainMapper,
-                              IUserService userService)
+                              IAccountsService accountsService,
+                              ILogger<TransactionService> logger)
+        : base(unitOfWork.UserRepository)
     {
         _unitOfWork = unitOfWork;
+        _accountsService = accountsService;
         _logger = logger;
-        _requestDomainMapper = requestDomainMapper;
-        _userService = userService;
     }
 
     /// <inheritdoc/>
@@ -64,23 +60,30 @@ public class TransactionService : ITransactionService
     }
 
     /// <inheritdoc/>
-    public async Task<bool> AddTransactionAsync(TransactionDomain transactionDomain)
+    public async Task<TransactionDomain> AddTransactionAsync(TransactionDomain transactionDomain)
     {
         ArgumentNullException.ThrowIfNull(transactionDomain);
 
-        // check if user exists
-        if (!await _userService.UserExistsAsync(transactionDomain.UserId))
-            return false;
+        // create new guid for each payments
+        foreach (var accounts in transactionDomain.Payments)
+            accounts.Id = Guid.NewGuid();
 
-        // Add data to repository
+        // create new guid for transaction
         transactionDomain.Id = Guid.NewGuid();
-        await _unitOfWork.TransactionRepository.AddAsync(transactionDomain);
-        var rowsUpdated = await _unitOfWork.SaveChangesAsync();
+
+        // add transaction & payment to repository
+        var transaction = await _unitOfWork.TransactionRepository.AddAsync(transactionDomain);
         
-        _logger.LogDebug($"{rowsUpdated} rows updated");
+        // update current balance in respective accounts
+        foreach (var account in transaction.Payments)
+            await _accountsService.UpdateCurrentBalance(account.AccountId, transaction.IsExpense ? -account.Amount : account.Amount);
 
+        // save repository changes
+        var rowsUpdated = await _unitOfWork.SaveChangesAsync();
 
-        return true;
+        _logger.LogDebug("{rowsUpdated} rows updated", rowsUpdated);
+
+        return transaction;
     }
 
     /// <inheritdoc/>
@@ -108,13 +111,13 @@ public class TransactionService : ITransactionService
     /// <inheritdoc/>
     public async Task<BalanceDomain?> GetBalanceAsync(string userId)
     {
-        var transactions = await _unitOfWork.TransactionRepository.GetAllAsync(entity =>  entity.UserId == userId);
+        var transactions = await _unitOfWork.TransactionRepository.GetAllAsync(entity => entity.UserId == userId);
 
-        if(transactions == null || !transactions.Any()) return null;
+        if (transactions == null || !transactions.Any()) return null;
 
         // get the balance after accounting transactions
         var balance = transactions.Sum(d => d.IsExpense ? -d.Amount : d.Amount);
-        
+
         // add the initial balance of the all accounts of user
         var accounts = await _unitOfWork.AccountsRepository.GetAllAsync(acc => acc.UserId == userId);
         if (accounts.Any()) balance += accounts.Sum(acc => acc.InitialBalance);

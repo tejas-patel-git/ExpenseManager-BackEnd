@@ -3,7 +3,6 @@ using FinanceManager.Application.Services;
 using FinanceManager.Data;
 using FinanceManager.Data.Models;
 using FinanceManager.Data.Repository;
-using FinanceManager.Domain.Abstraction.Mappers;
 using FinanceManager.Domain.Models;
 using FinanceManager.Models.Request;
 using FluentAssertions;
@@ -18,10 +17,9 @@ public class TransactionServiceTests
     private readonly IFixture _fixture;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<ITransactionRepository> _transactionRepositoryMock;
-    private readonly Mock<IUserService> _userServiceMock;
-    private readonly Mock<IMapper<TransactionRequest, TransactionDomain>> _requestDomainMapperMock;
     private readonly NullLogger<TransactionService> _logger;
     private readonly TransactionService _transactionService;
+    private readonly Mock<IAccountsService> _accountService;
 
     public TransactionServiceTests()
     {
@@ -42,12 +40,11 @@ public class TransactionServiceTests
 
         // Mock repository
         _transactionRepositoryMock = new();
+        
         _unitOfWorkMock = new();
         _unitOfWorkMock.SetupGet(un => un.TransactionRepository).Returns(_transactionRepositoryMock.Object);
 
-        // Mock services and mappers
-        _userServiceMock = new();
-        _requestDomainMapperMock = new();
+        _accountService = new();
 
         // Mock Logger
         _logger = new NullLogger<TransactionService>();
@@ -55,9 +52,8 @@ public class TransactionServiceTests
         // Inject mock into service
         _transactionService = new TransactionService(
             _unitOfWorkMock.Object,
-            _logger,
-            _requestDomainMapperMock.Object,
-            _userServiceMock.Object
+            _accountService.Object,
+            _logger
         );
     }
 
@@ -113,34 +109,14 @@ public class TransactionServiceTests
     }
 
     [Fact]
-    public async Task AddTransactionAsync_ShouldReturnFalse_WhenUserDoesNotExist()
-    {
-        // Arrange
-        var transaction = _fixture.Create<TransactionDomain>();
-        _userServiceMock
-            .Setup(service => service.UserExistsAsync(transaction.UserId))
-            .ReturnsAsync(false);
-
-        // Act
-        var result = await _transactionService.AddTransactionAsync(transaction);
-
-        // Assert
-        result.Should().BeFalse();
-        _userServiceMock.Verify(service => service.UserExistsAsync(transaction.UserId), Times.Once);
-    }
-
-    [Fact]
     public async Task AddTransactionAsync_ShouldAddTransaction_WhenUserExists()
     {
         // Arrange
         var transaction = _fixture.Create<TransactionDomain>();
-        _userServiceMock
-            .Setup(service => service.UserExistsAsync(transaction.UserId))
-            .ReturnsAsync(true);
-
+        
         _transactionRepositoryMock
             .Setup(repo => repo.AddAsync(transaction))
-            .Returns(Task.CompletedTask);
+            .ReturnsAsync(transaction);
 
         _unitOfWorkMock
             .Setup(u => u.SaveChangesAsync())
@@ -150,7 +126,6 @@ public class TransactionServiceTests
         var result = await _transactionService.AddTransactionAsync(transaction);
 
         // Assert
-        result.Should().BeTrue();
         _transactionRepositoryMock.Verify(repo => repo.AddAsync(transaction), Times.Once);
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Once);
     }
@@ -160,7 +135,7 @@ public class TransactionServiceTests
     {
         // Arrange
         var transactionDomain = _fixture.Create<TransactionDomain>();
-        
+
         _transactionRepositoryMock
             .Setup(repo => repo.UpdateAsync(transactionDomain))
             .Returns(Task.CompletedTask);

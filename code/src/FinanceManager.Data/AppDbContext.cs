@@ -22,5 +22,19 @@ namespace FinanceManager.Data
 
         internal DbSet<User> Users { get; set; }
         internal DbSet<UserBankAccounts> UserBankAccounts { get; set; }
+        internal DbSet<TransactionPayment> Payments { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TransactionPayment>()
+                .HasOne(ta => ta.Transaction)
+                .WithMany(t => t.Payments)
+                .HasForeignKey(ta => ta.TransactionId);
+
+            modelBuilder.Entity<TransactionPayment>()
+                .HasOne(ta => ta.UserBankAccount)
+                .WithMany()
+                .HasForeignKey(ta => ta.UserBankAccountId);
+        }
     }
 }

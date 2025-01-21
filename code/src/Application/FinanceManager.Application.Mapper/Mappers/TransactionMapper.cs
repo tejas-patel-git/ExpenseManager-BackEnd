@@ -9,13 +9,21 @@ namespace FinanceManager.Application.Mapper.Mappers
     public class TransactionRequestToDomainMapper : BaseMapper<TransactionRequest, TransactionDomain>
     {
         public TransactionRequestToDomainMapper()
-            : base(source => new()
+            : base(source =>
             {
-                // TODO : Handle null ids
-                Amount = source.Amount,
-                Date = source.Date,
-                IsExpense = source.IsExpense,
-                Description = source.Description
+                List<PaymentDomain> payments = [];
+
+                foreach (var account in source.Payments.Accounts)
+                    payments.Add(new() { AccountId = account.AccountId, Amount = account.Amount });
+
+                return new()
+                {
+                    Amount = source.Amount,
+                    Date = source.Date,
+                    IsExpense = source.IsExpense,
+                    Description = source.Description,
+                    Payments = payments
+                };
             })
         {
         }
@@ -39,16 +47,30 @@ namespace FinanceManager.Application.Mapper.Mappers
     public class TransactionDomainToEntityMapper : BaseMapper<TransactionDomain, Transaction>
     {
         public TransactionDomainToEntityMapper()
-            : base(source => new()
+            : base(source =>
             {
-                // TODO : Handle Null transaction id.
-                Id = source.Id,
-                UserId = source.UserId,
-                IsExpense = source.IsExpense,
-                Amount = source.Amount,
-                Date = source.Date,
-                Description = source.Description,
-                UpdatedAt = DateTime.UtcNow
+                List<TransactionPayment> payments = [];
+
+                foreach (var payment in source.Payments)
+                    payments.Add(new()
+                    {
+                        TransactionId = source.Id,
+                        UserBankAccountId = payment.AccountId,
+                        Amount = payment.Amount,
+                    });
+
+                return new()
+                {
+                    // TODO : Handle Null transaction id.
+                    Id = source.Id,
+                    UserId = source.UserId,
+                    IsExpense = source.IsExpense,
+                    Amount = source.Amount,
+                    Date = source.Date,
+                    Description = source.Description,
+                    Payments = payments,
+                    UpdatedAt = DateTime.UtcNow
+                };
             })
         {
         }
@@ -57,14 +79,28 @@ namespace FinanceManager.Application.Mapper.Mappers
     public class TransactionEntityToDomainMapper : BaseMapper<Transaction, TransactionDomain>
     {
         public TransactionEntityToDomainMapper()
-            : base(source => new()
+            : base(source =>
             {
-                Id = source.Id,
-                UserId = source.UserId,
-                IsExpense = source.IsExpense,
-                Amount = source.Amount,
-                Date = source.Date,
-                Description = source.Description
+                List<PaymentDomain> payments = [];
+
+                foreach (var payment in source.Payments)
+                    payments.Add(new()
+                    {
+                        Id = source.Id,
+                        AccountId = payment.UserBankAccountId,
+                        Amount = payment.Amount,
+                    });
+
+                return new()
+                {
+                    Id = source.Id,
+                    UserId = source.UserId,
+                    IsExpense = source.IsExpense,
+                    Amount = source.Amount,
+                    Date = source.Date,
+                    Description = source.Description,
+                    Payments = payments,
+                };
             })
         {
         }

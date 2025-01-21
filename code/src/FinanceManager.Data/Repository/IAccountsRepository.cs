@@ -8,5 +8,6 @@ namespace FinanceManager.Data.Repository
     {
         Task<bool> DeleteByIdAsync(Guid id, string userId);
         Task<bool> UpdateAsync(AccountsDomain accountsDomain);
+        Task<bool> UpdateBalance(Guid id, decimal amount);
     }
 }

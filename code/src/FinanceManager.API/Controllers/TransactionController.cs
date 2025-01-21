@@ -14,6 +14,7 @@ namespace FinanceManager.API.Controllers
     {
         private readonly ILogger<TransactionController> _logger;
         private readonly ITransactionService _transactionService;
+        private readonly IAccountsService _accountService;
         private readonly IMapper<TransactionRequest, TransactionDomain> _requestDomainMapper;
         private readonly IMapper<TransactionDomain, TransactionResponse> _domainResponseMapper;
 
@@ -26,11 +27,13 @@ namespace FinanceManager.API.Controllers
         /// <param name="domainResponseMapper"></param>
         public TransactionController(ILogger<TransactionController> logger,
                                      ITransactionService transactionService,
+                                     IAccountsService accountService,
                                      IMapper<TransactionRequest, TransactionDomain> requestDomainMapper,
                                      IMapper<TransactionDomain, TransactionResponse> domainResponseMapper) : base()
         {
             _logger = logger;
             _transactionService = transactionService;
+            _accountService = accountService;
             _requestDomainMapper = requestDomainMapper;
             _domainResponseMapper = domainResponseMapper;
         }
@@ -89,6 +92,8 @@ namespace FinanceManager.API.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> AddTransaction([FromBody] TransactionRequest transactionRequest)
         {
+            _logger.LogInformation("Request received for adding a new transaction.");
+
             // TODO : Add Validations
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -97,15 +102,47 @@ namespace FinanceManager.API.Controllers
             string? userId = GetUserIdOfRequest();
             if (string.IsNullOrEmpty(userId))
             {
-                return Unauthorized("User Id is missing in the token.");
+                return Unauthorized(FailureResponse("User id is missing in the token."));
+            }
+            else if (!await _transactionService.UserExists(userId))
+            {
+                return BadRequest(FailureResponse("User does not exists"));
             }
 
-            var transaction = _requestDomainMapper.Map(transactionRequest);
-            transaction.UserId = userId;
+            // check if payment exists
+            if (transactionRequest.Payments == null) return BadRequest(FailureResponse("Payment information is missing."));
 
-            if (!await _transactionService.AddTransactionAsync(transaction))
-                return Conflict(FailureResponse("User does not exists"));
+            // check if request have payment accounts
+            var accountIds = transactionRequest.Payments.Accounts?.Where(acc => acc.AccountId != Guid.Empty)
+                                                                   .Select(acc => acc.AccountId)
+                                                                   .ToList();
+            if (accountIds == null || accountIds.Count == 0)
+            {
+                return BadRequest(FailureResponse("Payment account is missing."));
+            }
 
+            // validate if payment account amount match with the transaction amount
+            var amount = transactionRequest.Payments.Accounts.Sum(x => x.Amount);
+            if(transactionRequest.Amount != amount) return BadRequest(FailureResponse("Transaction & total payment account amount mismatch."));
+
+
+            // validate if payment account exists
+            if (!await _accountService.Exists(accountIds, userId))
+            {
+                if (accountIds.Count > 1)
+                    return BadRequest(FailureResponse("Not all payment account exists."));
+                else
+                    return BadRequest(FailureResponse("Payment account does not exist."));
+            }
+
+            // request model to domain model mapping
+            var transactionDomain = _requestDomainMapper.Map(transactionRequest);
+            transactionDomain.UserId = userId;
+
+            // add transaction
+            var transaction = await _transactionService.AddTransactionAsync(transactionDomain);
+
+            _logger.LogInformation("Request completed for adding a new transaction.");
             return Ok(SuccessResponse(_domainResponseMapper.Map(transaction)));
         }
 
@@ -119,7 +156,7 @@ namespace FinanceManager.API.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateTransaction([FromQuery]Guid id, [FromBody] TransactionRequest transactionRequest)
+        public async Task<IActionResult> UpdateTransaction([FromQuery] Guid id, [FromBody] TransactionRequest transactionRequest)
         {
             // TODO : Add Validations
 
