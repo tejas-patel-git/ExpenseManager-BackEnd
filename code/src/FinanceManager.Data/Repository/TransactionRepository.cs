@@ -9,6 +9,7 @@ namespace FinanceManager.Data.Repository;
 internal class TransactionRepository : Repository<TransactionDomain, Transaction, Guid>, ITransactionRepository
 {
     private readonly ILogger<TransactionRepository> _logger;
+    private readonly IMapper<TransactionDomain, Transaction> _domainEntityMapper;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TransactionRepository"/> class.
@@ -25,6 +26,7 @@ internal class TransactionRepository : Repository<TransactionDomain, Transaction
         : base(context, logger, domainEntityMapper, entityDomainMapper)
     {
         _logger = logger;
+        _domainEntityMapper = domainEntityMapper;
     }
 
     public override async Task UpdateAsync(TransactionDomain transactionDomain)
@@ -41,11 +43,15 @@ internal class TransactionRepository : Repository<TransactionDomain, Transaction
                 return;
             }
 
+            // map
+            var transaction = _domainEntityMapper.Map(transactionDomain);
+
             // Update the properties of the existing entity
-            existingTransaction.IsExpense = transactionDomain.IsExpense;
-            existingTransaction.Date = transactionDomain.Date;
-            existingTransaction.Amount = transactionDomain.Amount;
-            existingTransaction.Description = transactionDomain.Description;
+            existingTransaction.IsExpense = transaction.IsExpense;
+            existingTransaction.Date = transaction.Date;
+            existingTransaction.Amount = transaction.Amount;
+            existingTransaction.Description = transaction.Description;
+            existingTransaction.Payments = transaction.Payments;
 
             _logger.LogInformation($"'{typeof(Transaction).Name}' with id {existingTransaction.Id} updated.");
         }

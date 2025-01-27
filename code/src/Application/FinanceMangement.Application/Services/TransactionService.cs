@@ -87,12 +87,12 @@ internal class TransactionService : BaseService, ITransactionService
     }
 
     /// <inheritdoc/>
-    public async Task UpdateTransactionAsync(TransactionDomain transactionDto)
+    public async Task UpdateTransactionAsync(TransactionDomain transactionDomain)
     {
-        ArgumentNullException.ThrowIfNull(transactionDto);
+        ArgumentNullException.ThrowIfNull(transactionDomain);
 
         // Update data to repository
-        await _unitOfWork.TransactionRepository.UpdateAsync(transactionDto);
+        await _unitOfWork.TransactionRepository.UpdateAsync(transactionDomain);
         var rowsUpdated = await _unitOfWork.SaveChangesAsync();
 
         _logger.LogInformation($"{rowsUpdated} rows updated while updating {typeof(TransactionDomain).Name}");

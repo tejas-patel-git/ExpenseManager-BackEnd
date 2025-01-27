@@ -71,6 +71,6 @@ namespace FinanceManager.Data.Models
         public virtual User User { get; set; }
 
         // Navigation property for many-to-many relationship
-        public virtual ICollection<TransactionPayment> Payments { get; set; }
+        public virtual ICollection<TransactionPayment> Payments { get; set; } = [];
     }
 }
