@@ -40,5 +40,5 @@ public class TransactionDomain : IDomainModel<Guid>
     /// </summary>
     public string? Description { get; set; }
 
-    public ICollection<PaymentDomain> Payments { get; set; }
+    public ICollection<PaymentDomain> Payments { get; set; } = [];
 }
