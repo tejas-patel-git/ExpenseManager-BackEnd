@@ -91,7 +91,7 @@ internal class TransactionService : BaseService, ITransactionService
     {
         ArgumentNullException.ThrowIfNull(transactionDomain);
 
-        // Update data to repository
+        // update transaction
         await _unitOfWork.TransactionRepository.UpdateAsync(transactionDomain);
         var rowsUpdated = await _unitOfWork.SaveChangesAsync();
 

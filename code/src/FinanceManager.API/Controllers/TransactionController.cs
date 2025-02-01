@@ -179,8 +179,8 @@ namespace FinanceManager.API.Controllers
 
             // check if request have payment accounts
             var accountIds = transactionRequest.Payments.Accounts?.Where(acc => acc.AccountId != Guid.Empty)
-                                                                   .Select(acc => acc.AccountId)
-                                                                   .ToList();
+                                                                  .Select(acc => acc.AccountId)
+                                                                  .ToList();
             if (accountIds == null || accountIds.Count == 0)
             {
                 return BadRequest(FailureResponse("Payment account is missing."));
