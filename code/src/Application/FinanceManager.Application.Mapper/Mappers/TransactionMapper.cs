@@ -86,7 +86,7 @@ namespace FinanceManager.Application.Mapper.Mappers
                 foreach (var payment in source.Payments)
                     payments.Add(new()
                     {
-                        Id = source.Id,
+                        Id = payment.Id,
                         AccountId = payment.UserBankAccountId,
                         Amount = payment.Amount,
                     });
