@@ -43,7 +43,7 @@ internal class TransactionRepository : Repository<TransactionDomain, Transaction
 
             if (existingTransaction == null)
             {
-                _logger.LogWarning("'{transaction}' with id {id} not found.", nameof(Transaction), existingTransaction.Id);
+                _logger.LogWarning("'{transaction}' with id {id} not found.", nameof(Transaction), transaction.Id);
                 return;
             }
 
@@ -52,9 +52,10 @@ internal class TransactionRepository : Repository<TransactionDomain, Transaction
             existingTransaction.Date = transaction.Date;
             existingTransaction.Amount = transaction.Amount;
             existingTransaction.Description = transaction.Description;
+            existingTransaction.UpdatedAt = DateTime.UtcNow;
 
             // process payments
-            var requestAccountIds = transaction.Payments.Select(a => a.UserBankAccountId).ToList();
+            var existingPayments = transaction.Payments.Select(a => a.UserBankAccountId).ToList();
 
             // update existing payments or add new ones
             foreach (var payment in transaction.Payments)
@@ -79,7 +80,7 @@ internal class TransactionRepository : Repository<TransactionDomain, Transaction
 
             // remove orphaned payments
             var paymentsToRemove = existingTransaction.Payments
-                .Where(p => !requestAccountIds.Contains(p.UserBankAccountId))
+                .Where(p => !existingPayments.Contains(p.UserBankAccountId))
                 .ToList();
 
             foreach (var payment in paymentsToRemove)
