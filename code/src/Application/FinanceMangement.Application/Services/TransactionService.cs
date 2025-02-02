@@ -73,7 +73,7 @@ internal class TransactionService : BaseService, ITransactionService
 
         // add transaction & payment to repository
         var transaction = await _unitOfWork.TransactionRepository.AddAsync(transactionDomain);
-        
+
         // update current balance in respective accounts
         foreach (var account in transaction.Payments)
             await _accountsService.UpdateCurrentBalance(account.AccountId, transaction.IsExpense ? -account.Amount : account.Amount);
@@ -91,12 +91,29 @@ internal class TransactionService : BaseService, ITransactionService
     {
         ArgumentNullException.ThrowIfNull(transactionDomain);
 
+        var oldPayments = await _unitOfWork.PaymentRepository.GetAllAsync(x => x.TransactionId == transactionDomain.Id);
+        var oldTransaction = await _unitOfWork.TransactionRepository.GetByIdAsync(transactionDomain.Id);
+
+        if (oldTransaction == null) return;
+
         // update transaction
         await _unitOfWork.TransactionRepository.UpdateAsync(transactionDomain);
 
-        // update payment
-        await _unitOfWork.PaymentRepository.UpsertPayment(transactionDomain.Id, transactionDomain.Payments);
+        // update current balance of old payment accounts
+        foreach (var oldPayment in oldPayments)
+        {
+            // revert old payment account balance - ADD amount if it was an expense
+            await _unitOfWork.AccountsRepository.UpdateBalance(oldPayment.AccountId, oldTransaction.IsExpense ? oldPayment.Amount : -oldPayment.Amount);
+        }
 
+        // update current balance of new payment accounts
+        foreach (var newPayment in transactionDomain.Payments)
+        {
+            // add amount if not an expense
+            await _unitOfWork.AccountsRepository.UpdateBalance(newPayment.AccountId, transactionDomain.IsExpense ? -newPayment.Amount : newPayment.Amount);
+        }
+
+        // save changes
         var rowsUpdated = await _unitOfWork.SaveChangesAsync();
 
         _logger.LogInformation("{rowsUpdated} rows updated while {method}", rowsUpdated, nameof(UpdateTransactionAsync));

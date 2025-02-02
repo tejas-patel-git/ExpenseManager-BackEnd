@@ -58,17 +58,7 @@ internal class TransactionRepository : Repository<TransactionDomain, Transaction
             existingTransaction.Amount = transaction.Amount;
             existingTransaction.Description = transaction.Description;
             existingTransaction.UpdatedAt = DateTime.UtcNow;
-
-            // process payments
-            var paymentsBeforeUpdate = transaction.Payments.Select(a => a.UserBankAccountId).ToList();
-
-           
-            // remove orphaned payments
-            var paymentsToRemove = existingTransaction.Payments
-                .Where(p => !paymentsBeforeUpdate.Contains(p.UserBankAccountId))
-                .ToList();
-
-            if (paymentsToRemove != null && paymentsToRemove.Count > 0) await _paymentRepository.RemovePayment(paymentsToRemove);
+            existingTransaction.Payments = transaction.Payments;
 
             _logger.LogInformation("'{transaction} with id {id} updated.", nameof(Transaction), existingTransaction.Id);
         }
