@@ -131,14 +131,28 @@ public class TransactionServiceTests
     }
 
     [Fact]
-    public async Task UpdateTransactionAsync_ShouldUpdateTransaction()
+    public async Task UpdateTransactionAsync_ShouldUpdateTransactionAndBalances()
     {
         // Arrange
         var transactionDomain = _fixture.Create<TransactionDomain>();
+        var oldPayments = _fixture.CreateMany<PaymentDomain>(2).ToList();
+        var oldTransaction = _fixture.Create<TransactionDomain>();
 
-        _transactionRepositoryMock
-            .Setup(repo => repo.UpdateAsync(transactionDomain))
+        _unitOfWorkMock
+            .Setup(u => u.PaymentRepository.GetAllAsync(It.IsAny<Expression<Func<TransactionPayment, bool>>>()))
+            .ReturnsAsync(oldPayments);
+
+        _unitOfWorkMock
+            .Setup(u => u.TransactionRepository.GetByIdAsync(transactionDomain.Id))
+            .ReturnsAsync(oldTransaction);
+
+        _unitOfWorkMock
+            .Setup(u => u.TransactionRepository.UpdateAsync(transactionDomain))
             .Returns(Task.CompletedTask);
+
+        _unitOfWorkMock
+            .Setup(u => u.AccountsRepository.UpdateBalance(It.IsAny<Guid>(), It.IsAny<decimal>()))
+            .ReturnsAsync(true);
 
         _unitOfWorkMock
             .Setup(u => u.SaveChangesAsync())
@@ -148,8 +162,51 @@ public class TransactionServiceTests
         await _transactionService.UpdateTransactionAsync(transactionDomain);
 
         // Assert
-        _transactionRepositoryMock.Verify(repo => repo.UpdateAsync(transactionDomain), Times.Once);
+        _unitOfWorkMock.Verify(u => u.PaymentRepository.GetAllAsync(It.IsAny<Expression<Func<TransactionPayment, bool>>>()), Times.Once);
+        _unitOfWorkMock.Verify(u => u.TransactionRepository.GetByIdAsync(transactionDomain.Id), Times.Once);
+        _unitOfWorkMock.Verify(u => u.TransactionRepository.UpdateAsync(transactionDomain), Times.Once);
+
+        // Verify that the balances of old payment accounts are updated correctly
+        foreach (var oldPayment in oldPayments)
+        {
+            _unitOfWorkMock.Verify(u => u.AccountsRepository.UpdateBalance(
+                oldPayment.AccountId,
+                oldTransaction.IsExpense ? oldPayment.Amount : -oldPayment.Amount), Times.Once);
+        }
+
+        // Verify that the balances of new payment accounts are updated correctly
+        foreach (var newPayment in transactionDomain.Payments)
+        {
+            _unitOfWorkMock.Verify(u => u.AccountsRepository.UpdateBalance(
+                newPayment.AccountId,
+                transactionDomain.IsExpense ? -newPayment.Amount : newPayment.Amount), Times.Once);
+        }
+
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Once);
+    }
+
+    [Fact]
+    public async Task UpdateTransactionAsync_ShouldNotUpdate_WhenOldTransactionNotFound()
+    {
+        // Arrange
+        var transactionDomain = _fixture.Create<TransactionDomain>();
+
+        _unitOfWorkMock
+            .Setup(u => u.TransactionRepository.GetByIdAsync(transactionDomain.Id))
+            .ReturnsAsync((TransactionDomain?)null);
+        _unitOfWorkMock
+            .Setup(u => u.PaymentRepository.GetAllAsync(It.IsAny<Expression<Func<TransactionPayment, bool>>>()))
+            .ReturnsAsync(It.IsAny<IEnumerable<PaymentDomain>>);
+
+
+        // Act
+        await _transactionService.UpdateTransactionAsync(transactionDomain);
+
+        // Assert
+        _unitOfWorkMock.Verify(u => u.TransactionRepository.GetByIdAsync(transactionDomain.Id), Times.Once);
+        _unitOfWorkMock.Verify(u => u.TransactionRepository.UpdateAsync(It.IsAny<TransactionDomain>()), Times.Never);
+        _unitOfWorkMock.Verify(u => u.AccountsRepository.UpdateBalance(It.IsAny<Guid>(), It.IsAny<decimal>()), Times.Never);
+        _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Never);
     }
 
     [Fact]
