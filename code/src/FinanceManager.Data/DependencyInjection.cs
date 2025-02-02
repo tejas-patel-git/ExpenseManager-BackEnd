@@ -9,6 +9,7 @@ public static class DependencyInjection
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         // register
+        services.AddScoped<IPaymentRepository, PaymentsRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IAccountsRepository, AccountsRepository>();

@@ -14,6 +14,10 @@ namespace FinanceManager.Application.Mapper
         {
             // register mappers
 
+            // payment model mappers
+            services.AddSingleton<IMapper<TransactionPayment, PaymentDomain>, PaymentEntityToDomainMapper>();
+            services.AddSingleton<IMapper<PaymentDomain, TransactionPayment>, PaymentDomainToEntityMapper>();
+
             // transaction model mappers
             services.AddSingleton<IMapper<TransactionRequest, TransactionDomain>, TransactionRequestToDomainMapper>();
             services.AddSingleton<IMapper<TransactionDomain, TransactionResponse>, TransactionDomainToResponseMapper>();

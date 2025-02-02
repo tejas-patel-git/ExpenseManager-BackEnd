@@ -114,12 +114,6 @@ internal class Repository<TDomain, TEntity, TId> : IRepository<TDomain, TEntity,
         {
             var entity = domainEntityMapper.Map(domain);
 
-            if (entity is IAuditableEntity auditableEntity)
-            {
-                auditableEntity.CreatedAt = DateTime.UtcNow;
-                auditableEntity.UpdatedAt = DateTime.UtcNow;
-            }
-
             await AddAsync(entity);
 
             return entityDomainMapper.Map(entity);
@@ -131,8 +125,14 @@ internal class Repository<TDomain, TEntity, TId> : IRepository<TDomain, TEntity,
         }
     }
 
-    private async Task AddAsync(TEntity entity)
+    public async Task AddAsync(TEntity entity)
     {
+        if (entity is IAuditableEntity auditableEntity)
+        {
+            auditableEntity.CreatedAt = DateTime.UtcNow;
+            auditableEntity.UpdatedAt = DateTime.UtcNow;
+        }
+
         await dbSet.AddAsync(entity);
         _logger.LogInformation("'{type}' added successfully with Id {id}.", typeof(TEntity).Name, entity.Id);
     }

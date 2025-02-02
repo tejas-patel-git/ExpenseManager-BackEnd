@@ -158,6 +158,7 @@ namespace FinanceManager.API.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> UpdateTransaction([FromQuery] Guid id, [FromBody] TransactionRequest transactionRequest)
         {
+            _logger.LogInformation("Received transaction update request");
             // TODO : Add Validations
 
             if (!ModelState.IsValid)
@@ -199,11 +200,15 @@ namespace FinanceManager.API.Controllers
                     return BadRequest(FailureResponse("Payment account does not exist."));
             }
 
+            // map transaction to domain
             var transactionDomain = _requestDomainMapper.Map(transactionRequest);
             transactionDomain.Id = id;
             transactionDomain.UserId = userId;
+            foreach (var payment in transactionDomain.Payments) payment.TransactionId = transactionDomain.Id;
 
             await _transactionService.UpdateTransactionAsync(transactionDomain);
+
+            _logger.LogInformation("Transaction update request fulfilled");
             return NoContent();
         }
 

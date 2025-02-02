@@ -13,6 +13,7 @@ public class UnitOfWork : IUnitOfWork
     private readonly IUserRepository _userRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly IAccountsRepository _accountsRepository;
+    private readonly IPaymentRepository _paymentRepository;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UnitOfWork"/> class.
@@ -24,12 +25,14 @@ public class UnitOfWork : IUnitOfWork
     public UnitOfWork(AppDbContext context,
                       ITransactionRepository transactionRepository,
                       IUserRepository userRepository,
-                      IAccountsRepository accountsRepository)
+                      IAccountsRepository accountsRepository,
+                      IPaymentRepository paymentRepository)
     {
         _context = context;
         _transactionRepository = transactionRepository;
         _userRepository = userRepository;
         _accountsRepository = accountsRepository;
+        _paymentRepository = paymentRepository;
     }
 
     /// <inheritdoc/>
@@ -37,6 +40,9 @@ public class UnitOfWork : IUnitOfWork
 
     /// <inheritdoc/>
     public ITransactionRepository TransactionRepository => _transactionRepository;
+
+    /// <inheritdoc/>
+    public IPaymentRepository PaymentRepository => _paymentRepository;
 
     /// <inheritdoc/>
     public IAccountsRepository AccountsRepository => _accountsRepository;
@@ -71,7 +77,7 @@ public class UnitOfWork : IUnitOfWork
     public void Dispose()
     {
         _transaction?.Dispose();
-        _context.Dispose();
+        _context?.Dispose();
 
         GC.SuppressFinalize(this);
     }
