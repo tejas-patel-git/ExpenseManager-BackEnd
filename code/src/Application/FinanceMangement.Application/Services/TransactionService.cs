@@ -93,9 +93,13 @@ internal class TransactionService : BaseService, ITransactionService
 
         // update transaction
         await _unitOfWork.TransactionRepository.UpdateAsync(transactionDomain);
+
+        // update payment
+        await _unitOfWork.PaymentRepository.UpsertPayment(transactionDomain.Id, transactionDomain.Payments);
+
         var rowsUpdated = await _unitOfWork.SaveChangesAsync();
 
-        _logger.LogInformation($"{rowsUpdated} rows updated while updating {typeof(TransactionDomain).Name}");
+        _logger.LogInformation("{rowsUpdated} rows updated while {method}", rowsUpdated, nameof(UpdateTransactionAsync));
     }
 
     /// <inheritdoc/>

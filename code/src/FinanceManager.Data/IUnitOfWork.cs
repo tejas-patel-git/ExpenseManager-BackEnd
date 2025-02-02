@@ -17,6 +17,7 @@ public interface IUnitOfWork : IDisposable
     /// </summary>
     ITransactionRepository TransactionRepository { get; }
     IAccountsRepository AccountsRepository { get; }
+    IPaymentRepository PaymentRepository { get; }
 
     /// <summary>
     /// Saves all pending changes to the database.

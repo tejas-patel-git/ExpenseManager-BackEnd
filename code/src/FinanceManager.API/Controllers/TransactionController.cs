@@ -199,9 +199,11 @@ namespace FinanceManager.API.Controllers
                     return BadRequest(FailureResponse("Payment account does not exist."));
             }
 
+            // map transaction to domain
             var transactionDomain = _requestDomainMapper.Map(transactionRequest);
             transactionDomain.Id = id;
             transactionDomain.UserId = userId;
+            foreach (var payment in transactionDomain.Payments) payment.TransactionId = transactionDomain.Id;
 
             await _transactionService.UpdateTransactionAsync(transactionDomain);
             return NoContent();

@@ -10,6 +10,8 @@ internal class TransactionRepository : Repository<TransactionDomain, Transaction
 {
     private readonly ILogger<TransactionRepository> _logger;
     private readonly IMapper<TransactionDomain, Transaction> _domainEntityMapper;
+    private readonly IMapper<Transaction, TransactionDomain> entityDomainMapper;
+    private readonly IPaymentRepository _paymentRepository;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TransactionRepository"/> class.
@@ -22,11 +24,14 @@ internal class TransactionRepository : Repository<TransactionDomain, Transaction
     public TransactionRepository(AppDbContext context,
                                  ILogger<TransactionRepository> logger,
                                  IMapper<TransactionDomain, Transaction> domainEntityMapper,
-                                 IMapper<Transaction, TransactionDomain> entityDomainMapper)
+                                 IMapper<Transaction, TransactionDomain> entityDomainMapper,
+                                 IPaymentRepository paymentRepository)
         : base(context, logger, domainEntityMapper, entityDomainMapper)
     {
         _logger = logger;
         _domainEntityMapper = domainEntityMapper;
+        this.entityDomainMapper = entityDomainMapper;
+        _paymentRepository = paymentRepository;
     }
 
     public override async Task UpdateAsync(TransactionDomain transactionDomain)
@@ -55,38 +60,15 @@ internal class TransactionRepository : Repository<TransactionDomain, Transaction
             existingTransaction.UpdatedAt = DateTime.UtcNow;
 
             // process payments
-            var existingPayments = transaction.Payments.Select(a => a.UserBankAccountId).ToList();
+            var paymentsBeforeUpdate = transaction.Payments.Select(a => a.UserBankAccountId).ToList();
 
-            // update existing payments or add new ones
-            foreach (var payment in transaction.Payments)
-            {
-                var existingPayment = existingTransaction.Payments
-                    .FirstOrDefault(p => p.UserBankAccountId == payment.UserBankAccountId);
-
-                if (existingPayment != null)
-                {
-                    existingPayment.Amount = payment.Amount;
-                }
-                else
-                {
-                    existingTransaction.Payments.Add(new TransactionPayment
-                    {
-                        UserBankAccountId = payment.UserBankAccountId,
-                        Amount = payment.Amount,
-                        TransactionId = existingTransaction.Id
-                    });
-                }
-            }
-
+           
             // remove orphaned payments
             var paymentsToRemove = existingTransaction.Payments
-                .Where(p => !existingPayments.Contains(p.UserBankAccountId))
+                .Where(p => !paymentsBeforeUpdate.Contains(p.UserBankAccountId))
                 .ToList();
 
-            foreach (var payment in paymentsToRemove)
-            {
-                existingTransaction.Payments.Remove(payment);
-            }
+            if (paymentsToRemove != null && paymentsToRemove.Count > 0) await _paymentRepository.RemovePayment(paymentsToRemove);
 
             _logger.LogInformation("'{transaction} with id {id} updated.", nameof(Transaction), existingTransaction.Id);
         }
