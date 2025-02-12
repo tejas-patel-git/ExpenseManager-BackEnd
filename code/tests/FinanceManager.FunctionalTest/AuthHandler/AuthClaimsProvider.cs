@@ -1,11 +1,11 @@
-﻿using System.Security.Claims;
+﻿using FinanceManager.FunctionalTest.Configuration;
+using System.Security.Claims;
 
 namespace FinanceManager.FunctionalTest.AuthHandler
 {
     public class AuthClaimsProvider
     {
         public IList<Claim> Claims { get; } = [];
-        public static readonly string UserId = Guid.NewGuid().ToString();
 
         public AuthClaimsProvider(IList<Claim> claims)
         {
@@ -14,7 +14,7 @@ namespace FinanceManager.FunctionalTest.AuthHandler
 
         public AuthClaimsProvider()
         {
-            Claims.Add(new Claim(ClaimTypes.NameIdentifier, UserId));
+            Claims.Add(new Claim(ClaimTypes.NameIdentifier, TestConstants.UserId));
         }
     }
 }

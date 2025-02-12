@@ -1,5 +1,6 @@
 ﻿using FinanceManager.Data;
 using FinanceManager.FunctionalTest.AuthHandler;
+using FinanceManager.FunctionalTest.Configuration;
 using FluentAssertions.Common;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -59,7 +60,7 @@ namespace FinanceManager.FunctionalTest.Abstraction
         {
             db.Users.Add(new Data.Models.User()
             {
-                Id = AuthClaimsProvider.UserId,
+                Id = TestConstants.UserId,
                 Email = "fm-svc-functional-test@gmail.com",
                 IsEmailVerified = false,
                 FamilyName = "Doe",
