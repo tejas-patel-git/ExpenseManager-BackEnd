@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Net.Http.Json;
 
-namespace FinanceManager.FunctionalTest.AccountTests
+namespace FinanceManager.FunctionalTest.Tests.AccountTests
 {
     public class AccountTest : BaseAccountTest
     {
@@ -29,7 +29,7 @@ namespace FinanceManager.FunctionalTest.AccountTests
 
             // Act
             var response = await HttpClient.PostAsJsonAsync("/api/accounts", newAccount);
-            
+
             // Assert: Response data
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var createdAccount = await response.Content.ReadFromJsonAsync<Response<AccountsResponse>>();
