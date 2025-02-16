@@ -1,23 +1,30 @@
 ﻿using FinanceManager.Data;
+using FinanceManager.Data.Models;
+using FinanceManager.FunctionalTest.TestData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http.Headers;
 
 namespace FinanceManager.FunctionalTest.Abstraction
 {
-    public class BaseFunctionalTest : IClassFixture<FunctionalTestWebAppFactory>
+    public class BaseFunctionalTest : IClassFixture<FunctionalTestWebAppFactory>, IAsyncLifetime
     {
-        private readonly IServiceScopeFactory _scopeFactory;
+        protected readonly string UserId = Guid.NewGuid().ToString();
+        protected readonly string BaseUrl = "api";
 
         public HttpClient HttpClient { get; init; }
-        protected AppDbContext Context { get; }
+        public IServiceProvider ServiceProvider { get; init; }
+        protected AppDbContext Context { get; init; }
 
-        internal BaseFunctionalTest(FunctionalTestWebAppFactory factory)
+        public BaseFunctionalTest(FunctionalTestWebAppFactory factory)
         {
             HttpClient = factory.CreateClient();
+            ServiceProvider = factory.Services;
+            Context = ServiceProvider.GetService<AppDbContext>() ?? throw new Exception("Database context not found");
+            Context.Database.EnsureCreated();
 
-            _scopeFactory = factory.Services.GetRequiredService<IServiceScopeFactory>();
-            Context = _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<AppDbContext>();
+            // Set the UserId in TestFixtureContext so that each test class has its own user registered in TestAuthHandler
+            var testFixtureContext = ServiceProvider.GetRequiredService<TestFixtureContext>();
+            testFixtureContext.UserId = UserId;
         }
 
         protected void DumpTable<TEntity>(DbSet<TEntity> dbSet) where TEntity : class
@@ -27,6 +34,30 @@ namespace FinanceManager.FunctionalTest.Abstraction
             {
                 Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(entity));
             }
+        }
+
+        private async Task SeedUserData(AppDbContext context)
+        {
+            context.Users.Add(TestDataGenerator.Generate<User>(faker => faker.RuleFor(u => u.Id, UserId)));
+            await context.SaveChangesAsync();
+        }
+
+        public async Task InitializeAsync()
+        {
+            await SeedUserData(Context);
+        }
+
+        public async Task DisposeAsync()
+        {
+            var accountsToDelete = Context.UserBankAccounts.Where(a => a.UserId == UserId);
+            var userToDelete = Context.Users.Where(u => u.Id == UserId);
+
+            Context.UserBankAccounts.RemoveRange(accountsToDelete);
+            Context.Users.RemoveRange(userToDelete);
+
+            await Context.SaveChangesAsync();
+
+            await Context.DisposeAsync();
         }
     }
 }

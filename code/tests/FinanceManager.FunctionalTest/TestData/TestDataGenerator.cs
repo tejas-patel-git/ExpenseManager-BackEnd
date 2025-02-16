@@ -5,13 +5,14 @@ namespace FinanceManager.FunctionalTest.TestData
     public static class TestDataGenerator
     {
         private static readonly Dictionary<Type, object> _fakerRegistry = [];
-
         static TestDataGenerator()
         {
+            RegisterFaker(TestDataFakers.UserFaker());
+
             RegisterFaker(TestDataFakers.UserBankAccountsFaker());
+            RegisterFaker(TestDataFakers.AccountsRequestFaker());
 
             RegisterFaker(TestDataFakers.TransactionRequestFaker());
-            RegisterFaker(TestDataFakers.TransactionFaker());
         }
 
         public static void RegisterFaker<T>(Faker<T> faker) where T : class

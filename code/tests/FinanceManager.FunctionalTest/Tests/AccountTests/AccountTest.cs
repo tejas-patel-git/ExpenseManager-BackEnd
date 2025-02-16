@@ -1,4 +1,5 @@
 ﻿using FinanceManager.FunctionalTest.Abstraction;
+using FinanceManager.FunctionalTest.TestData;
 using FinanceManager.Models.Request;
 using FinanceManager.Models.Response;
 using FluentAssertions;
@@ -18,14 +19,7 @@ namespace FinanceManager.FunctionalTest.Tests.AccountTests
         public async Task AddAccount_CreatesNewAccount()
         {
             // Arranges
-            var newAccount = new AccountsRequest
-            {
-                AccountName = "Test Account",
-                AccountNumber = "12345",
-                BankName = Domain.Enums.BankName.None,
-                Balance = 100.50M,
-                AccountType = Domain.Enums.AccountType.Savings
-            };
+            var newAccount = TestDataGenerator.Generate<AccountsRequest>();
 
             // Act
             var response = await HttpClient.PostAsJsonAsync("/api/accounts", newAccount);
@@ -38,7 +32,7 @@ namespace FinanceManager.FunctionalTest.Tests.AccountTests
             createdAccount.Data.InitialBalance.Should().Be(newAccount.Balance);
 
             // Assert: Validate database
-            var dbAccount = await Context.UserBankAccounts.FirstOrDefaultAsync(a => a.AccountName == newAccount.AccountName);
+            var dbAccount = await Context.UserBankAccounts.FirstOrDefaultAsync(a => a.Id == createdAccount.Data.AccountId);
             dbAccount.Should().NotBeNull();
             dbAccount!.AccountName.Should().Be(newAccount.AccountName);
             dbAccount.AccountNumber.Should().Be(newAccount.AccountNumber);

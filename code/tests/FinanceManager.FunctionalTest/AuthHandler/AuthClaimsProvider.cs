@@ -1,5 +1,4 @@
-﻿using FinanceManager.FunctionalTest.Configuration;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
 namespace FinanceManager.FunctionalTest.AuthHandler
 {
@@ -12,9 +11,9 @@ namespace FinanceManager.FunctionalTest.AuthHandler
             Claims = claims;
         }
 
-        public AuthClaimsProvider()
+        public AuthClaimsProvider(TestFixtureContext context)
         {
-            Claims.Add(new Claim(ClaimTypes.NameIdentifier, TestConstants.UserId));
+            Claims.Add(new Claim(ClaimTypes.NameIdentifier, context.UserId));
         }
     }
 }
