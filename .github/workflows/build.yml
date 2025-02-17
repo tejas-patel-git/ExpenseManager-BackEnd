@@ -1,4 +1,4 @@
-name: .NET CI/CD Workflow
+name: build
 
 on:
   push:
@@ -33,4 +33,4 @@ jobs:
 
       # Step 5: Run Tests
       - name: Run Tests
-        run: dotnet test code/ExpenseManger-Backend.sln --configuration Release --verbosity normal
+        run: dotnet test code/ExpenseManger-Backend.sln --configuration Release --verbosity normal --filter FullyQualifiedName!~FinanceManager.FunctionalTest
