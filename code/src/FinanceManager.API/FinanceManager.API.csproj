@@ -17,6 +17,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="FinanceManager.FunctionalTest"/>
+	</ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Application\FinanceMangement.Application\FinanceManager.Application.csproj" />
     <ProjectReference Include="..\FinanceManager.Configuration\FinanceManager.Configuration.csproj" />

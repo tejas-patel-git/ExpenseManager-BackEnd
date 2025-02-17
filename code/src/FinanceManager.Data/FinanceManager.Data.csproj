@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+  	<InternalsVisibleTo Include="FinanceManager.FunctionalTest"/>
+  </ItemGroup>
+	
+  <ItemGroup>
     <ProjectReference Include="..\FinanceManager.Domain\FinanceManager.Domain.csproj" />
   </ItemGroup>
 
