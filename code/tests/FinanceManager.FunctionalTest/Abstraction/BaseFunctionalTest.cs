@@ -56,8 +56,6 @@ namespace FinanceManager.FunctionalTest.Abstraction
             Context.Users.RemoveRange(userToDelete);
 
             await Context.SaveChangesAsync();
-
-            await Context.DisposeAsync();
         }
     }
 }
