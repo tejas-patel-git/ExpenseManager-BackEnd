@@ -58,36 +58,89 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             dbTransaction.Payments.Sum(p => p.Amount).Should().Be(newTransaction.Amount);
         }
 
-        //[Fact(DisplayName = "Get Transaction By Id - Should Return a Valid Transaction")]
-        //public async Task GetTransactionById_ReturnsValidTransaction()
-        //{
-        //    // Arrange
-        //    var newTransaction = new TransactionRequest
-        //    {
-        //        IsExpense = false,
-        //        Amount = 50M,
-        //        Date = DateTime.Parse("2024-11-01T10:00:00"),
-        //        Description = "Test Transaction",
-        //        Payments = new Payment
-        //        {
-        //            Accounts =
-        //            [
-        //                new Accounts { AccountId = Guid.Parse("07250AAA-6E32-4389-837E-2F60CB7FED42"), Amount = 25M },
-        //                new Accounts { AccountId = Guid.Parse("D95654CE-DBF3-4C3B-876B-6C3A2B41808A"), Amount = 25M }
-        //            ]
-        //        }
-        //    };
+        [Theory(DisplayName = "Account Balance gets updated correctly after new transaction is posted")]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task AccountsBalanceUpdatesAfterNewTransaction(bool isExpense)
+        {
+            // Arrange
+            const int ACCOUNT_COUNTS = 3;
+            var fakeAccounts = TestDataGenerator.GenerateMany<AccountsRequest>(ACCOUNT_COUNTS);
+            var fakeTransaction = TestDataGenerator.Generate<TransactionRequest>(faker => faker.RuleFor(a => a.IsExpense, isExpense));
+            var postedFakeAccounts = new List<AccountsResponse>();
 
-        //    var transactionId = await CreateTestTransactionAsync(newTransaction);
+            foreach (var account in fakeAccounts)
+            {
+                // add accounts using actual api
+                var accountResponse = await PostAccount(account);
 
-        //    // Act
-        //    var transaction = await GetTransactionByIdAsync(transactionId.Value);
+                // validate response
+                accountResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+                var accountResponseBody = await accountResponse.Content.ReadFromJsonAsync<Response<AccountsResponse>>();
+                accountResponseBody.Should().NotBeNull("should have got response from account post request");
 
-        //    // Assert
-        //    transaction.Should().NotBeNull();
-        //    transaction!.TransactionId.Should().Be(transactionId.Value);
-        //    transaction.Amount.Should().Be(50M);
-        //}
+                // collect created accounts
+                postedFakeAccounts.Add(accountResponseBody!.Data!);
+            }
+
+            // divide the transaction amount equally in all accounts
+            int eachAccountTransactionAmount = (int)(fakeTransaction.Amount / postedFakeAccounts.Count);
+            foreach (var account in postedFakeAccounts)
+            {
+                fakeTransaction.Payments.Accounts.Add(new() { AccountId = account.AccountId, Amount = eachAccountTransactionAmount });
+            }
+
+            decimal remainingTransactionAmount = fakeTransaction.Amount - (eachAccountTransactionAmount * postedFakeAccounts.Count);
+            fakeTransaction.Payments.Accounts.ToList()[0].Amount += remainingTransactionAmount;
+            //var currentBalance = Context.UserBankAccounts
+
+
+            // Act
+            var transactionResponse = await PostTransaction(fakeTransaction);
+
+            // Assert : validate transaction properties
+            transactionResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            var transactionResponseBody = await transactionResponse.Content.ReadFromJsonAsync<Response<TransactionResponse>>();
+            transactionResponseBody.ValidateTransactionResponseModel(fakeTransaction);
+
+            // Assert : validate accounts from api
+            var accounts = new List<AccountsResponse>();
+            foreach (var account in postedFakeAccounts)
+            {
+                // get accounts using actual api
+                var accountResponse = await GetAccountsById(account.AccountId);
+
+                // validate response
+                accountResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+                var accountResponseBody = await accountResponse.Content.ReadFromJsonAsync<Response<AccountsResponse>>();
+                accountResponseBody.Should().NotBeNull("should have got response from account post request");
+
+                // collect created accounts
+                accounts.Add(accountResponseBody!.Data!);
+            }
+
+            accounts.Should().HaveCount(ACCOUNT_COUNTS);
+
+            var excludedAccountId = fakeTransaction.Payments.Accounts.First().AccountId;
+            accounts.Where(a => a.AccountId != excludedAccountId)
+                   .Should().AllSatisfy(a =>
+                   {
+                       var previousBalance = postedFakeAccounts.First(fa => fa.AccountId == a.AccountId).CurrentBalance;
+                       var shouldBeBalance = isExpense ? previousBalance - eachAccountTransactionAmount : previousBalance + eachAccountTransactionAmount;
+                       a.CurrentBalance.Should().Be(shouldBeBalance);
+                   });
+            //accounts.First(a => a.AccountId == excludedAccountId).CurrentBalance.Should().Be(
+            //       postedFakeAccounts.First(fa => fa.AccountId == excludedAccountId).CurrentBalance
+            //       + eachAccountTransactionAmount + remainingTransactionAmount);
+
+            accounts.First(a => a.AccountId == excludedAccountId).CurrentBalance
+                    .Should().Be(
+                        (isExpense
+                           ? postedFakeAccounts.First(fa => fa.AccountId == excludedAccountId).CurrentBalance - eachAccountTransactionAmount - remainingTransactionAmount
+                           : postedFakeAccounts.First(fa => fa.AccountId == excludedAccountId).CurrentBalance + eachAccountTransactionAmount + remainingTransactionAmount
+                         ));
+
+        }
 
         //[Fact(DisplayName = "Get All Transactions - Should Return a List with Required Fields")]
         //public async Task GetAllTransactions_ReturnsTransactionsWithRequiredFields()

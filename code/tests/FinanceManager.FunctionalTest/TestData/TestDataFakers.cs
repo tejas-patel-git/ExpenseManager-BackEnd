@@ -43,7 +43,7 @@ internal static class TestDataFakers
                         .RuleFor(t => t.Amount, f => f.Finance.Amount(10, 500))
                         .RuleFor(t => t.Date, f => f.Date.Recent())
                         .RuleFor(t => t.Description, f => f.Commerce.ProductName())
-                        .RuleFor(t => t.Payments, new Payment() { Accounts = [] });
+                        .RuleFor(t => t.Payments, f => new Payment() { Accounts = [] });
     }
 
     internal static Faker<UserBankAccounts> UserBankAccountsFaker()
