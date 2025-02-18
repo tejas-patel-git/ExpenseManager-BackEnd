@@ -8,16 +8,23 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
     public class BaseTransactionTest : BaseFunctionalTest
     {
         private readonly string TransactionEndpoint;
+        private readonly string AccountEndpoint;
         private readonly string QueryParamId = "id";
 
         internal BaseTransactionTest(FunctionalTestWebAppFactory factory) : base(factory)
         {
             TransactionEndpoint = $"{BaseUrl}/transaction";
+            AccountEndpoint = $"{BaseUrl}/accounts";
         }
 
         protected async Task<HttpResponseMessage> PostTransaction(object transactionPayload)
         {
             return await HttpClient.PostAsJsonAsync(TransactionEndpoint, transactionPayload);
+        }
+
+        protected async Task<HttpResponseMessage> PostAccount(object accountPayload)
+        {
+            return await HttpClient.PostAsJsonAsync(AccountEndpoint, accountPayload);
         }
 
         protected async Task<TransactionResponse?> GetTransactionByIdAsync(Guid transactionId)
@@ -26,6 +33,12 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             var response = await HttpClient.GetAsync(requestUri);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<TransactionResponse>();
+        }
+
+        protected async Task<HttpResponseMessage> GetAccountsById(Guid accountId)
+        {
+            var requestUri = BuildUriWithQuery(AccountEndpoint, QueryParamId, accountId.ToString());
+            return await HttpClient.GetAsync(requestUri);
         }
 
         protected async Task<List<TransactionResponse>?> GetAllTransactionsAsync()
