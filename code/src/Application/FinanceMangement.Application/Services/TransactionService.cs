@@ -128,21 +128,4 @@ internal class TransactionService : BaseService, ITransactionService
 
         return isSuccess;
     }
-
-    /// <inheritdoc/>
-    public async Task<BalanceDomain?> GetBalanceAsync(string userId)
-    {
-        var transactions = await _unitOfWork.TransactionRepository.GetAllAsync(entity => entity.UserId == userId);
-
-        if (transactions == null || !transactions.Any()) return null;
-
-        // get the balance after accounting transactions
-        var balance = transactions.Sum(d => d.IsExpense ? -d.Amount : d.Amount);
-
-        // add the initial balance of the all accounts of user
-        var accounts = await _unitOfWork.AccountsRepository.GetAllAsync(acc => acc.UserId == userId);
-        if (accounts.Any()) balance += accounts.Sum(acc => acc.InitialBalance);
-
-        return new() { TransactionBalance = balance };
-    }
 }
