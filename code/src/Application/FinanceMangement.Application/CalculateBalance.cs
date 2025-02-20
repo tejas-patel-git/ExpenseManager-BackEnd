@@ -33,7 +33,7 @@ namespace FinanceManager.Application
             var totalBalance = accounts.Sum(a => a.InitialBalance + a.CurrentBalance);
             var accountsBalance = accounts.ToDictionary(a => a.AccountName, a=> a.InitialBalance + a.CurrentBalance);
 
-            return new() { AccountsBalance = accountsBalance };
+            return new() { AccountsBalance = accountsBalance, TotalBalance = totalBalance };
         }
     }
 }

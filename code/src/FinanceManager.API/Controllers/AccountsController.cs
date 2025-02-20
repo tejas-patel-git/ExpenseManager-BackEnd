@@ -137,7 +137,7 @@ namespace FinanceManager.API.Controllers
             var accountBalance = await _accountsService.GetBalanceAsync(userId);
             if (accountBalance == null) return NotFound("No accounts found");
 
-            return Ok(accountBalance);
+            return Ok(SuccessResponse(accountBalance));
         }
     }
 }
