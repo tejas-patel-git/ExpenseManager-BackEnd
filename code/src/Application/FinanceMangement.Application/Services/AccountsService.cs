@@ -7,13 +7,16 @@ namespace FinanceManager.Application.Services
     internal class AccountsService : BaseService, IAccountsService
     {
         private readonly ILogger<AccountsService> _logger;
+        private readonly ICalculateBalance _calculateBalance;
         private readonly IUnitOfWork _unitOfWork;
 
         public AccountsService(ILogger<AccountsService> logger,
+                               ICalculateBalance calculateBalance,
                                IUnitOfWork unitOfWork)
             : base(unitOfWork.UserRepository)
         {
             _logger = logger;
+            _calculateBalance = calculateBalance;
             _unitOfWork = unitOfWork;
         }
 
@@ -108,6 +111,15 @@ namespace FinanceManager.Application.Services
         public async Task<bool> UpdateCurrentBalance(Guid id, decimal amount)
         {
             return await _unitOfWork.AccountsRepository.UpdateBalance(id, amount);
+        }
+
+        public async Task<BalanceDomain?> GetBalanceAsync(string userId)
+        {
+            var accountsBalance = await _calculateBalance.GetAccountBalance(userId);
+
+            if (accountsBalance == null) return null;
+
+            return accountsBalance;
         }
     }
 }
