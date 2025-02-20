@@ -99,6 +99,15 @@ namespace FinanceManager.Application.Services
             return await _unitOfWork.AccountsRepository.ExistsAsync(ids);
         }
 
+        public async Task<bool> Exists(string userId, string accountName)
+        {
+            var account = await _unitOfWork.AccountsRepository.GetAllAsync(a => a.UserId ==  userId && a.AccountName == accountName);
+
+            if (account == null || !account.Any()) return false;
+
+            return true;
+        }
+
         public async Task<bool> Exists(ICollection<Guid> ids, string userId)
         {
             ArgumentNullException.ThrowIfNull(ids, nameof(ids));

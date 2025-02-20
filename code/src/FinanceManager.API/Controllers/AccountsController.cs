@@ -66,12 +66,21 @@ namespace FinanceManager.API.Controllers
             var userId = GetUserIdOfRequest();
             if (string.IsNullOrEmpty(userId)) return BadRequest(FailureResponse("User id is missing."));
 
+            if (await AccountNameExists(userId, accountsRequest.AccountName)) return Conflict(FailureResponse("Account name already exists"));
+
             var accountsDomain = _requestDomainMapper.Map(accountsRequest);
             accountsDomain.UserId = userId;
 
             if (!await _accountsService.AddAccount(accountsDomain)) return Conflict(FailureResponse("User does not exists"));
 
             return Ok(SuccessResponse(_domainResponseMapper.Map(accountsDomain)));
+        }
+
+        private async Task<bool> AccountNameExists(string userId, string accountName)
+        {
+            if (await _accountsService.Exists(userId, accountName)) return true;
+
+            return false;
         }
 
         [HttpPut]
