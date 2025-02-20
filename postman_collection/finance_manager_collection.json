@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "1f8ce10e-453d-4c40-aaa4-8aeb17a24e60",
 		"name": "Finanace Manager",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+		"schema": "https://schema.postman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
 		{
@@ -448,6 +448,24 @@
 				{
 					"name": "get all accounts by user",
 					"id": "e348c56e-e983-43ed-b7f3-93ab217ebc75",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							}
+						],
+						"url": "{{base_url}}/accounts"
+					},
+					"response": []
+				},
+				{
+					"name": "get account balance",
+					"id": "17b7db4d-6215-462b-b307-e92c6d778631",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
