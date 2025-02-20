@@ -378,7 +378,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"accountName\": \"accounNameTest\",\n  \"accountNumber\": \"12345\",\n  \"bankName\": 1,\n  \"accountType\": 1,\n  \"balance\": 10.6\n}",
+							"raw": "{\n  \"accountName\": \"accounNameTest2\",\n  \"accountNumber\": \"12345\",\n  \"bankName\": 1,\n  \"accountType\": 1,\n  \"balance\": 10.6\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -453,7 +453,7 @@
 								"value": "*/*"
 							}
 						],
-						"url": "{{base_url}}/accounts"
+						"url": "{{base_url}}/accounts/balance"
 					},
 					"response": []
 				},
