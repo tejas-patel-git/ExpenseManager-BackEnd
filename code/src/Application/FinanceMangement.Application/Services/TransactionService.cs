@@ -143,6 +143,6 @@ internal class TransactionService : BaseService, ITransactionService
         var accounts = await _unitOfWork.AccountsRepository.GetAllAsync(acc => acc.UserId == userId);
         if (accounts.Any()) balance += accounts.Sum(acc => acc.InitialBalance);
 
-        return new() { CurrentBalance = balance };
+        return new() { TransactionBalance = balance };
     }
 }

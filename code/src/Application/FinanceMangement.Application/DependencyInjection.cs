@@ -8,6 +8,7 @@ namespace FinanceManager.Application
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             // register services
+            services.AddScoped<ICalculateBalance, CalculateBalance>();
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAccountsService, AccountsService>();

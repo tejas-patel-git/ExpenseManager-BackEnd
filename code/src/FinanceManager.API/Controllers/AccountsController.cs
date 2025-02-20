@@ -123,5 +123,21 @@ namespace FinanceManager.API.Controllers
 
             return Ok(SuccessResponse($"Account with id '{id}' deleted successfully."));
         }
+
+        [HttpGet("balance")]
+        public async Task<IActionResult> GetBalance()
+        {
+            // retrieve user id from claims
+            string? userId = GetUserIdOfRequest();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User id is missing in the token.");
+            }
+
+            var accountBalance = await _accountsService.GetBalanceAsync(userId);
+            if (accountBalance == null) return NotFound("No accounts found");
+
+            return Ok(SuccessResponse(accountBalance));
+        }
     }
 }

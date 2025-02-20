@@ -13,5 +13,6 @@ namespace FinanceManager.Application.Services
         Task<IEnumerable<AccountsDomain>> GetAccounts(string userId);
         Task<bool> UpdateAccountAsync(AccountsDomain accountsDomain);
         Task<bool> Exists(string userId, string accountName);
+        Task<BalanceDomain?> GetBalanceAsync(string userId);
     }
 }
