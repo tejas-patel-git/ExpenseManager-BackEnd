@@ -12,5 +12,6 @@ namespace FinanceManager.Application.Services
         Task<AccountsDomain?> GetAccounts(Guid accountId, string userId);
         Task<IEnumerable<AccountsDomain>> GetAccounts(string userId);
         Task<bool> UpdateAccountAsync(AccountsDomain accountsDomain);
+        Task<bool> Exists(string userId, string accountName);
     }
 }
