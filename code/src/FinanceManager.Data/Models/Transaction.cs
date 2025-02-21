@@ -28,6 +28,7 @@ namespace FinanceManager.Data.Models
         /// If <c>true</c>, the transaction is an expense; otherwise, it is income.
         /// </remarks>
         public bool IsExpense { get; set; }
+        public byte TransactionType {  get; set; }
 
         /// <summary>
         /// Gets or sets the monetary amount of the transaction.

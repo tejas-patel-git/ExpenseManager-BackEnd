@@ -1,4 +1,5 @@
-﻿using FinanceManager.FunctionalTest.Abstraction;
+﻿using FinanceManager.Domain.Enums;
+using FinanceManager.FunctionalTest.Abstraction;
 using FinanceManager.FunctionalTest.TestData;
 using FinanceManager.Models.Request;
 using FinanceManager.Models.Response;
@@ -95,11 +96,19 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
         protected async Task<(List<AccountsResponse> CreatedAccounts, TransactionRequest Transaction)>
            SetupAccountsAndTransaction(bool isExpense, int numberOfAccounts)
         {
-            var accountRequests = TestDataGenerator.GenerateMany<AccountsRequest>(numberOfAccounts);
+            var accountRequests = TestDataGenerator.GenerateMany<AccountsRequest>(numberOfAccounts, faker =>
+            {
+                faker.RuleFor(a => a.AccountName, f => $"{f.Finance.AccountName()}_{f.UniqueIndex}");
+            });
             var createdAccounts = await CreateAccountsViaApi(accountRequests);
 
             var transaction = TestDataGenerator.Generate<TransactionRequest>(cfg =>
                 cfg.RuleFor(t => t.IsExpense, isExpense)
+                   .RuleFor(t => t.Type, (f, t) =>
+                   {
+                       if (t.IsExpense) return f.PickRandomWithout([TransactionType.Undefined, TransactionType.Income]);
+                       else return f.PickRandomWithout([TransactionType.Undefined, TransactionType.Expense]);
+                   })
             );
 
             DistributeTransactionAmount(transaction, createdAccounts.Select(a => a.AccountId).ToList());
@@ -113,7 +122,7 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             foreach (var request in requests)
             {
                 var response = await PostAccount(request);
-                response.StatusCode.Should().Be(HttpStatusCode.OK);
+                response.StatusCode.Should().Be(HttpStatusCode.OK, $"{response.Content.ReadAsStringAsync().Result}");
 
                 var content = await response.Content.ReadFromJsonAsync<Response<AccountsResponse>>();
                 createdAccounts.Add(content!.Data!);

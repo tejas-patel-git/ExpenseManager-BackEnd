@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FinanceManager.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace FinanceManager.Models.Request;
 
@@ -32,6 +34,11 @@ public class TransactionRequest : BaseRequest
     /// </summary>
     [Required]
     public bool IsExpense { get; set; }
+
+    [Required(ErrorMessage = "Transaction type is required.")]
+    //[EnumDataType(typeof(TransactionType), ErrorMessage = "Invalid transaction type.")]
+    [JsonConverter(typeof(JsonStringEnumConverter<TransactionType>))]
+    public TransactionType Type { get; set; }
 
     [Required]
     public Payment Payments { get; set; }
