@@ -23,6 +23,8 @@ namespace FinanceManager.Data
         internal DbSet<User> Users { get; set; }
         internal DbSet<UserBankAccounts> UserBankAccounts { get; set; }
         internal DbSet<TransactionPayment> Payments { get; set; }
+        internal DbSet<SavingsGoal> SavingsGoals { get; set; }
+        internal DbSet<SavingsTransaction> SavingsTransactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
