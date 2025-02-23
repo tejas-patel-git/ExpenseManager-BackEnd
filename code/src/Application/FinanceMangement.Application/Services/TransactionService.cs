@@ -1,6 +1,10 @@
 ﻿using FinanceManager.Data;
+using FinanceManager.Data.Models;
+using FinanceManager.Domain.Enums;
 using FinanceManager.Domain.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
+using System.Reflection.Metadata;
 
 namespace FinanceManager.Application.Services;
 
@@ -64,24 +68,53 @@ internal class TransactionService : BaseService, ITransactionService
     {
         ArgumentNullException.ThrowIfNull(transactionDomain);
 
-        // create new guid for each payments
-        foreach (var accounts in transactionDomain.Payments)
-            accounts.Id = Guid.NewGuid();
-
-        // create new guid for transaction
+        // Assign new GUID for the transaction
         transactionDomain.Id = Guid.NewGuid();
 
-        // add transaction & payment to repository
+
+        // Handle Savings transactions
+        if (transactionDomain.TransactionType == TransactionType.Savings)
+        {
+            var savingsGoal = await _unitOfWork.SavingsGoalRepository.GetByIdAsync(s => s.UserId == transactionDomain.UserId
+                                                                                  && s.Goal == transactionDomain.SavingsGoal) 
+                ?? throw new Exception("Savings goal does not exist");
+            var savingsTransaction = new SavingsTransactionDomain
+            {
+                Id = Guid.NewGuid(),
+                TransactionId = transactionDomain.Id,
+                SavingsGoalId = savingsGoal.Id
+            };
+
+            await _unitOfWork.SavingsTransactionRepository.AddAsync(savingsTransaction);
+            _logger.LogDebug("Added SavingsTransaction for Transaction ID {TransactionId} with SavingsGoalId {SavingsGoalId}",
+                transactionDomain.Id, savingsTransaction.SavingsGoalId);
+
+            // Do not process Payments for Savings transactions
+            if (transactionDomain.Payments.Count != 0)
+            {
+                _logger.LogWarning("Payments provided for Savings transaction ID {TransactionId} were ignored.", transactionDomain.Id);
+                transactionDomain.Payments = [];
+            }
+        }
+        else
+        {
+            // Assign new GUIDs for payments and process them for non-Savings transactions
+            foreach (var payment in transactionDomain.Payments)
+            {
+                payment.Id = Guid.NewGuid();
+                //await _unitOfWork.PaymentRepository.AddAsync(payment); // Explicitly add to PaymentRepository
+                await _accountsService.UpdateCurrentBalance(
+                    payment.AccountId,
+                    transactionDomain.IsExpense ? -payment.Amount : payment.Amount
+                );
+            }
+        }
+
+        // Add the base transaction
         var transaction = await _unitOfWork.TransactionRepository.AddAsync(transactionDomain);
-
-        // update current balance in respective accounts
-        foreach (var account in transaction.Payments)
-            await _accountsService.UpdateCurrentBalance(account.AccountId, transaction.IsExpense ? -account.Amount : account.Amount);
-
-        // save repository changes
+        // Save all changes
         var rowsUpdated = await _unitOfWork.SaveChangesAsync();
-
-        _logger.LogDebug("{rowsUpdated} rows updated", rowsUpdated);
+        _logger.LogDebug("{RowsUpdated} rows updated", rowsUpdated);
 
         return transaction;
     }
