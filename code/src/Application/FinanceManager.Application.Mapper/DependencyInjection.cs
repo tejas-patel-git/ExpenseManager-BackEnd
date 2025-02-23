@@ -14,6 +14,14 @@ namespace FinanceManager.Application.Mapper
         {
             // register mappers
 
+            // saving transaction mapper
+            services.AddSingleton<IMapper<SavingsTransactionDomain, SavingsTransaction>, SavingsTransactionDomainToEntityMapper>();
+            services.AddSingleton<IMapper<SavingsTransaction, SavingsTransactionDomain>, SavingsTransactionToDomainMapper>();
+
+            // saving goal mapper
+            services.AddSingleton<IMapper<SavingsGoalDomain, SavingsGoal>, SavingsGoalDomainToEntityMapper>();
+            services.AddSingleton<IMapper<SavingsGoal, SavingsGoalDomain>, SavingsGoalToDomainMapper>();
+
             // payment model mappers
             services.AddSingleton<IMapper<TransactionPayment, PaymentDomain>, PaymentEntityToDomainMapper>();
             services.AddSingleton<IMapper<PaymentDomain, TransactionPayment>, PaymentDomainToEntityMapper>();
