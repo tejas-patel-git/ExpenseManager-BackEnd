@@ -28,6 +28,7 @@ namespace FinanceManager.Data.Models
         /// If <c>true</c>, the transaction is an expense; otherwise, it is income.
         /// </remarks>
         public bool IsExpense { get; set; }
+        public byte TransactionType {  get; set; }
 
         /// <summary>
         /// Gets or sets the monetary amount of the transaction.
@@ -72,5 +73,8 @@ namespace FinanceManager.Data.Models
 
         // Navigation property for many-to-many relationship
         public virtual ICollection<TransactionPayment> Payments { get; set; } = [];
+
+        // Navigation property for one-to-one relationship
+        public SavingsTransaction? SavingsTransaction { get; set; }
     }
 }

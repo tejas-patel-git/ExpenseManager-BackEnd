@@ -1,4 +1,5 @@
 ﻿using FinanceManager.Domain.Abstraction;
+using FinanceManager.Domain.Enums;
 
 namespace FinanceManager.Domain.Models;
 
@@ -21,6 +22,7 @@ public class TransactionDomain : IDomainModel<Guid>
     /// If <c>true</c>, the transaction is an expense; otherwise, it is income.
     /// </remarks>
     public bool IsExpense { get; set; }
+    public TransactionType TransactionType { get; set; }
 
     /// <summary>
     /// Gets or sets the monetary amount of the transaction.

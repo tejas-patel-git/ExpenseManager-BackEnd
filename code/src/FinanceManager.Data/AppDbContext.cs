@@ -26,10 +26,15 @@ namespace FinanceManager.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<SavingsTransaction>()
+                .HasOne(s => s.Transaction)
+                .WithOne(t => t.SavingsTransaction)
+                .HasForeignKey<SavingsTransaction>(s => s.TransactionId);
+
             modelBuilder.Entity<TransactionPayment>()
-                .HasOne(ta => ta.Transaction)
-                .WithMany(t => t.Payments)
-                .HasForeignKey(ta => ta.TransactionId);
+               .HasOne(ta => ta.Transaction)
+               .WithMany(t => t.Payments)
+               .HasForeignKey(ta => ta.TransactionId);
 
             modelBuilder.Entity<TransactionPayment>()
                 .HasOne(ta => ta.UserBankAccount)

@@ -12,6 +12,7 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
         {
             transactionResponse.Should().NotBeNull();
             transactionResponse!.IsExpense.Should().Be(transaction.IsExpense);
+            transactionResponse.TransactionType.Should().Be(transaction.Type.ToString());
             transactionResponse.Amount.Should().Be(transaction.Amount);
             transactionResponse.Date.Should().Be(transaction.Date);
             transactionResponse.Description.Should().Be(transaction.Description);
@@ -26,6 +27,7 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             dbTransaction.Should().NotBeNull();
             dbTransaction!.Amount.Should().Be(expectedTransaction.Amount);
             dbTransaction.IsExpense.Should().Be(expectedTransaction.IsExpense);
+            dbTransaction.TransactionType.Should().Be((byte)expectedTransaction.Type);
             dbTransaction.Date.Should().Be(expectedTransaction.Date);
             dbTransaction.Description.Should().Be(expectedTransaction.Description);
 

@@ -15,6 +15,7 @@
         /// </summary>
         /// <value><c>true</c> if the transaction is an expense; <c>false</c>, if transaction is an income.</value>
         public bool IsExpense { get; set; }
+        public string TransactionType { get; set; }
 
         /// <summary>
         /// Gets or sets the monetary amount of the transaction.

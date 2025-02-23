@@ -1,5 +1,4 @@
 using FinanceManager.FunctionalTest.Abstraction;
-using FinanceManager.Models.Request;
 using FinanceManager.Models.Response;
 using FluentAssertions;
 using System.Net;
@@ -36,7 +35,7 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             await transactionResponse.Data!.AssertTransactionWithDB(transaction, Context); // db data assertion
 
             // account balance assertion
-            var updatedAccounts = await GetAccountsViaApi(createdAccounts.Select(a=> a.AccountId));
+            var updatedAccounts = await GetAccountsViaApi(createdAccounts.Select(a => a.AccountId));
 
             transaction.AssertAccountBalancesAfterTransaction(updatedAccounts, createdAccounts, isExpense);
         }

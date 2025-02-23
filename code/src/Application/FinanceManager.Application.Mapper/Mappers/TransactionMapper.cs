@@ -1,5 +1,6 @@
 ﻿using FinanceManager.Data.Models;
 using FinanceManager.Domain.Abstraction.Mappers;
+using FinanceManager.Domain.Enums;
 using FinanceManager.Domain.Models;
 using FinanceManager.Models.Request;
 using FinanceManager.Models.Response;
@@ -22,6 +23,7 @@ namespace FinanceManager.Application.Mapper.Mappers
                     Date = source.Date,
                     IsExpense = source.IsExpense,
                     Description = source.Description,
+                    TransactionType = source.Type,
                     Payments = payments
                 };
             })
@@ -38,6 +40,7 @@ namespace FinanceManager.Application.Mapper.Mappers
                 Amount = source.Amount,
                 Date = source.Date,
                 IsExpense = source.IsExpense,
+                TransactionType = source.TransactionType.ToString(),
                 Description = source.Description
             })
         {
@@ -65,6 +68,7 @@ namespace FinanceManager.Application.Mapper.Mappers
                     Id = source.Id,
                     UserId = source.UserId,
                     IsExpense = source.IsExpense,
+                    TransactionType = (byte)source.TransactionType,
                     Amount = source.Amount,
                     Date = source.Date,
                     Description = source.Description,
@@ -96,6 +100,7 @@ namespace FinanceManager.Application.Mapper.Mappers
                     Id = source.Id,
                     UserId = source.UserId,
                     IsExpense = source.IsExpense,
+                    TransactionType = (TransactionType)source.TransactionType,
                     Amount = source.Amount,
                     Date = source.Date,
                     Description = source.Description,

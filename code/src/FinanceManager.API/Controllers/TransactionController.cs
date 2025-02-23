@@ -98,6 +98,12 @@ namespace FinanceManager.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            // validate transaction type
+            if (transactionRequest.Type == Domain.Enums.TransactionType.Undefined) return BadRequest(FailureResponse("Type is required"));
+            if (transactionRequest.Type == Domain.Enums.TransactionType.Income && transactionRequest.IsExpense
+                || transactionRequest.Type == Domain.Enums.TransactionType.Expense && !transactionRequest.IsExpense)
+                return BadRequest(FailureResponse("Transaction type is incorrect."));
+
             // retrieve user id from claims
             string? userId = GetUserIdOfRequest();
             if (string.IsNullOrEmpty(userId))

@@ -4,6 +4,7 @@ using FinanceManager.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinanceManager.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250220185658_Add_TransactionType_In_Transaction_Table")]
+    partial class Add_TransactionType_In_Transaction_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,26 +24,6 @@ namespace FinanceManager.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("FinanceManager.Data.Models.SavingsTransaction", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("SavingsGoalId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TransactionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TransactionId")
-                        .IsUnique();
-
-                    b.ToTable("SavingsTransaction");
-                });
 
             modelBuilder.Entity("FinanceManager.Data.Models.Transaction", b =>
                 {
@@ -215,17 +198,6 @@ namespace FinanceManager.Data.Migrations
                     b.ToTable("UserBankAccounts");
                 });
 
-            modelBuilder.Entity("FinanceManager.Data.Models.SavingsTransaction", b =>
-                {
-                    b.HasOne("FinanceManager.Data.Models.Transaction", "Transaction")
-                        .WithOne("SavingsTransaction")
-                        .HasForeignKey("FinanceManager.Data.Models.SavingsTransaction", "TransactionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Transaction");
-                });
-
             modelBuilder.Entity("FinanceManager.Data.Models.Transaction", b =>
                 {
                     b.HasOne("FinanceManager.Data.Models.User", "User")
@@ -259,8 +231,6 @@ namespace FinanceManager.Data.Migrations
             modelBuilder.Entity("FinanceManager.Data.Models.Transaction", b =>
                 {
                     b.Navigation("Payments");
-
-                    b.Navigation("SavingsTransaction");
                 });
 
             modelBuilder.Entity("FinanceManager.Data.Models.User", b =>
