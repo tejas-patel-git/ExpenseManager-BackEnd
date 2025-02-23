@@ -22,6 +22,7 @@ public class TransactionDomain : IDomainModel<Guid>
     /// If <c>true</c>, the transaction is an expense; otherwise, it is income.
     /// </remarks>
     public bool IsExpense { get; set; }
+
     public TransactionType TransactionType { get; set; }
 
     /// <summary>
@@ -43,4 +44,24 @@ public class TransactionDomain : IDomainModel<Guid>
     public string? Description { get; set; }
 
     public ICollection<PaymentDomain> Payments { get; set; } = [];
+
+    public bool IsAccountable()
+    {
+        return TransactionType != TransactionType.Savings;
+    }
+
+    public bool IsCredit()
+    {
+        return !IsExpense;
+    }
+
+    public bool IsDebit()
+    {
+        return IsExpense;
+    }
+
+    public decimal GetTransactionAmount()
+    {
+        return IsCredit() ? Amount : -Amount;
+    }
 }

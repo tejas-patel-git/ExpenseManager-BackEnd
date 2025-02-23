@@ -42,4 +42,6 @@ public class TransactionRequest : BaseRequest
 
     [Required]
     public Payment Payments { get; set; }
+
+    public string SavingGoal { get; set; }
 }
