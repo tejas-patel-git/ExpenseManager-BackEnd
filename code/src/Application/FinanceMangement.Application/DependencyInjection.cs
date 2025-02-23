@@ -1,4 +1,7 @@
 ﻿using FinanceManager.Application.Services;
+using FinanceManager.Application.Validator;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FinanceManager.Application
@@ -12,6 +15,9 @@ namespace FinanceManager.Application
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAccountsService, AccountsService>();
+
+            services.AddValidatorsFromAssemblyContaining<TransactionRequestValidator>();
+            services.AddFluentValidationAutoValidation();
 
             return services;
         }
