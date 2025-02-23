@@ -44,6 +44,7 @@ public class TransactionDomain : IDomainModel<Guid>
     public string? Description { get; set; }
 
     public ICollection<PaymentDomain> Payments { get; set; } = [];
+    public string SavingsGoal { get; set; }
 
     public bool IsAccountable()
     {

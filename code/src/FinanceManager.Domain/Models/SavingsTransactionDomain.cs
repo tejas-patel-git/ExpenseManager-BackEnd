@@ -1,6 +1,8 @@
-﻿namespace FinanceManager.Domain.Models
+﻿using FinanceManager.Domain.Abstraction;
+
+namespace FinanceManager.Domain.Models
 {
-    public class SavingsTransactionDomain
+    public class SavingsTransactionDomain : IDomainModel<Guid>
     {
         public Guid Id { get; set; }
         public Guid TransactionId { get; set; }
