@@ -18,6 +18,8 @@ public interface IUnitOfWork : IDisposable
     ITransactionRepository TransactionRepository { get; }
     IAccountsRepository AccountsRepository { get; }
     IPaymentRepository PaymentRepository { get; }
+    ISavingsTransactionRepository SavingsTransactionRepository { get; }
+    ISavingsGoalRepository SavingsGoalRepository { get; }
 
     /// <summary>
     /// Saves all pending changes to the database.

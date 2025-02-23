@@ -7,6 +7,7 @@ namespace FinanceManager.Domain.Abstraction.Repository
     where TEntity : class, IEntityModel<TId>
     {
         Task<TDomain?> GetByIdAsync(TId id);
+        Task<TDomain?> GetByIdAsync(Expression<Func<TEntity, bool>> filter);
         Task<TDomain> AddAsync(TDomain domainModel);
         Task UpdateAsync(TDomain domainModel);
         Task<bool> DeleteByIdAsync(TId id);
