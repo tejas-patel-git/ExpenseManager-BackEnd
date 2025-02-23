@@ -87,6 +87,13 @@ internal class Repository<TDomain, TEntity, TId> : IRepository<TDomain, TEntity,
         }
     }
 
+    public async Task<TDomain?> GetByIdAsync(Expression<Func<TEntity, bool>> filter)
+    {
+        var entities = await FilterQuery(filter).SingleOrDefaultAsync();
+        if (entities == null) return null;
+        return entityDomainMapper.Map(entities);
+    }
+
     protected virtual async Task<TEntity?> GetEntity(TId id)
     {
         try

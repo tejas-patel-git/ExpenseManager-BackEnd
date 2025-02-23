@@ -14,6 +14,8 @@ public class UnitOfWork : IUnitOfWork
     private readonly ITransactionRepository _transactionRepository;
     private readonly IAccountsRepository _accountsRepository;
     private readonly IPaymentRepository _paymentRepository;
+    private readonly ISavingsTransactionRepository _savingsTransactionRepository;
+    private readonly ISavingsGoalRepository _savingsGoalRepository;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UnitOfWork"/> class.
@@ -26,13 +28,17 @@ public class UnitOfWork : IUnitOfWork
                       ITransactionRepository transactionRepository,
                       IUserRepository userRepository,
                       IAccountsRepository accountsRepository,
-                      IPaymentRepository paymentRepository)
+                      IPaymentRepository paymentRepository,
+                      ISavingsTransactionRepository savingsTransactionRepository,
+                      ISavingsGoalRepository savingsGoalRepository)
     {
         _context = context;
         _transactionRepository = transactionRepository;
         _userRepository = userRepository;
         _accountsRepository = accountsRepository;
         _paymentRepository = paymentRepository;
+        _savingsTransactionRepository = savingsTransactionRepository;
+        _savingsGoalRepository = savingsGoalRepository;
     }
 
     /// <inheritdoc/>
@@ -46,6 +52,12 @@ public class UnitOfWork : IUnitOfWork
 
     /// <inheritdoc/>
     public IAccountsRepository AccountsRepository => _accountsRepository;
+    
+    /// <inheritdoc/>
+    public ISavingsTransactionRepository SavingsTransactionRepository => _savingsTransactionRepository;
+
+    /// <inheritdoc/>
+    public ISavingsGoalRepository SavingsGoalRepository => _savingsGoalRepository;
 
     /// <inheritdoc/>
     public async Task<int> SaveChangesAsync()

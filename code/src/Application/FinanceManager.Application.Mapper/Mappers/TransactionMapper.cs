@@ -24,6 +24,7 @@ namespace FinanceManager.Application.Mapper.Mappers
                     IsExpense = source.IsExpense,
                     Description = source.Description,
                     TransactionType = source.Type,
+                    SavingsGoal = source.SavingGoal,
                     Payments = payments
                 };
             })
