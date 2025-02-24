@@ -35,22 +35,23 @@ namespace FinanceManager.Application.Validator
                 .When(x => !x.IsExpense, ApplyConditionTo.CurrentValidator); ;
 
             // Payments validation: required for non-Savings, must match Amount
-            RuleFor(x => x.Payments)
+            RuleFor(x => x.Payments).Cascade(CascadeMode.Stop)
                 // required
                 .NotNull()
                 .WithMessage("{PropertyName} is required for non-Savings transactions.")
                 // rules for Payments model properties
                 .ChildRules(payment =>
                 {
-                    payment.RuleFor(p => p.Accounts).NotEmpty().WithMessage("{PropertyName} should have atleast one account.");
-                    payment.RuleForEach(p => p.Accounts)
+                    payment.RuleFor(p => p!.Accounts).NotEmpty().WithMessage("{PropertyName} should have atleast one account.");
+                    payment.RuleForEach(p => p!.Accounts)
                            .ChildRules(account =>
                            {
+                               account.RuleFor(a => a.AccountId).NotEqual(Guid.Empty).WithMessage("Invalid account id");
                                account.RuleFor(a => a.Amount).GreaterThan(0).WithMessage("{PropertyName} should be greater than 0");
                            });
                 })
                 // sum of payments account should be equal to transaction amount
-                .Must((t, p) => p.Accounts.Sum(a => a.Amount) == t.Amount)
+                .Must((t, p) => p!.Accounts.Sum(a => a.Amount) == t.Amount)
                 .WithMessage("The sum of payment account amounts must match the transaction amount.")
                 .When(x => x.Type != TransactionType.Savings);
 
@@ -58,10 +59,10 @@ namespace FinanceManager.Application.Validator
             RuleFor(x => x.SavingGoal)
                 .NotEmpty()
                 .When(x => x.Type == TransactionType.Savings)
-                .WithMessage($"{nameof(TransactionRequest.SavingGoal)} is required for Savings transactions.")
+                .WithMessage($"'{nameof(TransactionRequest.SavingGoal)}' is required for Savings transactions.")
                 .MaximumLength(50)
                 .When(x => x.SavingGoal != null)
-                .WithMessage($"{nameof(TransactionRequest.SavingGoal)} cannot exceed 50 characters.");
+                .WithMessage($"'{nameof(TransactionRequest.SavingGoal)}' cannot exceed 50 characters.");
         }
     }
 }
