@@ -569,20 +569,26 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "d2ae3447-b9c3-43a8-ba71-929c171a15e6",
+				"id": "ec812409-637a-467c-9670-3202aa08d3d7",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
+					"// transaction amount\r",
 					"let currentAmount = parseFloat(pm.environment.get(\"currentAmount\")) || 100;\r",
 					"currentAmount += 10;\r",
-					"pm.environment.set(\"currentAmount\", currentAmount);"
+					"pm.environment.set(\"currentAmount\", currentAmount);\r",
+					"\r",
+					"// transaction date format\r",
+					"let randomDate = new Date(pm.variables.replaceIn(\"{{$randomDateRecent}}\"));\r",
+					"let formattedDate = randomDate.toISOString(); // e.g., \"2025-02-20T08:45:12\"\r",
+					"pm.environment.set(\"formattedDate\", formattedDate);"
 				]
 			}
 		},
 		{
 			"listen": "test",
 			"script": {
-				"id": "7e35f34c-e41e-44fb-8cde-4e4fcd0cd427",
+				"id": "d5276639-250e-4912-b427-25de01865e02",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
