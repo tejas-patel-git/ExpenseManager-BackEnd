@@ -14,8 +14,11 @@ namespace FinanceManager.Application.Mapper.Mappers
             {
                 List<PaymentDomain> payments = [];
 
-                foreach (var account in source.Payments.Accounts)
-                    payments.Add(new() { AccountId = account.AccountId, Amount = account.Amount });
+                if (source.Payments != null)
+                {
+                    foreach (var account in source.Payments.Accounts)
+                        payments.Add(new() { AccountId = account.AccountId, Amount = account.Amount });
+                }
 
                 return new()
                 {
