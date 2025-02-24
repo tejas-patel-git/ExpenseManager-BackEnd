@@ -167,7 +167,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"isExpense\": true,\n    \"amount\": {{$random}},\n    \"date\": {{$randomDateRecent}},\n    \"description\": {{$randomLoremSentence}},\n    \"type\":\"expense\",\n    \"SavingGoal\": \"Vacation Fund\",\n    \"payments\":{\n        \"accounts\":[\n            {\n                \"accountId\":\"F55B7B07-C481-4DF4-802B-5CFFC1C63421\",\n                \"amount\":100\n            }\n        ]\n    }\n}",
+							"raw": "{\n    \"isExpense\": false,\n    \"amount\": {{currentAmount}},\n    \"date\": \"{{formattedDate}}\",\n    \"description\": \"{{$randomLoremSentence}}\",\n    \"type\":\"expense\",\n    \"SavingGoal\": \"Vacation Fund\",\n    \"payments\":{\n        \"accounts\":[\n            {\n                \"accountId\":\"F55B7B07-C481-4DF4-802B-5CFFC1C63421\",\n                \"amount\": {{currentAmount}}\n            }\n        ]\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
