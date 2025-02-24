@@ -569,18 +569,20 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "09cfa769-c289-46f4-b440-bb7248f29b97",
+				"id": "d2ae3447-b9c3-43a8-ba71-929c171a15e6",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
-					""
+					"let currentAmount = parseFloat(pm.environment.get(\"currentAmount\")) || 100;\r",
+					"currentAmount += 10;\r",
+					"pm.environment.set(\"currentAmount\", currentAmount);"
 				]
 			}
 		},
 		{
 			"listen": "test",
 			"script": {
-				"id": "f9bec626-3cce-4e35-9ff4-5f112afd3241",
+				"id": "7e35f34c-e41e-44fb-8cde-4e4fcd0cd427",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
