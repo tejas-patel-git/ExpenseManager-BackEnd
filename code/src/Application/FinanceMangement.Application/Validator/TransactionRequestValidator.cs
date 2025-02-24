@@ -21,18 +21,18 @@ namespace FinanceManager.Application.Validator
                 .NotEmpty()
                 .WithMessage($"{nameof(TransactionRequest.Date)} is required.");
 
-            RuleFor(x => x.IsExpense)
-                .NotEmpty()
-                .WithMessage($"{nameof(TransactionRequest.IsExpense)} is required.");
-
             RuleFor(x => x.Type)
                 .IsInEnum()
-                //.NotEqual(TransactionType.Undefined)
-                .WithMessage("A valid transaction {PropertyName} is required.")
-                .Equal(TransactionType.Expense).WithMessage($"'{nameof(TransactionRequest.IsExpense)}' should be true for Expense-type transaction")
-                .When(x => x.IsExpense, ApplyConditionTo.CurrentValidator)
-                .Equal(TransactionType.Income).WithMessage($"'{nameof(TransactionRequest.IsExpense)}' should be false for Income-type transaction")
-                .When(x => !x.IsExpense, ApplyConditionTo.CurrentValidator); ;
+                .NotEqual(TransactionType.Undefined)
+                .WithMessage("A valid '{PropertyName}' is required.");
+
+            RuleFor(x => x.IsExpense)
+                //.NotEmpty()
+                //.WithMessage($"{nameof(TransactionRequest.IsExpense)} is required.")
+                .Equal(true).WithMessage($"'{nameof(TransactionRequest.IsExpense)}' should be true for Expense-type transaction")
+                .When(x => x.Type == TransactionType.Expense, ApplyConditionTo.CurrentValidator)
+                .Equal(false).WithMessage($"'{nameof(TransactionRequest.IsExpense)}' should be false for Income-type transaction")
+                .When(x => x.Type == TransactionType.Income, ApplyConditionTo.CurrentValidator);
 
             // Payments validation: required for non-Savings, must match Amount
             RuleFor(x => x.Payments).Cascade(CascadeMode.Stop)
@@ -42,12 +42,18 @@ namespace FinanceManager.Application.Validator
                 // rules for Payments model properties
                 .ChildRules(payment =>
                 {
-                    payment.RuleFor(p => p!.Accounts).NotEmpty().WithMessage("{PropertyName} should have atleast one account.");
+                    payment.RuleFor(p => p.Accounts).Cascade(CascadeMode.Stop)
+                           .NotNull().WithMessage("The {PropertyName} field is required.")
+                           .NotEmpty().WithMessage("{PropertyName} should have atleast one account.");
+
                     payment.RuleForEach(p => p!.Accounts)
                            .ChildRules(account =>
                            {
-                               account.RuleFor(a => a.AccountId).NotEqual(Guid.Empty).WithMessage("Invalid account id");
-                               account.RuleFor(a => a.Amount).GreaterThan(0).WithMessage("{PropertyName} should be greater than 0");
+                               account.RuleFor(a => a.AccountId).Cascade(CascadeMode.Stop)
+                                      .NotEmpty().WithMessage("The {PropertyName} field is required.")
+                                      .NotEqual(Guid.Empty).WithMessage("{PropertyName} is invalid.");
+
+                               account.RuleFor(a => a.Amount).GreaterThan(0).WithMessage("{PropertyName} should be greater than 0.");
                            });
                 })
                 // sum of payments account should be equal to transaction amount
