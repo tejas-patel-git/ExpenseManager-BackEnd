@@ -27,8 +27,12 @@ namespace FinanceManager.Application.Validator
 
             RuleFor(x => x.Type)
                 .IsInEnum()
-                .NotEqual(TransactionType.Undefined)
-                .WithMessage($"A valid transaction {nameof(TransactionRequest.Type)} is required.");
+                //.NotEqual(TransactionType.Undefined)
+                .WithMessage("A valid transaction {PropertyName} is required.")
+                .Equal(TransactionType.Expense).WithMessage($"'{nameof(TransactionRequest.IsExpense)}' should be true for Expense-type transaction")
+                .When(x => x.IsExpense, ApplyConditionTo.CurrentValidator)
+                .Equal(TransactionType.Income).WithMessage($"'{nameof(TransactionRequest.IsExpense)}' should be false for Income-type transaction")
+                .When(x => !x.IsExpense, ApplyConditionTo.CurrentValidator); ;
 
             // Payments validation: required for non-Savings, must match Amount
             RuleFor(x => x.Payments)
