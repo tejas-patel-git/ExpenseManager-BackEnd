@@ -41,6 +41,7 @@ internal static class TestDataFakers
         return new Faker<TransactionRequest>()
                         .RuleFor(t => t.IsExpense, f => f.Random.Bool())
                         .RuleFor(t => t.Amount, f => f.Finance.Amount(10, 500))
+                        .RuleFor(t => t.SavingGoal, f => f.Finance.Random.Word())
                         .RuleFor(t => t.Date, f => f.Date.Recent())
                         .RuleFor(t => t.Description, f => f.Commerce.ProductName())
                         .RuleFor(t => t.Payments, f => new Payment() { Accounts = [] });
@@ -69,5 +70,17 @@ internal static class TestDataFakers
                         .RuleFor(a => a.BankName, f => f.PickRandom<BankName>())
                         .RuleFor(a => a.AccountType, f => f.PickRandom<AccountType>())
                         .RuleFor(a => a.Balance, f => f.Finance.Amount(100, 10000));
+    }
+
+    internal static Faker<SavingsGoal> SavingsGoalFaker()
+    {
+        return new Faker<SavingsGoal>()
+                        .RuleFor(a => a.Id, f => Guid.NewGuid())
+                        .RuleFor(a => a.UserId, f => Guid.NewGuid().ToString())
+                        .RuleFor(a => a.CurrentBalance, f => f.Finance.Amount(100, 10000))
+                        .RuleFor(a => a.InitialBalance, f => f.Finance.Amount(100, 10000))
+                        .RuleFor(t => t.CreatedAt, f => f.Date.Recent())
+                        .RuleFor(t => t.UpdatedAt, f => f.Date.Recent())
+                        .RuleFor(t => t.Goal, f => f.Finance.Random.Word());
     }
 }
