@@ -1,4 +1,6 @@
+using FinanceManager.Data.Models;
 using FinanceManager.FunctionalTest.Abstraction;
+using FinanceManager.FunctionalTest.TestData;
 using FinanceManager.Models.Response;
 using FluentAssertions;
 using System.Net;
@@ -38,6 +40,41 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             var updatedAccounts = await GetAccountsViaApi(createdAccounts.Select(a => a.AccountId));
 
             transaction.AssertAccountBalancesAfterTransaction(updatedAccounts, createdAccounts, isExpense);
+        }
+
+        [Theory(DisplayName = "Should create savings transaction correctly without affecting accounts")]
+        [InlineData(true)]    // Savings transaction (expense)
+        [InlineData(false)]   // Savings transaction (income)
+        public async Task ShouldCreateSavingsTransaction_WhenPostingNewSavingsTransaction(bool isExpense)
+        {
+            // Arrange
+            var (createdAccounts, transaction) = await SetupAccountsAndTransaction(isExpense, AccountCount, true);
+            var initialBalances = createdAccounts.ToDictionary(a => a.AccountId, a => a.CurrentBalance);
+            var savingsGoals = TestDataGenerator.Generate<SavingsGoal>(cfg =>
+            {
+                cfg.RuleFor(s => s.UserId, UserId)
+                   .RuleFor(s => s.Goal, transaction.SavingGoal);
+            });
+            Context.SavingsGoals.Add(savingsGoals);
+            await Context.SaveChangesAsync();
+
+            // Act
+            var response = await PostTransaction(transaction);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var transactionResponse = await response.Content.ReadFromJsonAsync<Response<TransactionResponse>>();
+
+            transactionResponse.Should().NotBeNull();
+            transactionResponse!.Data.Should().NotBeNull();
+
+            transactionResponse.Data.AssertTransactionResponseModel(transaction);
+            await transactionResponse.Data!.AssertSavingsTransactionWithDB(transaction, Context);
+
+            var updatedAccounts = await GetAccountsViaApi(createdAccounts.Select(a => a.AccountId));
+            updatedAccounts.AssertAccountBalancesUnchanged(createdAccounts);
+
+            //transactionResponse.Data!.Type.Should().Be(TransactionType.Savings);
         }
     }
 }

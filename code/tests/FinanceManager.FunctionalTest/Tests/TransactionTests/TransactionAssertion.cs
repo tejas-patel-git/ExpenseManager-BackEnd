@@ -1,4 +1,5 @@
 ﻿using FinanceManager.Data;
+using FinanceManager.Domain.Enums;
 using FinanceManager.Models.Request;
 using FinanceManager.Models.Response;
 using FluentAssertions;
@@ -36,6 +37,31 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             dbTransaction.Payments.Sum(p => p.Amount).Should().Be(expectedTransaction.Amount);
         }
 
+        internal static async Task AssertSavingsTransactionWithDB(this TransactionResponse transactionResponse,
+        TransactionRequest expectedTransaction,
+        AppDbContext context)
+        {
+            var dbTransaction = await context.Transactions
+                .Include(t => t.Payments).Include(t => t.SavingsTransaction)
+                .FirstOrDefaultAsync(t => t.Id == transactionResponse.TransactionId);
+
+            dbTransaction.Should().NotBeNull();
+            dbTransaction!.Amount.Should().Be(expectedTransaction.Amount);
+            dbTransaction.IsExpense.Should().Be(expectedTransaction.IsExpense);
+            dbTransaction.TransactionType.Should().Be((byte)TransactionType.Savings);
+            dbTransaction.Date.Should().Be(expectedTransaction.Date);
+            dbTransaction.Description.Should().Be(expectedTransaction.Description);
+
+            dbTransaction.Payments.Should().BeEmpty();
+
+            dbTransaction.SavingsTransaction.Should().NotBeNull();
+            dbTransaction.SavingsTransaction!.TransactionId.Should().Be(transactionResponse.TransactionId);
+
+            var dbSavingsGoal = await context.SavingsGoals.FirstOrDefaultAsync(s => s.Id == dbTransaction.SavingsTransaction.SavingsGoalId);
+            dbSavingsGoal.Should().NotBeNull();
+            dbSavingsGoal!.Goal.Should().Be(expectedTransaction.SavingGoal);
+        }
+
         internal static void AssertAccountBalancesAfterTransaction(
             this TransactionRequest transaction,
             List<AccountsResponse> updatedAccounts,
@@ -57,6 +83,17 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
 
                 var expectedBalance = originalBalance + (isExpense ? -expectedPayment : expectedPayment);
                 updatedAccount.CurrentBalance.Should().Be(expectedBalance);
+            }
+        }
+
+        internal static void AssertAccountBalancesUnchanged(this List<AccountsResponse> updatedAccounts,
+                                                            List<AccountsResponse> originalAccounts)
+        {
+            var initialBalances = originalAccounts.ToDictionary(a => a.AccountId, a => a.CurrentBalance);
+
+            foreach (var updatedAccount in updatedAccounts)
+            {
+                updatedAccount.CurrentBalance.Should().Be(initialBalances[updatedAccount.AccountId]);
             }
         }
     }

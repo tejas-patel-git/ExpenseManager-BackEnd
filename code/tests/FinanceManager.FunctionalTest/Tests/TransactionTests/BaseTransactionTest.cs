@@ -94,24 +94,40 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
         }
 
         protected async Task<(List<AccountsResponse> CreatedAccounts, TransactionRequest Transaction)>
-           SetupAccountsAndTransaction(bool isExpense, int numberOfAccounts)
+           SetupAccountsAndTransaction(bool isExpense, int numberOfAccounts, bool isSavingsTransaction = false)
         {
+            var transaction = TestDataGenerator.Generate<TransactionRequest>(cfg =>
+                cfg.RuleFor(t => t.IsExpense, isExpense)
+                   .RuleFor(t => t.Type, (f, t) =>
+                   {
+                       if (isSavingsTransaction)
+                       {
+                           return TransactionType.Savings;
+                       }
+                       else
+                       {
+                           if (t.IsExpense)
+                               return f.PickRandomWithout([TransactionType.Undefined, TransactionType.Income, TransactionType.Savings]);
+                           else
+                               return f.PickRandomWithout([TransactionType.Undefined, TransactionType.Expense, TransactionType.Savings]);
+                       }
+                   })
+            );
+
             var accountRequests = TestDataGenerator.GenerateMany<AccountsRequest>(numberOfAccounts, faker =>
             {
                 faker.RuleFor(a => a.AccountName, f => $"{f.Finance.AccountName()}_{f.UniqueIndex}");
             });
             var createdAccounts = await CreateAccountsViaApi(accountRequests);
 
-            var transaction = TestDataGenerator.Generate<TransactionRequest>(cfg =>
-                cfg.RuleFor(t => t.IsExpense, isExpense)
-                   .RuleFor(t => t.Type, (f, t) =>
-                   {
-                       if (t.IsExpense) return f.PickRandomWithout([TransactionType.Undefined, TransactionType.Income]);
-                       else return f.PickRandomWithout([TransactionType.Undefined, TransactionType.Expense]);
-                   })
-            );
-
-            DistributeTransactionAmount(transaction, createdAccounts.Select(a => a.AccountId).ToList());
+            if (isSavingsTransaction)
+            {
+                transaction.Payments = null;
+            }
+            else
+            {
+                DistributeTransactionAmount(transaction, createdAccounts.Select(a => a.AccountId).ToList());
+            }
             return (createdAccounts, transaction);
         }
 
