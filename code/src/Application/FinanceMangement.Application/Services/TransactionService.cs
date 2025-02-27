@@ -1,10 +1,7 @@
 ﻿using FinanceManager.Data;
-using FinanceManager.Data.Models;
 using FinanceManager.Domain.Enums;
 using FinanceManager.Domain.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
-using System.Reflection.Metadata;
 
 namespace FinanceManager.Application.Services;
 
@@ -76,7 +73,7 @@ internal class TransactionService : BaseService, ITransactionService
         if (transactionDomain.TransactionType == TransactionType.Savings)
         {
             var savingsGoal = await _unitOfWork.SavingsGoalRepository.GetByIdAsync(s => s.UserId == transactionDomain.UserId
-                                                                                  && s.Goal == transactionDomain.SavingsGoal) 
+                                                                                  && s.Goal == transactionDomain.SavingsGoal)
                 ?? throw new Exception("Savings goal does not exist");
             var savingsTransaction = new SavingsTransactionDomain
             {
@@ -88,6 +85,8 @@ internal class TransactionService : BaseService, ITransactionService
             await _unitOfWork.SavingsTransactionRepository.AddAsync(savingsTransaction);
             _logger.LogDebug("Added SavingsTransaction for Transaction ID {TransactionId} with SavingsGoalId {SavingsGoalId}",
                 transactionDomain.Id, savingsTransaction.SavingsGoalId);
+
+            await _unitOfWork.SavingsGoalRepository.UpdateBalance(savingsGoal.Id, transactionDomain.GetTransactionAmount());
 
             // Do not process Payments for Savings transactions
             if (transactionDomain.Payments.Count != 0)
