@@ -1,4 +1,5 @@
 ﻿using FinanceManager.Data;
+using FinanceManager.Data.Models;
 using FinanceManager.Domain.Enums;
 using FinanceManager.Models.Request;
 using FinanceManager.Models.Response;
@@ -21,7 +22,7 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
 
         internal static async Task AssertTransactionWithDB(this TransactionResponse transactionResponse, TransactionRequest expectedTransaction, AppDbContext context)
         {
-            var dbTransaction = await context.Transactions
+            var dbTransaction = await context.Transactions.AsNoTracking()
                 .Include(t => t.Payments)
                 .FirstOrDefaultAsync(t => t.Id == transactionResponse.TransactionId);
 
@@ -32,6 +33,7 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             dbTransaction.Date.Should().Be(expectedTransaction.Date);
             dbTransaction.Description.Should().Be(expectedTransaction.Description);
 
+            dbTransaction.Payments.Should().NotBeNull();
             dbTransaction.Payments.Should()
                 .HaveCount(expectedTransaction.Payments.Accounts.Count);
             dbTransaction.Payments.Sum(p => p.Amount).Should().Be(expectedTransaction.Amount);
@@ -41,7 +43,7 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
         TransactionRequest expectedTransaction,
         AppDbContext context)
         {
-            var dbTransaction = await context.Transactions
+            var dbTransaction = await context.Transactions.AsNoTracking()
                 .Include(t => t.Payments).Include(t => t.SavingsTransaction)
                 .FirstOrDefaultAsync(t => t.Id == transactionResponse.TransactionId);
 
@@ -57,7 +59,7 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             dbTransaction.SavingsTransaction.Should().NotBeNull();
             dbTransaction.SavingsTransaction!.TransactionId.Should().Be(transactionResponse.TransactionId);
 
-            var dbSavingsGoal = await context.SavingsGoals.FirstOrDefaultAsync(s => s.Id == dbTransaction.SavingsTransaction.SavingsGoalId);
+            var dbSavingsGoal = await context.SavingsGoals.AsNoTracking().FirstOrDefaultAsync(s => s.Id == dbTransaction.SavingsTransaction.SavingsGoalId);
             dbSavingsGoal.Should().NotBeNull();
             dbSavingsGoal!.Goal.Should().Be(expectedTransaction.SavingGoal);
         }
@@ -95,6 +97,20 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             {
                 updatedAccount.CurrentBalance.Should().Be(initialBalances[updatedAccount.AccountId]);
             }
+        }
+
+        internal static async Task AssertSavingsBalanceAfterSavingsTransactionsWithDB(this TransactionResponse transactionResponse, SavingsGoal currentSavingsGoals, AppDbContext context)
+        {
+            var dbSavingsGoal = await context.SavingsGoals.AsNoTracking().FirstOrDefaultAsync(s => currentSavingsGoals.Goal == s.Goal
+                                                                                    && currentSavingsGoals.UserId == s.UserId);
+
+            dbSavingsGoal.Should().NotBeNull();
+            dbSavingsGoal!.CreatedAt.Should().Be(currentSavingsGoals.CreatedAt);
+            dbSavingsGoal.UpdatedAt.Should().Be(currentSavingsGoals.UpdatedAt);
+            dbSavingsGoal.InitialBalance.Should().Be(currentSavingsGoals.InitialBalance);
+            dbSavingsGoal.CurrentBalance.Should().Be(transactionResponse.IsExpense ?
+                currentSavingsGoals.CurrentBalance - transactionResponse.Amount
+                : currentSavingsGoals.CurrentBalance + transactionResponse.Amount);
         }
     }
 }

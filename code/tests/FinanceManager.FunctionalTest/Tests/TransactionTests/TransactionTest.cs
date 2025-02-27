@@ -71,6 +71,8 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             transactionResponse.Data.AssertTransactionResponseModel(transaction);
             await transactionResponse.Data!.AssertSavingsTransactionWithDB(transaction, Context);
 
+            await transactionResponse.Data!.AssertSavingsBalanceAfterSavingsTransactionsWithDB(savingsGoals, Context);
+
             var updatedAccounts = await GetAccountsViaApi(createdAccounts.Select(a => a.AccountId));
             updatedAccounts.AssertAccountBalancesUnchanged(createdAccounts);
 
