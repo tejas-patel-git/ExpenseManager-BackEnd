@@ -131,18 +131,25 @@ internal class TransactionService : BaseService, ITransactionService
         // update transaction
         await _unitOfWork.TransactionRepository.UpdateAsync(transactionDomain);
 
-        // update current balance of old payment accounts
-        foreach (var oldPayment in oldPayments)
+        if (transactionDomain.IsSavingsType())
         {
-            // revert old payment account balance - ADD amount if it was an expense
-            await _unitOfWork.AccountsRepository.UpdateBalance(oldPayment.AccountId, oldTransaction.IsExpense ? oldPayment.Amount : -oldPayment.Amount);
-        }
 
-        // update current balance of new payment accounts
-        foreach (var newPayment in transactionDomain.Payments)
+        }
+        else
         {
-            // add amount if not an expense
-            await _unitOfWork.AccountsRepository.UpdateBalance(newPayment.AccountId, transactionDomain.IsExpense ? -newPayment.Amount : newPayment.Amount);
+            // update current balance of old payment accounts
+            foreach (var oldPayment in oldPayments)
+            {
+                // revert old payment account balance - ADD amount if it was an expense
+                await _unitOfWork.AccountsRepository.UpdateBalance(oldPayment.AccountId, oldTransaction.IsExpense ? oldPayment.Amount : -oldPayment.Amount);
+            }
+
+            // update current balance of new payment accounts
+            foreach (var newPayment in transactionDomain.Payments)
+            {
+                // add amount if not an expense
+                await _unitOfWork.AccountsRepository.UpdateBalance(newPayment.AccountId, transactionDomain.IsExpense ? -newPayment.Amount : newPayment.Amount);
+            }
         }
 
         // save changes
@@ -159,5 +166,10 @@ internal class TransactionService : BaseService, ITransactionService
         await _unitOfWork.SaveChangesAsync();
 
         return isSuccess;
+    }
+
+    public async Task<bool> Exists(Guid transactionId)
+    {
+        return await _unitOfWork.TransactionRepository.ExistsAsync(transactionId);
     }
 }
