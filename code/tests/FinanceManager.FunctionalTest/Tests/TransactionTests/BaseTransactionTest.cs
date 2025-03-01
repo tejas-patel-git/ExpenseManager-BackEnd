@@ -32,12 +32,10 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             return await HttpClient.PostAsJsonAsync(AccountEndpoint, accountPayload);
         }
 
-        protected async Task<TransactionResponse?> GetTransactionByIdAsync(Guid transactionId)
+        protected async Task<HttpResponseMessage> GetTransactionByIdAsync(Guid transactionId)
         {
             var requestUri = BuildUriWithQuery(TransactionEndpoint, QueryParamId, transactionId.ToString());
-            var response = await HttpClient.GetAsync(requestUri);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<TransactionResponse>();
+            return await HttpClient.GetAsync(requestUri);
         }
 
         protected async Task<HttpResponseMessage> GetAccountsById(Guid accountId)
@@ -60,11 +58,10 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             response.EnsureSuccessStatusCode();
         }
 
-        protected async Task UpdateTransactionAsync(Guid transactionId, object updatedTransaction)
+        protected async Task<HttpResponseMessage> UpdateTransactionAsync(Guid transactionId, TransactionRequest transactionRequest)
         {
             var requestUri = BuildUriWithQuery(TransactionEndpoint, QueryParamId, transactionId.ToString());
-            var response = await HttpClient.PutAsJsonAsync(requestUri, updatedTransaction);
-            response.EnsureSuccessStatusCode();
+            return await HttpClient.PutAsJsonAsync(requestUri, transactionRequest);
         }
 
         /// <summary>

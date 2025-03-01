@@ -169,22 +169,20 @@ namespace FinanceManager.API.Controllers
                 return BadRequest(FailureResponse("User does not exists"));
             }
 
-            // check if payment exists
-            if (transactionRequest.Payments == null) return BadRequest(FailureResponse("Payment information is missing."));
+            // check if transaction exists
+            if(!await _transactionService.Exists(id))
+            {
+                return NotFound(FailureResponse("Transaction does not exist"));
+            }
 
             // check if request have payment accounts
-            var accountIds = transactionRequest.Payments.Accounts?.Where(acc => acc.AccountId != Guid.Empty)
+            var accountIds = transactionRequest.Payments?.Accounts?.Where(acc => acc.AccountId != Guid.Empty)
                                                                   .Select(acc => acc.AccountId)
                                                                   .ToList();
             if (accountIds == null || accountIds.Count == 0)
             {
                 return BadRequest(FailureResponse("Payment account is missing."));
             }
-
-            // validate if payment account amount match with the transaction amount
-            var amount = transactionRequest.Payments?.Accounts?.Sum(x => x.Amount);
-            if (transactionRequest.Amount != amount) return BadRequest(FailureResponse("Transaction & total payment account amount mismatch."));
-
             // validate if payment account exists
             if (!await _accountService.Exists(accountIds, userId))
             {

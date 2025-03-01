@@ -65,4 +65,9 @@ public class TransactionDomain : IDomainModel<Guid>
     {
         return IsCredit() ? Amount : -Amount;
     }
+
+    public bool IsSavingsType()
+    {
+        return TransactionType == TransactionType.Savings;
+    }
 }
