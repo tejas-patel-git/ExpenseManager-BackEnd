@@ -62,7 +62,7 @@ namespace FinanceManager.API.Controllers
             else
             {
                 var savings = await _savingsService.GetUserSavingsAsync(userId);
-                if (savings.Count == 0)
+                if (!savings.Any())
                     return NotFound(FailureResponse("No savings goals found!"));
 
                 return Ok(SuccessResponse(_domainResponseMapper.Map(savings)));
