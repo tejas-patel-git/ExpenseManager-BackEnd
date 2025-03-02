@@ -4,7 +4,7 @@ namespace FinanceManager.Application
 {
     internal interface ICalculateBalance
     {
-        Task<BalanceDomain?> GetAccountBalance(string userId);
+        Task<BalanceDomain?> GetBalance(string userId);
         Task<BalanceDomain?> GetTransactionalBalance(string userId);
     }
 }

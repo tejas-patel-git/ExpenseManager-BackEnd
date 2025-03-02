@@ -124,7 +124,7 @@ namespace FinanceManager.Application.Services
 
         public async Task<BalanceDomain?> GetBalanceAsync(string userId)
         {
-            var accountsBalance = await _calculateBalance.GetAccountBalance(userId);
+            var accountsBalance = await _calculateBalance.GetBalance(userId);
 
             if (accountsBalance == null) return null;
 
