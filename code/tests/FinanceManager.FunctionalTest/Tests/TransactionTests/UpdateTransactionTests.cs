@@ -37,7 +37,7 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             // Create an updated transaction
             var updatedTransaction = transaction.Clone();
             updatedTransaction.Description = "Updated Transaction";
-
+            
             // Act
             var updateResponse = await UpdateTransactionAsync(transactionId, updatedTransaction);
 
@@ -309,7 +309,7 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
                         Amount = a.Amount
                     }).ToList()
                 };
-            }
+                }
 
             return clone;
         }
