@@ -1,5 +1,4 @@
 ﻿using FinanceManager.Data;
-using FinanceManager.Domain.Enums;
 using FinanceManager.Domain.Models;
 using Microsoft.Extensions.Logging;
 
@@ -70,7 +69,7 @@ internal class TransactionService : BaseService, ITransactionService
 
 
         // Handle Savings transactions
-        if (transactionDomain.TransactionType == TransactionType.Savings)
+        if (transactionDomain.IsSavingsType())
         {
             var savingsGoal = await _unitOfWork.SavingsGoalRepository.GetByIdAsync(s => s.UserId == transactionDomain.UserId
                                                                                   && s.Goal == transactionDomain.SavingsGoal)
@@ -128,12 +127,24 @@ internal class TransactionService : BaseService, ITransactionService
 
         if (oldTransaction == null) return;
 
-        // update transaction
-        await _unitOfWork.TransactionRepository.UpdateAsync(transactionDomain);
-
-        if (transactionDomain.IsSavingsType())
+        if (transactionDomain.IsSavingsType() && oldTransaction.IsSavingsType())
         {
+            var savingsGoal = await _unitOfWork.SavingsGoalRepository.GetByIdAsync(s => s.UserId == transactionDomain.UserId
+                                                                                  && s.Goal == transactionDomain.SavingsGoal)
+                ?? throw new Exception("Savings goal does not exist");
 
+            var updateAmount = transactionDomain.GetTransactionAmount() - oldTransaction.GetTransactionAmount();
+            await _unitOfWork.SavingsGoalRepository.UpdateBalance(savingsGoal.Id, updateAmount);
+
+            _logger.LogInformation("Updated Savings Goal Balance for Transaction ID {TransactionId} with SavingsGoalId {SavingsGoalId}",
+                transactionDomain.Id, savingsGoal.Id);
+
+            // Do not process Payments for Savings transactions
+            if (transactionDomain.Payments.Count != 0)
+            {
+                _logger.LogWarning("Payments provided for Savings transaction ID {TransactionId} were ignored.", transactionDomain.Id);
+                transactionDomain.Payments = [];
+            }
         }
         else
         {
@@ -151,6 +162,9 @@ internal class TransactionService : BaseService, ITransactionService
                 await _unitOfWork.AccountsRepository.UpdateBalance(newPayment.AccountId, transactionDomain.IsExpense ? -newPayment.Amount : newPayment.Amount);
             }
         }
+
+        // update transaction
+        await _unitOfWork.TransactionRepository.UpdateAsync(transactionDomain);
 
         // save changes
         var rowsUpdated = await _unitOfWork.SaveChangesAsync();

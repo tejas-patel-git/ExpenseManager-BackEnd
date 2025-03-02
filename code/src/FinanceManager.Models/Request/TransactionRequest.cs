@@ -36,4 +36,9 @@ public class TransactionRequest : BaseRequest
     public Payment? Payments { get; set; }
 
     public string? SavingGoal { get; set; }
+
+    public bool IsSavingsType()
+    {
+        return Type == TransactionType.Savings;
+    }
 }

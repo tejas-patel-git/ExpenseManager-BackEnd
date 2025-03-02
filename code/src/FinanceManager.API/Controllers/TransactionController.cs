@@ -170,26 +170,29 @@ namespace FinanceManager.API.Controllers
             }
 
             // check if transaction exists
-            if(!await _transactionService.Exists(id))
+            if (!await _transactionService.Exists(id))
             {
                 return NotFound(FailureResponse("Transaction does not exist"));
             }
 
             // check if request have payment accounts
-            var accountIds = transactionRequest.Payments?.Accounts?.Where(acc => acc.AccountId != Guid.Empty)
-                                                                  .Select(acc => acc.AccountId)
-                                                                  .ToList();
-            if (accountIds == null || accountIds.Count == 0)
+            if (!transactionRequest.IsSavingsType())
             {
-                return BadRequest(FailureResponse("Payment account is missing."));
-            }
-            // validate if payment account exists
-            if (!await _accountService.Exists(accountIds, userId))
-            {
-                if (accountIds.Count > 1)
-                    return BadRequest(FailureResponse("Not all payment account exists."));
-                else
-                    return BadRequest(FailureResponse("Payment account does not exist."));
+                var accountIds = transactionRequest.Payments?.Accounts?.Where(acc => acc.AccountId != Guid.Empty)
+                                                                      .Select(acc => acc.AccountId)
+                                                                      .ToList();
+                if (accountIds == null || accountIds.Count == 0)
+                {
+                    return BadRequest(FailureResponse("Payment account is missing."));
+                }
+                // validate if payment account exists
+                if (!await _accountService.Exists(accountIds, userId))
+                {
+                    if (accountIds.Count > 1)
+                        return BadRequest(FailureResponse("Not all payment account exists."));
+                    else
+                        return BadRequest(FailureResponse("Payment account does not exist."));
+                }
             }
 
             // map transaction to domain
