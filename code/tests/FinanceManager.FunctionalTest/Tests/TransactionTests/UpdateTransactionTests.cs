@@ -4,6 +4,7 @@ using FinanceManager.Models;
 using FinanceManager.Models.Request;
 using FinanceManager.Models.Response;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Net.Http.Json;
 
@@ -36,7 +37,7 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             // Create an updated transaction
             var updatedTransaction = transaction.Clone();
             updatedTransaction.Description = "Updated Transaction";
-            
+
             // Act
             var updateResponse = await UpdateTransactionAsync(transactionId, updatedTransaction);
 
@@ -206,6 +207,55 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             Context.Payments.Where(p => p.TransactionId == createdTransaction.Data.TransactionId).Should().HaveCount(AccountCount);
         }
 
+        [Theory(DisplayName = "Should correctly update savings balance when changing savings' transaction amount")]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task ShouldUpdateAccountBalances_WhenChangingSavingsTransactionAmount(bool isExpense)
+        {
+            // Arrange
+            var (createdAccounts, transaction) = await SetupAccountsAndTransaction(isExpense, AccountCount, true);
+
+            // Track savings current balances
+            var savingsGoal = await SetUpSavingsGoalUsingDb(transaction.SavingGoal);
+            var initialSavingsCurrentBalance = savingsGoal.CurrentBalance;
+
+            // First create a transaction
+            var createResponse = await PostTransaction(transaction);
+            createResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            var createdTransaction = await createResponse.Content.ReadFromJsonAsync<Response<TransactionResponse>>();
+            createdTransaction.Should().NotBeNull();
+
+            // Get account balances after initial transaction
+            var accountsAfterCreate = await GetAccountsViaApi(createdAccounts.Select(a => a.AccountId));
+
+            // Create an updated transaction with different amount
+            var updatedTransaction = transaction.Clone();
+            updatedTransaction.Amount = transaction.Amount * 2; // Double the amount
+
+            // Act
+            var updateResponse = await UpdateTransactionAsync(createdTransaction!.Data!.TransactionId, updatedTransaction);
+
+            // Assert
+            updateResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+            // Get updated account balances
+            var accountsAfterUpdate = await GetAccountsViaApi(createdAccounts.Select(a => a.AccountId));
+
+            // Verify savings balances were correctly adjusted
+            var savingsGoalDB = Context.SavingsGoals.AsNoTracking().FirstOrDefault(s => s.Id == savingsGoal.Id);
+            savingsGoalDB.Should().NotBeNull();
+            savingsGoalDB!.CurrentBalance.Should().Be(transaction.IsExpense ? initialSavingsCurrentBalance - updatedTransaction.Amount
+                                                                                : initialSavingsCurrentBalance + updatedTransaction.Amount,
+                                                       $"because transaction amount was update from {transaction.Amount} to {updatedTransaction.Amount} when Savings Balance was {initialSavingsCurrentBalance}");
+
+            // Assert no other records are created
+            Context.Payments.AsNoTracking().Where(p => p.TransactionId == createdTransaction.Data.TransactionId)
+                .Should().HaveCount(0);
+            Context.SavingsTransactions.AsNoTracking().Where(s => s.TransactionId == createdTransaction.Data.TransactionId)
+                .Should().HaveCount(1);
+
+        }
+
         // Helper method to calculate expected balance after update
         private decimal CalculateExpectedBalance(
             decimal initialBalance,
@@ -248,15 +298,19 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
                 IsExpense = transaction.IsExpense,
                 SavingGoal = transaction.SavingGoal,
                 Type = transaction.Type,
-                Payments = new Payment
+            };
+
+            if (transaction.Payments != null && transaction.Payments!.Accounts != null && transaction.Payments.Accounts!.Count != 0) {
+                clone.Payments = new Payment
                 {
                     Accounts = transaction.Payments!.Accounts!.Select(a => new Accounts
                     {
                         AccountId = a.AccountId,
                         Amount = a.Amount
                     }).ToList()
-                }
-            };
+                };
+            }
+
             return clone;
         }
     }

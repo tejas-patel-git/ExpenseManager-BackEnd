@@ -1,5 +1,4 @@
 ﻿using FinanceManager.Data;
-using FinanceManager.Domain.Enums;
 using FinanceManager.Domain.Models;
 using Microsoft.Extensions.Logging;
 
@@ -134,7 +133,8 @@ internal class TransactionService : BaseService, ITransactionService
                                                                                   && s.Goal == transactionDomain.SavingsGoal)
                 ?? throw new Exception("Savings goal does not exist");
 
-            await _unitOfWork.SavingsGoalRepository.UpdateBalance(savingsGoal.Id, oldTransaction.Amount - transactionDomain.GetTransactionAmount());
+            var updateAmount = transactionDomain.GetTransactionAmount() - oldTransaction.GetTransactionAmount();
+            await _unitOfWork.SavingsGoalRepository.UpdateBalance(savingsGoal.Id, updateAmount);
 
             _logger.LogInformation("Updated Savings Goal Balance for Transaction ID {TransactionId} with SavingsGoalId {SavingsGoalId}",
                 transactionDomain.Id, savingsGoal.Id);
@@ -165,7 +165,7 @@ internal class TransactionService : BaseService, ITransactionService
 
         // update transaction
         await _unitOfWork.TransactionRepository.UpdateAsync(transactionDomain);
-        
+
         // save changes
         var rowsUpdated = await _unitOfWork.SaveChangesAsync();
 

@@ -1,4 +1,5 @@
-﻿using FinanceManager.Domain.Enums;
+﻿using FinanceManager.Data.Models;
+using FinanceManager.Domain.Enums;
 using FinanceManager.FunctionalTest.Abstraction;
 using FinanceManager.FunctionalTest.TestData;
 using FinanceManager.Models.Request;
@@ -126,6 +127,26 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
                 DistributeTransactionAmount(transaction, createdAccounts.Select(a => a.AccountId).ToList());
             }
             return (createdAccounts, transaction);
+        }
+
+        protected async Task<SavingsGoal> SetUpSavingsGoalUsingDb(string? goal = null)
+        {
+            var savingsGoal = TestDataGenerator.Generate<SavingsGoal>(cfg =>
+                cfg.RuleFor(s => s.UserId, UserId)
+                   .RuleFor(s => s.Goal, f =>
+                   {
+                       if (string.IsNullOrEmpty(goal))
+                       {
+                           return f.Finance.Random.Word();
+                       }
+                       return goal;
+                   })
+            );
+
+            await Context.SavingsGoals.AddAsync(savingsGoal);
+            await Context.SaveChangesAsync();
+
+            return savingsGoal;
         }
 
         protected async Task<List<AccountsResponse>> CreateAccountsViaApi(IEnumerable<AccountsRequest> requests)
