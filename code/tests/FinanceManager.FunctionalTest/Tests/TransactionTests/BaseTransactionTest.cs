@@ -15,12 +15,14 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
     {
         private readonly string TransactionEndpoint;
         private readonly string AccountEndpoint;
+        private readonly string SavingsEndpoint;
         private readonly string QueryParamId = "id";
 
         internal BaseTransactionTest(FunctionalTestWebAppFactory factory) : base(factory)
         {
             TransactionEndpoint = $"{BaseUrl}/transaction";
             AccountEndpoint = $"{BaseUrl}/accounts";
+            SavingsEndpoint = $"{BaseUrl}/savings";
         }
 
         protected async Task<HttpResponseMessage> PostTransaction(object transactionPayload)
@@ -43,6 +45,11 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
         {
             var requestUri = BuildUriWithQuery(AccountEndpoint, QueryParamId, accountId.ToString());
             return await HttpClient.GetAsync(requestUri);
+        }
+
+        protected async Task<HttpResponseMessage> PostSavingsGoal(SavingsRequest savingsRequest)
+        {
+            return await HttpClient.PostAsJsonAsync(SavingsEndpoint, savingsRequest);
         }
 
         protected async Task<List<TransactionResponse>?> GetAllTransactionsAsync()
@@ -182,6 +189,29 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             }
 
             return fetchedAccounts;
+        }
+
+        protected async Task<SavingsResponse> SetUpSavingsGoalUsingApi(string? goal = null)
+        {
+            var savingsRequest = TestDataGenerator.Generate<SavingsRequest>(cfg =>
+                cfg.RuleFor(s => s.Goal, f =>
+                   {
+                       if (string.IsNullOrEmpty(goal))
+                       {
+                           return f.Finance.Random.Word();
+                       }
+                       return goal;
+                   })
+            );
+
+            var response = await PostSavingsGoal(savingsRequest);
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
+
+            var content = await response.Content.ReadFromJsonAsync<Response<SavingsResponse >>();
+            content.Should().NotBeNull();
+            content!.Data.Should().NotBeNull();
+
+            return content.Data!;
         }
     }
 }

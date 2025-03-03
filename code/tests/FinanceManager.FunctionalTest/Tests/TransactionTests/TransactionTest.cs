@@ -50,13 +50,7 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             // Arrange
             var (createdAccounts, transaction) = await SetupAccountsAndTransaction(isExpense, AccountCount, true);
             var initialBalances = createdAccounts.ToDictionary(a => a.AccountId, a => a.CurrentBalance);
-            var savingsGoals = TestDataGenerator.Generate<SavingsGoal>(cfg =>
-            {
-                cfg.RuleFor(s => s.UserId, UserId)
-                   .RuleFor(s => s.Goal, transaction.SavingGoal);
-            });
-            Context.SavingsGoals.Add(savingsGoals);
-            await Context.SaveChangesAsync();
+            var savingsGoalsResponse = await SetUpSavingsGoalUsingApi(transaction.SavingGoal);
 
             // Act
             var response = await PostTransaction(transaction);
@@ -71,7 +65,7 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             transactionResponse.Data.AssertTransactionResponseModel(transaction);
             await transactionResponse.Data!.AssertSavingsTransactionWithDB(transaction, Context);
 
-            await transactionResponse.Data!.AssertSavingsBalanceAfterSavingsTransactionsWithDB(savingsGoals, Context);
+            await transactionResponse.Data!.AssertSavingsBalanceAfterSavingsTransactionsWithDB(savingsGoalsResponse, Context);
 
             var updatedAccounts = await GetAccountsViaApi(createdAccounts.Select(a => a.AccountId));
             updatedAccounts.AssertAccountBalancesUnchanged(createdAccounts);

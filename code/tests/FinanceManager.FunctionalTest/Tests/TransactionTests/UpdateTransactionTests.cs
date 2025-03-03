@@ -216,8 +216,8 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             var (createdAccounts, transaction) = await SetupAccountsAndTransaction(isExpense, AccountCount, true);
 
             // Track savings current balances
-            var savingsGoal = await SetUpSavingsGoalUsingDb(transaction.SavingGoal);
-            var initialSavingsCurrentBalance = savingsGoal.CurrentBalance;
+            var savingsGoalResponse = await SetUpSavingsGoalUsingApi(transaction.SavingGoal);
+            var initialSavingsCurrentBalance = savingsGoalResponse.CurrentBalance;
 
             // First create a transaction
             var createResponse = await PostTransaction(transaction);
@@ -242,7 +242,7 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             var accountsAfterUpdate = await GetAccountsViaApi(createdAccounts.Select(a => a.AccountId));
 
             // Verify savings balances were correctly adjusted
-            var savingsGoalDB = Context.SavingsGoals.AsNoTracking().FirstOrDefault(s => s.Id == savingsGoal.Id);
+            var savingsGoalDB = Context.SavingsGoals.AsNoTracking().FirstOrDefault(s => s.Id == savingsGoalResponse.Id);
             savingsGoalDB.Should().NotBeNull();
             savingsGoalDB!.CurrentBalance.Should().Be(transaction.IsExpense ? initialSavingsCurrentBalance - updatedTransaction.Amount
                                                                                 : initialSavingsCurrentBalance + updatedTransaction.Amount,

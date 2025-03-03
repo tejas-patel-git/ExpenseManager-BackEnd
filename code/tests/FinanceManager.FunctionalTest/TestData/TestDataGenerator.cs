@@ -15,6 +15,7 @@ namespace FinanceManager.FunctionalTest.TestData
             RegisterFaker(TestDataFakers.TransactionRequestFaker());
             
             RegisterFaker(TestDataFakers.SavingsGoalFaker());
+            RegisterFaker(TestDataFakers.SavingsRequestFaker());
         }
 
         public static void RegisterFaker<T>(Faker<T> faker) where T : class
