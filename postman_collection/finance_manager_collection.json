@@ -577,7 +577,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"Goal\": \"savingsGoal2\",\n  \"TargetAmount\": 10.6,\n  \"CurrentBalance\": 10.6,\n  \"InitialBalance\": 10.6\n}",
+							"raw": "{\n  \"Goal\": \"savingsGoal3\",\n  \"TargetAmount\": 10.6,\n  \"CurrentBalance\": 10.6,\n  \"InitialBalance\": 10.6\n}",
 							"options": {
 								"raw": {
 									"language": "json"
