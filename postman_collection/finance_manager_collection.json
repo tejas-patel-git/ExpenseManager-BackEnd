@@ -545,12 +545,12 @@
 									"let response = pm.response.json();\r",
 									"\r",
 									"// Check if the response is successful and contains the accountId\r",
-									"if (response.success && response.data && response.data.accountId) {\r",
-									"    // Store the accountId in a Postman variable\r",
-									"    pm.environment.set(\"accountId\", response.data.accountId);\r",
-									"    console.log(\"accountId stored:\", response.data.accountId);\r",
+									"if (response.success && response.data && response.data.id) {\r",
+									"    // Store the savingsId in a Postman variable\r",
+									"    pm.environment.set(\"savingsId\", response.data.id);\r",
+									"    console.log(\"savingsId stored:\", response.data.id);\r",
 									"} else {\r",
-									"    console.error(\"Failed to retrieve accountId from the response.\");\r",
+									"    console.error(\"Failed to retrieve savingsId from the response.\");\r",
 									"}\r",
 									""
 								],
@@ -577,7 +577,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"Goal\": \"savingsGoal\",\n  \"TargetAmount\": 10.6,\n  \"CurrentBalance\": 10.6,\n  \"InitialBalance\": 10.6\n}",
+							"raw": "{\n  \"Goal\": \"savingsGoal2\",\n  \"TargetAmount\": 10.6,\n  \"CurrentBalance\": 10.6,\n  \"InitialBalance\": 10.6\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -603,7 +603,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/savings?id={{accountId}}",
+							"raw": "{{base_url}}/savings?id={{savingsId}}",
 							"host": [
 								"{{base_url}}"
 							],
@@ -613,7 +613,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "{{accountId}}"
+									"value": "{{savingsId}}"
 								}
 							]
 						}
@@ -715,6 +715,7 @@
 	"auth": {
 		"type": "oauth2",
 		"oauth2": {
+			"refreshTokenUrl": "{{vault:oauth-token-url}}",
 			"tokenRequestParams": [
 				{
 					"key": "audience",
@@ -724,7 +725,6 @@
 				}
 			],
 			"grant_type": "authorization_code_with_pkce",
-			"refreshTokenUrl": "{{vault:oauth-auth-url}}",
 			"scope": "",
 			"authRequestParams": [
 				{
@@ -749,7 +749,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "ec812409-637a-467c-9670-3202aa08d3d7",
+				"id": "a0750574-2f1f-459b-b361-93da37ccffd7",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -768,7 +768,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "d5276639-250e-4912-b427-25de01865e02",
+				"id": "52a9c93b-593d-45fd-a964-41a9d7389902",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
