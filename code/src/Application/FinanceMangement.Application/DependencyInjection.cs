@@ -15,6 +15,7 @@ namespace FinanceManager.Application
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAccountsService, AccountsService>();
+            services.AddScoped<ISavingsService, SavingsService>();
 
             services.AddValidatorsFromAssemblyContaining<TransactionRequestValidator>();
             services.AddFluentValidationAutoValidation();

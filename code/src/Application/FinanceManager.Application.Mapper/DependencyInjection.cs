@@ -19,6 +19,8 @@ namespace FinanceManager.Application.Mapper
             services.AddSingleton<IMapper<SavingsTransaction, SavingsTransactionDomain>, SavingsTransactionToDomainMapper>();
 
             // saving goal mapper
+            services.AddSingleton<IMapper<SavingsRequest, SavingsGoalDomain>, SavingsRequestToDomainMapper>();
+            services.AddSingleton<IMapper<SavingsGoalDomain, SavingsResponse>, SavingsDomainToResponseMapper>();
             services.AddSingleton<IMapper<SavingsGoalDomain, SavingsGoal>, SavingsGoalDomainToEntityMapper>();
             services.AddSingleton<IMapper<SavingsGoal, SavingsGoalDomain>, SavingsGoalToDomainMapper>();
 
