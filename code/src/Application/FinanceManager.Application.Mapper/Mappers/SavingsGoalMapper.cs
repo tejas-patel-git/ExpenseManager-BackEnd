@@ -14,6 +14,7 @@ namespace FinanceManager.Application.Mapper.Mappers
                 Goal = source.Goal,
                 CurrentBalance = source.CurrentBalance,
                 InitialBalance = source.InitialBalance,
+                TargetAmount = source.TargetAmount
             })
         {
         }
@@ -29,6 +30,7 @@ namespace FinanceManager.Application.Mapper.Mappers
                 Goal = source.Goal,
                 CurrentBalance = source.CurrentBalance,
                 InitialBalance = source.InitialBalance,
+                TargetAmount = source.TargetAmount,
             })
         {
         }

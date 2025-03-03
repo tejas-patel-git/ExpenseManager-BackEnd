@@ -38,7 +38,12 @@ namespace FinanceManager.Application
             var savings = await _unitOfWork.SavingsGoalRepository.GetAllAsync(s => s.UserId == userId);
             if (savings != null && savings.Any())
             {
-                balance.SavingsBalance = savings.ToDictionary(s => s.Goal, s => s.InitialBalance + s.CurrentBalance);
+                balance.SavingsBalance = savings.Select(s => new SavingsBalanceDomain()
+                {
+                    Goal = s.Goal,
+                    CurrentBalance = s.CurrentBalance + s.InitialBalance,
+                    TargetAmount = s.TargetAmount,
+                });
             }
 
             return balance;

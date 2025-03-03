@@ -13,6 +13,6 @@ namespace FinanceManager.Domain.Models
         public decimal InitialBalance { get; set; }
 
         public decimal CurrentBalance { get; set; }
-        public int TargetAmount { get; set; }
+        public decimal TargetAmount { get; set; }
     }
 }
