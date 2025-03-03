@@ -509,13 +509,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/accounts/?id={{accountId}}",
+							"raw": "{{base_url}}/accounts?id={{accountId}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"accounts",
-								""
+								"accounts"
 							],
 							"query": [
 								{
@@ -530,6 +529,187 @@
 				}
 			],
 			"id": "a76d54de-f23f-4a7a-8e35-76d4057579c4"
+		},
+		{
+			"name": "Savings",
+			"item": [
+				{
+					"name": "add savings goal",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a5f42e33-2b3b-4aeb-8d3f-c1bc44775f3c",
+								"exec": [
+									"// Parse the response body\r",
+									"let response = pm.response.json();\r",
+									"\r",
+									"// Check if the response is successful and contains the accountId\r",
+									"if (response.success && response.data && response.data.accountId) {\r",
+									"    // Store the accountId in a Postman variable\r",
+									"    pm.environment.set(\"accountId\", response.data.accountId);\r",
+									"    console.log(\"accountId stored:\", response.data.accountId);\r",
+									"} else {\r",
+									"    console.error(\"Failed to retrieve accountId from the response.\");\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "a7624a4e-4452-44c7-b58e-3ad138c1d484",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"Goal\": \"savingsGoal\",\n  \"TargetAmount\": 10.6,\n  \"CurrentBalance\": 10.6,\n  \"InitialBalance\": 10.6\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/savings"
+					},
+					"response": []
+				},
+				{
+					"name": "get savings goal by id",
+					"id": "1717aaf5-6b8e-4c7c-8f50-2d3b91761763",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/savings?id={{accountId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"savings"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{accountId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all savings goal by user",
+					"id": "2ead7a0e-5e4c-4012-ace6-ffaf6e36d900",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							}
+						],
+						"url": "{{base_url}}/accounts"
+					},
+					"response": []
+				},
+				{
+					"name": "update savings goal",
+					"id": "49808c74-91f2-4556-b378-188980acda8a",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountName\": \"accounNameTestUpdate\",\n  \"accountNumber\": \"12345\",\n  \"bankName\": 0,\n  \"accountType\": 1,\n  \"balance\": 10.6\n} ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/savings?id={{accountId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"savings"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{accountId}}"
+								}
+							]
+						},
+						"description": "Updates an existing transaction."
+					},
+					"response": []
+				},
+				{
+					"name": "delete savings goal",
+					"id": "4a0790c3-e236-4fab-8dea-f602ef092e8e",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/savings?id={{accountId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"savings"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{accountId}}"
+								}
+							]
+						},
+						"description": "Deletes a transaction by its ID."
+					},
+					"response": []
+				}
+			],
+			"id": "09318266-c27c-4ea7-8967-8368a2748e4a"
 		}
 	],
 	"auth": {
