@@ -65,14 +65,6 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             return await HttpClient.PutAsJsonAsync(requestUri, transactionRequest);
         }
 
-        /// <summary>
-        /// Builds a properly formatted URI with query parameters.
-        /// </summary>
-        private static string BuildUriWithQuery(string basePath, string paramName, string paramValue)
-        {
-            return QueryHelpers.AddQueryString(basePath, paramName, paramValue);
-        }
-
         protected void DistributeTransactionAmount(TransactionRequest transaction, IReadOnlyCollection<Guid> accountIds)
         {
             var paymentAmount = (int)transaction.Amount / accountIds.Count;
@@ -182,6 +174,29 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             }
 
             return fetchedAccounts;
+        }
+
+        protected async Task<SavingsResponse> SetUpSavingsGoalUsingApi(string? goal = null)
+        {
+            var savingsRequest = TestDataGenerator.Generate<SavingsRequest>(cfg =>
+                cfg.RuleFor(s => s.Goal, f =>
+                   {
+                       if (string.IsNullOrEmpty(goal))
+                       {
+                           return f.Finance.Random.Word();
+                       }
+                       return goal;
+                   })
+            );
+
+            var response = await PostSavingsGoal(savingsRequest);
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
+
+            var content = await response.Content.ReadFromJsonAsync<Response<SavingsResponse >>();
+            content.Should().NotBeNull();
+            content!.Data.Should().NotBeNull();
+
+            return content.Data!;
         }
     }
 }

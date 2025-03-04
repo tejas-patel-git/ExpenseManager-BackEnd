@@ -83,4 +83,13 @@ internal static class TestDataFakers
                         .RuleFor(t => t.UpdatedAt, f => f.Date.Recent())
                         .RuleFor(t => t.Goal, f => f.Finance.Random.Word());
     }
+
+    internal static Faker<SavingsRequest> SavingsRequestFaker()
+    {
+        return new Faker<SavingsRequest>()
+                        .RuleFor(a => a.CurrentBalance, f => f.Finance.Amount(100, 10000))
+                        .RuleFor(a => a.InitialBalance, f => f.Finance.Amount(100, 10000))
+                        .RuleFor(a => a.TargetAmount, f => f.Finance.Amount(100, 10000))
+                        .RuleFor(t => t.Goal, f => f.Finance.Random.Word());
+    }
 }

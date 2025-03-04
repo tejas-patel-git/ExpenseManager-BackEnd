@@ -24,16 +24,29 @@ namespace FinanceManager.Application
             return new() { TransactionBalance = balance };
         }
 
-        public async Task<BalanceDomain?> GetAccountBalance(string userId)
+        public async Task<BalanceDomain?> GetBalance(string userId)
         {
+            BalanceDomain? balance = new();
+
             var accounts = await _unitOfWork.AccountsRepository.GetAllAsync(a => a.UserId == userId);
+            if (accounts != null && accounts.Any())
+            {
+                balance.AccountsBalance = accounts.ToDictionary(a => a.AccountName, a => a.InitialBalance + a.CurrentBalance);
+                balance.TotalBalance = accounts.Sum(a => a.InitialBalance + a.CurrentBalance);
+            }
 
-            if(accounts == null || !accounts.Any()) return null;
+            var savings = await _unitOfWork.SavingsGoalRepository.GetAllAsync(s => s.UserId == userId);
+            if (savings != null && savings.Any())
+            {
+                balance.SavingsBalance = savings.Select(s => new SavingsBalanceDomain()
+                {
+                    Goal = s.Goal,
+                    CurrentBalance = s.CurrentBalance + s.InitialBalance,
+                    TargetAmount = s.TargetAmount,
+                });
+            }
 
-            var totalBalance = accounts.Sum(a => a.InitialBalance + a.CurrentBalance);
-            var accountsBalance = accounts.ToDictionary(a => a.AccountName, a=> a.InitialBalance + a.CurrentBalance);
-
-            return new() { AccountsBalance = accountsBalance, TotalBalance = totalBalance };
+            return balance;
         }
     }
 }

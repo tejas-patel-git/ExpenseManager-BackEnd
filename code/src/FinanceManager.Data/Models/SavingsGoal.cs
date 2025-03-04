@@ -19,6 +19,9 @@ namespace FinanceManager.Data.Models
 
         [Column(TypeName = "decimal(10, 2)")]
         public decimal CurrentBalance { get; set; }
+        
+        [Column(TypeName = "decimal(10, 2)")]
+        public decimal TargetAmount { get; set; }
 
         /// <summary>
         /// Gets or sets the timestamp for when the transaction was last updated.

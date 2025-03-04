@@ -99,14 +99,13 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             }
         }
 
-        internal static async Task AssertSavingsBalanceAfterSavingsTransactionsWithDB(this TransactionResponse transactionResponse, SavingsGoal currentSavingsGoals, AppDbContext context)
+        internal static async Task AssertSavingsBalanceAfterSavingsTransactionsWithDB(this TransactionResponse transactionResponse,
+                                                                                      SavingsResponse currentSavingsGoals,
+                                                                                      AppDbContext context)
         {
-            var dbSavingsGoal = await context.SavingsGoals.AsNoTracking().FirstOrDefaultAsync(s => currentSavingsGoals.Goal == s.Goal
-                                                                                    && currentSavingsGoals.UserId == s.UserId);
+            var dbSavingsGoal = await context.SavingsGoals.AsNoTracking().FirstOrDefaultAsync(s => currentSavingsGoals.Id == s.Id);
 
             dbSavingsGoal.Should().NotBeNull();
-            dbSavingsGoal!.CreatedAt.Should().Be(currentSavingsGoals.CreatedAt);
-            dbSavingsGoal.UpdatedAt.Should().Be(currentSavingsGoals.UpdatedAt);
             dbSavingsGoal.InitialBalance.Should().Be(currentSavingsGoals.InitialBalance);
             dbSavingsGoal.CurrentBalance.Should().Be(transactionResponse.IsExpense ?
                 currentSavingsGoals.CurrentBalance - transactionResponse.Amount
