@@ -15,14 +15,12 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
     {
         private readonly string TransactionEndpoint;
         private readonly string AccountEndpoint;
-        private readonly string SavingsEndpoint;
         private readonly string QueryParamId = "id";
 
         internal BaseTransactionTest(FunctionalTestWebAppFactory factory) : base(factory)
         {
             TransactionEndpoint = $"{BaseUrl}/transaction";
             AccountEndpoint = $"{BaseUrl}/accounts";
-            SavingsEndpoint = $"{BaseUrl}/savings";
         }
 
         protected async Task<HttpResponseMessage> PostTransaction(object transactionPayload)
@@ -47,11 +45,6 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
             return await HttpClient.GetAsync(requestUri);
         }
 
-        protected async Task<HttpResponseMessage> PostSavingsGoal(SavingsRequest savingsRequest)
-        {
-            return await HttpClient.PostAsJsonAsync(SavingsEndpoint, savingsRequest);
-        }
-
         protected async Task<List<TransactionResponse>?> GetAllTransactionsAsync()
         {
             var response = await HttpClient.GetAsync(TransactionEndpoint);
@@ -70,14 +63,6 @@ namespace FinanceManager.FunctionalTest.Tests.TransactionTests
         {
             var requestUri = BuildUriWithQuery(TransactionEndpoint, QueryParamId, transactionId.ToString());
             return await HttpClient.PutAsJsonAsync(requestUri, transactionRequest);
-        }
-
-        /// <summary>
-        /// Builds a properly formatted URI with query parameters.
-        /// </summary>
-        private static string BuildUriWithQuery(string basePath, string paramName, string paramValue)
-        {
-            return QueryHelpers.AddQueryString(basePath, paramName, paramValue);
         }
 
         protected void DistributeTransactionAmount(TransactionRequest transaction, IReadOnlyCollection<Guid> accountIds)

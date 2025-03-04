@@ -1,8 +1,12 @@
 ﻿using FinanceManager.Data;
 using FinanceManager.Data.Models;
 using FinanceManager.FunctionalTest.TestData;
+using FinanceManager.Models.Request;
+using FluentAssertions;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http.Json;
 
 namespace FinanceManager.FunctionalTest.Abstraction
 {
@@ -10,6 +14,7 @@ namespace FinanceManager.FunctionalTest.Abstraction
     {
         protected readonly string UserId = Guid.NewGuid().ToString();
         protected readonly string BaseUrl = "api";
+        protected readonly string SavingsEndpoint;
 
         public HttpClient HttpClient { get; init; }
         public IServiceProvider ServiceProvider { get; init; }
@@ -17,6 +22,8 @@ namespace FinanceManager.FunctionalTest.Abstraction
 
         public BaseFunctionalTest(FunctionalTestWebAppFactory factory)
         {
+            SavingsEndpoint = $"{BaseUrl}/savings";
+
             HttpClient = factory.CreateClient();
             ServiceProvider = factory.Services;
             Context = ServiceProvider.GetService<AppDbContext>() ?? throw new Exception("Database context not found");
@@ -56,6 +63,19 @@ namespace FinanceManager.FunctionalTest.Abstraction
             Context.Users.RemoveRange(userToDelete);
 
             await Context.SaveChangesAsync();
+        }
+
+        protected async Task<HttpResponseMessage> PostSavingsGoal(SavingsRequest savingsRequest)
+        {
+            return await HttpClient.PostAsJsonAsync(SavingsEndpoint, savingsRequest);
+        }
+
+        /// <summary>
+        /// Builds a properly formatted URI with query parameters.
+        /// </summary>
+        protected static string BuildUriWithQuery(string basePath, string paramName, string paramValue)
+        {
+            return QueryHelpers.AddQueryString(basePath, paramName, paramValue);
         }
     }
 }
