@@ -1,0 +1,48 @@
+name: CI/CD Deployment of .NET 8 API to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # ✅ Checkout code
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # ✅ Set up .NET environment
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    # ✅ Build and publish
+    - name: Build and publish the API
+      run: |
+        dotnet restore
+        dotnet build --configuration Release --no-restore
+        dotnet publish -c Release -o ./publish
+
+    # ✅ Deploy to EC2
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          # Stop the current service
+          sudo systemctl stop kestrel-api
+
+          # Deploy the new version
+          rm -rf /ec2-expense-manager-api
+          mkdir -p /ec2-expense-manager-api
+          scp -r ./publish/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/ec2-expense-manager-api
+
+          # Restart the service
+          sudo systemctl start kestrel-api
+          sudo systemctl status kestrel-api
