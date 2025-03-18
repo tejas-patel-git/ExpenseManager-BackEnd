@@ -8,8 +8,7 @@ on:
         required: true
         type: choice
         options:
-          - staging
-          - productio
+          - Development
 
 jobs:
   build:
