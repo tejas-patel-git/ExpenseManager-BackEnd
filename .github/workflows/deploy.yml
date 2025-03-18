@@ -2,6 +2,14 @@ name: CI/CD Deployment of .NET 8 API to EC2
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Choose environment'
+        required: true
+        type: choice
+        options:
+          - staging
+          - productio
 
 jobs:
   build:
