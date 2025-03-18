@@ -21,6 +21,7 @@ jobs:
     # ✅ Build and publish
     - name: Build and publish the API
       run: |
+        cd code/src/FinanceManager.API
         dotnet restore
         dotnet build --configuration Release --no-restore
         dotnet publish -c Release -o ./publish
