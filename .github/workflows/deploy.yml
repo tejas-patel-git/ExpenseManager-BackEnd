@@ -34,27 +34,32 @@ jobs:
         dotnet build --configuration Release --no-restore
         dotnet publish -c Release -o ./publish
 
-    # ✅ Deploy to EC2
-    - name: Deploy to EC2 with environment secrets
+    # ✅ Add EC2 to known hosts (to avoid host verification issues)
+    - name: Add EC2 to known hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+    # ✅ Copy build artifacts to EC2 using scp
+    - name: Copy build artifacts to EC2
+      run: |
+        scp -i ~/.ssh/id_rsa -r code/src/FinanceManager.API/publish/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/www/ec2-expense-manager-api
+
+    # ✅ Deploy and restart service on EC2
+    - name: Deploy to EC2
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          # ✅ Add host key to avoid verification issues
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
-
           # ✅ Stop the existing service
           sudo systemctl stop kestrel-api || true
 
           # ✅ Ensure the directory exists with proper permissions
           sudo mkdir -p /var/www/ec2-expense-manager-api
-          sudo chown -R ${{ secrets.EC2_USER }}:$USER /var/www/ec2-expense-manager-api
+          sudo chown -R ec2-user:ec2-user /var/www/ec2-expense-manager-api
           sudo chmod -R 755 /var/www/ec2-expense-manager-api
-
-          # ✅ Deploy the new version
-          scp -r ./code/src/FinanceManager.API/publish/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/www/ec2-expense-manager-api
 
           # ✅ Restart the service
           sudo systemctl start kestrel-api
