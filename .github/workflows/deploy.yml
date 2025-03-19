@@ -73,7 +73,7 @@ jobs:
   # ✅ Deploy Job (Runs After Both Build & Setup)
   deploy:
     runs-on: ubuntu-latest
-    needs: [build, setup]   # Depends on both build and setup jobs
+    needs: [build, ssh-setup]   # Depends on both build and setup jobs
 
     steps:
     # ✅ Download SSH configuration
