@@ -39,8 +39,6 @@ jobs:
         name: api-publish
         path: code/src/FinanceManager.API/publish
 
----
-
   # ✅ Setup Job (Runs in Parallel with Build)
   setup:
     runs-on: ubuntu-latest
