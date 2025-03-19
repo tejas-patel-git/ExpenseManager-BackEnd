@@ -59,12 +59,18 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
-
-      # ✅ Upload to EC2
       - name: Upload artifact to EC2
         run: |
-          scp -i ${{ secrets.EC2_SSH_KEY }} -o StrictHostKeyChecking=no -r ./publish/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/api-deploy
-
+          # ✅ Create a temporary SSH key file
+          echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+          
+          # ✅ Copy files to EC2 using SCP
+          scp -i private_key.pem -o StrictHostKeyChecking=no -r ./publish/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/api-deploy
+          
+          # ✅ Remove the temporary key file for security
+          rm -f private_key.pem
+     
       # ✅ Deploy via SSH
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
