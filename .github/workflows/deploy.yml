@@ -1,4 +1,4 @@
-name: CI/CD Deployment of .NET 8 API to EC2
+name: deploy
 
 on:
   workflow_dispatch:
@@ -34,37 +34,36 @@ jobs:
         dotnet build --configuration Release --no-restore
         dotnet publish -c Release -o ./publish
 
-    # ✅ Compress the publish folder
-    - name: Compress publish folder for transfer
+    # ✅ Add EC2 host key to known_hosts (to avoid SSH verification issues)
+    - name: Add EC2 host key
       run: |
-        tar -czf api-publish.tar.gz -C code/src/FinanceManager.API/publish .
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-    # ✅ Deploy to EC2
-    - name: Deploy to EC2 with environment secrets
+    # ✅ Deploy to EC2 with environment secrets
+    - name: Deploy to EC2
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          # ✅ Stop the existing service (if running)
+          # ✅ Stop the existing service
           sudo systemctl stop kestrel-api || true
 
-          # ✅ Ensure the target directory exists
+          # ✅ Ensure the deployment directory exists
           sudo mkdir -p /var/www/ec2-expense-manager-api
-          sudo chown -R ${{ secrets.EC2_USER }}:$USER /var/www/ec2-expense-manager-api
+          sudo chown -R $USER:$USER /var/www/ec2-expense-manager-api
           sudo chmod -R 755 /var/www/ec2-expense-manager-api
 
-          # ✅ Upload the compressed build to EC2
-          scp -o StrictHostKeyChecking=no api-publish.tar.gz ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/www/ec2-expense-manager-api
+          # ✅ Deploy the new version (correct publish path)
+          rm -rf /var/www/ec2-expense-manager-api/*
+          scp -r ./publish/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/www/ec2-expense-manager-api
 
-          # ✅ Extract the build
-          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            cd /var/www/ec2-expense-manager-api
-            tar -xzf api-publish.tar.gz
-            rm -f api-publish.tar.gz
-          EOF
-
-          # ✅ Restart the service
+          # ✅ Restart the service and verify
+          sudo systemctl daemon-reload
           sudo systemctl start kestrel-api
           sudo systemctl status kestrel-api
+          
+          # ✅ Display recent logs for debugging
+          sudo journalctl -u kestrel-api --no-pager -n 50
