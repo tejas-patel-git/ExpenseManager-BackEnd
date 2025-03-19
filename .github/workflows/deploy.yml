@@ -84,7 +84,7 @@ jobs:
 
             # ✅ Create deployment directory if missing
             sudo mkdir -p /var/www/ec2-expense-manager-api
-            sudo chown -R www-data:www-data /var/www/ec2-expense-manager-api
+            sudo chown -R $USER:$USER /var/www/ec2-expense-manager-api
             sudo chmod -R 755 /var/www/ec2-expense-manager-api
 
             # ✅ Deploy the new version
