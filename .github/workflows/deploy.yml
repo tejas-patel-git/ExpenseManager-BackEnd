@@ -10,8 +10,9 @@ on:
         options:
           - Development
 
+# ✅ Parallel Build and Setup Jobs
 jobs:
-  # ✅ Build Job (Runs in Parallel)
+  # ✅ Build Job
   build:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
@@ -35,7 +36,7 @@ jobs:
         dotnet build --configuration Release --no-restore
         dotnet publish -c Release -o ./publish
 
-    # ✅ Store build output for deployment
+    # ✅ Store build output as artifact
     - name: Store build artifact
       uses: actions/upload-artifact@v4
       with:
@@ -44,9 +45,10 @@ jobs:
 
 ---
 
-  # ✅ Setup Job
-  ssh-setup:
+  # ✅ Setup Job (Runs in Parallel with Build)
+  setup:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
 
     steps:
     # ✅ Create SSH key file
@@ -70,10 +72,11 @@ jobs:
 
 ---
 
-  # ✅ Deploy Job (Runs After Both Build & Setup)
+  # ✅ Deploy Job (Waits for Both Build and Setup to Finish)
   deploy:
     runs-on: ubuntu-latest
-    needs: [build, ssh-setup]   # Depends on both build and setup jobs
+    environment: ${{ inputs.environment }}
+    needs: [build, setup]  # ⚠️ Ensure deploy waits for both jobs
 
     steps:
     # ✅ Download SSH configuration
