@@ -54,7 +54,7 @@ jobs:
           sudo chmod -R 755 /var/www/ec2-expense-manager-api
 
           # ✅ Deploy the new version
-          scp -r ./code/src/app/publish/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/www/ec2-expense-manager-api
+          scp -r ./code/src/FinanceManager.API/publish/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/www/ec2-expense-manager-api
 
           # ✅ Restart the service
           sudo systemctl start kestrel-api
