@@ -44,7 +44,9 @@ jobs:
   # ✅ Setup Job (Runs in Parallel with Build)
   setup:
     runs-on: ubuntu-latest
-
+    environment: ${{ inputs.environment }}
+    needs: build
+    
     steps:
     - name: Set up SSH key
       run: |
@@ -67,6 +69,7 @@ jobs:
   # ✅ Deploy Job (Waits for Both Build and Setup to Finish)
   deploy:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     needs: [build, setup]  # ⚠️ Ensure deploy waits for both jobs
 
     steps:
