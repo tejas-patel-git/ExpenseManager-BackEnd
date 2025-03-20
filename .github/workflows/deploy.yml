@@ -1,4 +1,4 @@
-name: Deploy
+name: deploy
 
 on:
   workflow_dispatch:
@@ -16,46 +16,85 @@ jobs:
     environment: ${{ inputs.environment }}
 
     steps:
-    # ✅ Checkout code
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      # ✅ Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    # ✅ Set up .NET environment
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '8.0.x'
+      # ✅ Set up .NET environment
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
 
-    # ✅ Build and publish
-    - name: Build and publish the API
-      run: |
-        cd code/src/FinanceManager.API
-        dotnet restore
-        dotnet build --configuration Release --no-restore
-        dotnet publish -c Release -o ./publish
+      # ✅ Build and publish
+      - name: Build and publish the API
+        run: |
+          cd code/src/FinanceManager.API
+          dotnet restore
+          dotnet build --configuration Release --no-restore
+          dotnet publish -c Release -o ./publish
 
-    # ✅ Deploy to EC2
-    - name: Deploy to EC2 with environment secrets
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          # ✅ Add host key to avoid verification issues
+      # ✅ Upload artifacts for deployment
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-publish
+          path: code/src/FinanceManager.API/publish
+
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    needs: build
+
+    steps:
+      # ✅ Download build artifact
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: api-publish
+          path: ./publish
+
+      # ✅ Add EC2 host key to known_hosts
+      - name: Add EC2 host key
+        run: |
+          mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+      - name: Upload artifact to EC2
+        run: |
+          # ✅ Create a temporary SSH key file
+          echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+          
+          # ✅ Copy files to EC2 using SCP
+          scp -i private_key.pem -o StrictHostKeyChecking=no -r ./publish/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/api-deploy
+          
+          # ✅ Remove the temporary key file for security
+          rm -f private_key.pem
+     
+      # ✅ Deploy via SSH
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # ✅ Stop the existing service
+            sudo systemctl stop kestrel-api || true
 
-          # ✅ Stop the existing service
-          sudo systemctl stop kestrel-api || true
+            # ✅ Create deployment directory if missing
+            sudo mkdir -p /var/www/ec2-expense-manager-api
+            sudo chown -R $USER:$USER /var/www/ec2-expense-manager-api
+            sudo chmod -R 755 /var/www/ec2-expense-manager-api
 
-          # ✅ Ensure the directory exists with proper permissions
-          sudo mkdir -p /var/www/ec2-expense-manager-api
-          sudo chown -R ${{ secrets.EC2_USER }}:$USER /var/www/ec2-expense-manager-api
-          sudo chmod -R 755 /var/www/ec2-expense-manager-api
+            # ✅ Deploy the new version
+            sudo rm -rf /var/www/ec2-expense-manager-api/*
+            sudo mv /home/${{ secrets.EC2_USER }}/api-deploy/* /var/www/ec2-expense-manager-api/
 
-          # ✅ Deploy the new version
-          scp -r ./code/src/app/publish/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/www/ec2-expense-manager-api
+            # ✅ Restart and verify the service
+            sudo systemctl daemon-reload
+            sudo systemctl start kestrel-api
+            sudo systemctl status kestrel-api
 
-          # ✅ Restart the service
-          sudo systemctl start kestrel-api
-          sudo systemctl status kestrel-api
+            # ✅ Display recent logs for debugging
+            sudo journalctl -u kestrel-api --no-pager -n 50
